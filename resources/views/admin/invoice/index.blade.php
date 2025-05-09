@@ -42,9 +42,9 @@
                                                 <tr>
                                                     <th>#</th>
                                                     <th>Invoice No</th>
-                                                    <th>Service ID</th>
-                                                    <th>Customer ID</th>
-                                                    <th>Employee ID</th>
+                                                    <th>Service</th>
+                                                    <th>Customer</th>
+                                                    <th>Employee</th>
                                                     <th>Price</th>
                                                     <th>Paid</th>
                                                     <th>Due Payment</th>
@@ -60,7 +60,7 @@
                                                 <tr>
                                                     <td>{{ $loop->iteration }}</td>
                                                     <td>{{ $assignment->invoice->invoice_number  }}</td>
-                                                    <td>{{ $assignment->service_id }}</td>
+                                                    <td>{{ $assignment->service->title }}</td>
                                                     <td>{{ $assignment->customer->name }}</td>
                                                     <td>{{ $assignment->employee?->name }}</td>
                                                     <td>{{ number_format($assignment->price, 2) }}</td>

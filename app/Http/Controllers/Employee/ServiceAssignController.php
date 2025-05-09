@@ -96,7 +96,7 @@ class ServiceAssignController extends Controller
             $serviceAssign->save();
 
             // Determine new payment status based on service price
-            $price = $serviceAssign->service->price;
+            $price = $serviceAssign->offer_price > 0 ? $serviceAssign->offer_price : $serviceAssign->price;
             $status = $serviceAssign->paid_payment >= $price ? 'paid' : 'partial';
 
             // Update invoice

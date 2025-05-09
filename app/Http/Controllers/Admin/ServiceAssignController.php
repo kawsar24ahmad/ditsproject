@@ -22,7 +22,7 @@ class ServiceAssignController extends Controller
      */
     public function index()
     {
-        $serviceAssignments =  ServiceAssign::with(['customer:id,name', 'employee:id,name', 'assignedTasks.task', 'invoice:id,invoice_number,service_assign_id'])
+        $serviceAssignments =  ServiceAssign::with(['customer:id,name', 'employee:id,name', 'assignedTasks.task', 'invoice:id,invoice_number,service_assign_id', 'service:id,title'])
         ->orderByDesc('id')->get();
         return view('admin.invoice.index', compact('serviceAssignments'));
     }
@@ -56,6 +56,7 @@ class ServiceAssignController extends Controller
         // Get the service price from the DB (prevent tampering)
         $service = Service::findOrFail($request->service_id);
         $price = $service->offer_price > 0 ? $service->offer_price : $service->price;
+
 
         // Create service assignment
         $serviceAssign = ServiceAssign::create([
@@ -158,7 +159,9 @@ class ServiceAssignController extends Controller
         ]);
 
         // Fetch service price
-        $price = Service::findOrFail($request->service_id)->price;
+        $service = Service::findOrFail($request->service_id);
+        $price = $service->offer_price > 0 ? $service->offer_price : $service->price;
+
 
         // Update assignment details
         $serviceAssign->update([
@@ -175,7 +178,7 @@ class ServiceAssignController extends Controller
             $serviceAssign->save();
 
             // Determine new status
-            $status = $serviceAssign->status;
+            $status = $serviceAssign->invoice->status;
             if ($serviceAssign->paid_payment >= $price) {
                 $status = 'paid';
             } elseif ($serviceAssign->paid_payment > 0) {
