@@ -28,11 +28,11 @@
                     <a href="#" class="d-block">{{ auth()->user()->name }}</a>
                 </div>
             </div>
-            <div class="info d-flex justify-content-center  text-center">
+            <!-- <div class="info d-flex justify-content-center  text-center">
                 <a href="#" class="d-block">
                     Wallet Balance: ৳{{ auth()->user()->wallet_balance }}
                 </a>
-            </div>
+            </div> -->
         </div>
 
 

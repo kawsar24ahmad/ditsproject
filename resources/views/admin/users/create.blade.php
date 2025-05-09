@@ -101,7 +101,7 @@
                                                         <label for="role">User Role</label>
                                                         <select name="role" class="form-control" id="role">
                                                             <option value="user">User</option>
-                                                            <option value="customer">Customer</option>
+                                                            <!-- <option value="customer">Customer</option> -->
                                                             <option value="employee">Employee</option>
                                                         </select>
                                                     </div>
