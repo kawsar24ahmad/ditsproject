@@ -1,0 +1,150 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        // Users Table
+        Schema::create('users', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('email')->unique();
+            $table->timestamp('email_verified_at')->nullable();
+            $table->string('password');
+            $table->string('provider')->nullable();
+            $table->string('provider_id')->nullable();
+            $table->string('fb_access_token', 500)->nullable();
+            $table->string('fb_page_id')->nullable();
+            $table->string('fb_page_token', 500)->nullable();
+            $table->enum('role', ['admin', 'user', 'customer'])->default('user');
+            $table->string('avatar')->nullable();
+            $table->string('phone')->nullable();
+            $table->string('status')->nullable();
+            $table->decimal('wallet_balance', 10, 2)->default(0);
+            $table->rememberToken();
+            $table->timestamps();
+            $table->softDeletes();
+        });
+
+        // Facebook Pages Table
+        Schema::create('facebook_pages', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->string('page_id');
+            $table->string('page_name');
+            $table->string('category')->nullable();
+            $table->text('page_access_token');
+            $table->text('profile_picture')->nullable();
+            $table->text('cover_photo')->nullable();
+            $table->string('status')->nullable();
+            $table->string('page_username')->nullable();
+            $table->integer('likes')->default(0);
+            $table->integer('followers')->default(0);
+            $table->timestamps();
+            $table->softDeletes();
+        });
+
+        // Wallet Transactions Table
+        Schema::create('wallet_transactions', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->enum('type', ['recharge', 'payment', 'refund', 'bonus', 'manual_adjustment', 'promotion', 'commission']);
+            $table->decimal('amount', 12, 2);
+            $table->string('method')->nullable();
+            $table->string('payment_method')->nullable();
+            $table->text('description')->nullable();
+            $table->string('sender_number')->nullable();
+            $table->string('transaction_id')->nullable();
+            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
+            $table->timestamps();
+        });
+
+        // Facebook Ads Table
+        Schema::create('facebook_ads', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('wallet_transaction_id')->nullable()->constrained('wallet_transactions')->nullOnDelete();
+            $table->foreignId('facebook_page_id')->constrained('facebook_pages')->onDelete('cascade');
+            $table->text('page_link')->nullable();
+            $table->decimal('budget', 10, 2);
+            $table->integer('duration');
+            $table->integer('min_age');
+            $table->integer('max_age');
+            $table->string('location');
+            $table->string('button')->nullable();
+            $table->text('greeting')->nullable();
+            $table->string('status')->nullable();
+            $table->string('url')->nullable();
+            $table->string('number')->nullable();
+            $table->timestamps();
+            $table->softDeletes();
+        });
+
+        // Categories Table
+        Schema::create('categories', function (Blueprint $table) {
+            $table->id();
+            $table->string('title');
+            $table->string('slug');
+            $table->integer('serial')->default(0);
+            $table->timestamps();
+        });
+
+        // Services Table
+        Schema::create('services', function (Blueprint $table) {
+            $table->id();
+            $table->string('title');
+            $table->string('slug');
+            $table->text('description')->nullable();
+            $table->decimal('price', 10, 2);
+            $table->decimal('offer_price', 10, 2)->nullable();
+            $table->foreignId('category_id')->constrained()->onDelete('cascade');
+            $table->string('thumbnail')->nullable();
+            $table->string('icon')->nullable();
+            $table->boolean('is_active')->default(true);
+            $table->string('type')->nullable();
+            $table->timestamps();
+            $table->softDeletes();
+        });
+
+        // Orders Table
+        Schema::create('orders', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->string('name');
+            $table->string('email');
+            $table->string('phone');
+            $table->text('address');
+            $table->decimal('amount', 10, 2);
+            $table->string('transaction_id')->nullable();
+            $table->string('payment_method')->nullable();
+            $table->timestamps();
+        });
+
+        // Service Purchases Table
+        Schema::create('service_purchases', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('service_id')->constrained()->onDelete('cascade');
+            $table->foreignId('wallet_transaction_id')->nullable()->constrained()->nullOnDelete();
+            $table->decimal('price', 10, 2);
+            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
+            $table->timestamps();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('service_purchases');
+        Schema::dropIfExists('orders');
+        Schema::dropIfExists('services');
+        Schema::dropIfExists('categories');
+        Schema::dropIfExists('facebook_ads');
+        Schema::dropIfExists('wallet_transactions');
+        Schema::dropIfExists('facebook_pages');
+        Schema::dropIfExists('users');
+    }
+};
