@@ -59,7 +59,7 @@
             </div>
 
             @php
-            $services = App\Models\ServiceAssign::with(['invoice:id,invoice_number,service_assign_id'])->where('customer_id', auth()->user()->id)->orderByDesc('id')->paginate(2);
+            $services = App\Models\ServiceAssign::with(['invoice:id,invoice_number,service_assign_id', 'service:id,title'])->where('customer_id', auth()->user()->id)->orderByDesc('id')->paginate(2);
             @endphp
 
             <!-- Services -->
@@ -128,8 +128,8 @@
                                                 <tr>
                                                     <th>#</th>
                                                     <th>Invoice No</th>
-                                                    <th>Service ID</th>
-                                                    <th>Customer ID</th>
+                                                    <th>Service </th>
+                                                    <th>Customer </th>
                                                     <th>Price</th>
                                                     <th>Paid</th>
                                                     <th>Due Payment</th>
@@ -145,7 +145,7 @@
                                                 <tr>
                                                     <td>{{ $loop->iteration }}</td>
                                                     <td>{{ $assignment->invoice->invoice_number }}</td>
-                                                    <td>{{ $assignment->service_id }}</td>
+                                                    <td>{{ $assignment->service->title }}</td>
                                                     <td>{{ $assignment->employee?->name }}</td>
                                                     <td>{{ number_format($assignment->price, 2) }}</td>
                                                     <td>{{ number_format($assignment->paid_payment, 2) }}</td>

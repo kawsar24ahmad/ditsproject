@@ -36,7 +36,7 @@
         @endphp
           @if ($status)
           <li class="nav-item me-3 ">
-              <a target="_blank"  class="btn btn-primary"  href="https://support.digitalwaveit.com/video-tutorial/">Service Dashboard</a>
+              <a target="_blank"  class="btn btn-danger"  href="https://support.digitalwaveit.com/video-tutorial/">সাপোর্টে জয়েন করুন</a>
           </li>
           @endif
 
