@@ -4,6 +4,7 @@ use App\Models\FacebookPage;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 use Laravel\Socialite\Facades\Socialite;
+use App\Http\Controllers\Admin\MediaController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\SettingController;
@@ -14,7 +15,7 @@ use App\Http\Controllers\Admin\ServiceTaskController;
 use App\Http\Controllers\SslCommerzPaymentController;
 use App\Http\Controllers\Admin\FacebookPageController;
 use App\Http\Controllers\Admin\ServiceAssignController;
-use App\Http\Controllers\Employee\ServiceAssignController as EmployeeServiceAssignController;
+use App\Http\Controllers\User\ServiceAssignedController;
 use App\Http\Controllers\Admin\WalletTransactionController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\User\WalletController as UserWalletController;
@@ -23,7 +24,8 @@ use App\Http\Controllers\User\ServiceController as UserServiceController;
 use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
 use App\Http\Controllers\Customer\ProfileController as CustomerProfileController;
 use App\Http\Controllers\Customer\FacebookController as CustomerFacebookController;
-use App\Http\Controllers\User\ServiceAssignedController;
+use App\Http\Controllers\Employee\ServiceAssignController as EmployeeServiceAssignController;
+use App\Http\Controllers\User\MediaController as UserMediaController;
 use App\Http\Controllers\User\WalletTransactionController as UserWalletTransactionController;
 
 
@@ -92,8 +94,7 @@ Route::middleware(['auth', 'role:admin'])->group(function ()  {
         Route::patch('/tasks/{task}/toggle', [ServiceTaskController::class, 'toggle'])->name('admin.tasks.toggle');
         Route::delete('/tasks/{task}', [ServiceTaskController::class, 'destroy'])->name('admin.tasks.destroy');
 
-
-
+        Route::resource('media', MediaController::class)->names('admin.media');
     });
 });
 
@@ -112,6 +113,7 @@ Route::middleware([ 'auth','role:user,customer'])->group(function ()  {
         Route::get('/service-assigns/{id}', [ServiceAssignedController::class, 'show'])->name('user.service_assigns.show');
         Route::get('/service-assigns/{id}/generate', [ServiceAssignedController::class, 'invoiceGenerate'])->name('user.service_assigns.invoiceGenerate');
         Route::get('/service-assigns/{id}/generate/pdf', [ServiceAssignedController::class, 'invoiceGeneratePdf'])->name('user.service_assigns.invoiceGeneratePdf');
+        Route::get('/support', [UserMediaController::class, 'index'])->name('user.support');
     });
 });
 

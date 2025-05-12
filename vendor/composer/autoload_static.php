@@ -35,6 +35,7 @@ class ComposerStaticInit873aa6c4d351fb5c49713ebaa8852969
         '7f7ac2ddea9cc3fb4b2cc201d63dbc10' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Log/functions.php',
         '493c6aea52f6009bab023b26c21a386a' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Support/functions.php',
         '58571171fd5812e6e447dce228f52f4d' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Support/helpers.php',
+        'fbf261d4b29bec9345c3d3398e1d1077' => __DIR__ . '/../..' . '/app/Helpers/YoutubeHelper.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -521,6 +522,7 @@ class ComposerStaticInit873aa6c4d351fb5c49713ebaa8852969
     public static $classMap = array (
         'App\\Http\\Controllers\\Admin\\CategoryController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/CategoryController.php',
         'App\\Http\\Controllers\\Admin\\FacebookPageController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/FacebookPageController.php',
+        'App\\Http\\Controllers\\Admin\\MediaController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/MediaController.php',
         'App\\Http\\Controllers\\Admin\\ProfileController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/ProfileController.php',
         'App\\Http\\Controllers\\Admin\\ServiceAssignController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/ServiceAssignController.php',
         'App\\Http\\Controllers\\Admin\\ServiceController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/ServiceController.php',
@@ -546,6 +548,7 @@ class ComposerStaticInit873aa6c4d351fb5c49713ebaa8852969
         'App\\Http\\Controllers\\ProfileController' => __DIR__ . '/../..' . '/app/Http/Controllers/ProfileController.php',
         'App\\Http\\Controllers\\ServicePurchaseController' => __DIR__ . '/../..' . '/app/Http/Controllers/ServicePurchaseController.php',
         'App\\Http\\Controllers\\SslCommerzPaymentController' => __DIR__ . '/../..' . '/app/Http/Controllers/SslCommerzPaymentController.php',
+        'App\\Http\\Controllers\\User\\MediaController' => __DIR__ . '/../..' . '/app/Http/Controllers/User/MediaController.php',
         'App\\Http\\Controllers\\User\\ProfileController' => __DIR__ . '/../..' . '/app/Http/Controllers/User/ProfileController.php',
         'App\\Http\\Controllers\\User\\ServiceAssignedController' => __DIR__ . '/../..' . '/app/Http/Controllers/User/ServiceAssignedController.php',
         'App\\Http\\Controllers\\User\\ServiceController' => __DIR__ . '/../..' . '/app/Http/Controllers/User/ServiceController.php',
@@ -566,6 +569,7 @@ class ComposerStaticInit873aa6c4d351fb5c49713ebaa8852969
         'App\\Models\\FacebookAd' => __DIR__ . '/../..' . '/app/Models/FacebookAd.php',
         'App\\Models\\FacebookPage' => __DIR__ . '/../..' . '/app/Models/FacebookPage.php',
         'App\\Models\\Invoice' => __DIR__ . '/../..' . '/app/Models/Invoice.php',
+        'App\\Models\\Media' => __DIR__ . '/../..' . '/app/Models/Media.php',
         'App\\Models\\Order' => __DIR__ . '/../..' . '/app/Models/Order.php',
         'App\\Models\\PaymentHistory' => __DIR__ . '/../..' . '/app/Models/PaymentHistory.php',
         'App\\Models\\Service' => __DIR__ . '/../..' . '/app/Models/Service.php',

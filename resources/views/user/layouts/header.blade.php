@@ -36,7 +36,7 @@
         @endphp
           @if ($status)
           <li class="nav-item me-3 ">
-              <a target="_blank"  class="btn btn-danger"  href="https://support.digitalwaveit.com/video-tutorial/">সাপোর্টে জয়েন করুন</a>
+              <a   class="btn btn-danger"  href="{{ route('user.support') }}">সাপোর্টে জয়েন করুন</a>
           </li>
           @endif
 

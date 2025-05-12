@@ -8,6 +8,7 @@ $baseDir = dirname($vendorDir);
 return array(
     'App\\Http\\Controllers\\Admin\\CategoryController' => $baseDir . '/app/Http/Controllers/Admin/CategoryController.php',
     'App\\Http\\Controllers\\Admin\\FacebookPageController' => $baseDir . '/app/Http/Controllers/Admin/FacebookPageController.php',
+    'App\\Http\\Controllers\\Admin\\MediaController' => $baseDir . '/app/Http/Controllers/Admin/MediaController.php',
     'App\\Http\\Controllers\\Admin\\ProfileController' => $baseDir . '/app/Http/Controllers/Admin/ProfileController.php',
     'App\\Http\\Controllers\\Admin\\ServiceAssignController' => $baseDir . '/app/Http/Controllers/Admin/ServiceAssignController.php',
     'App\\Http\\Controllers\\Admin\\ServiceController' => $baseDir . '/app/Http/Controllers/Admin/ServiceController.php',
@@ -33,6 +34,7 @@ return array(
     'App\\Http\\Controllers\\ProfileController' => $baseDir . '/app/Http/Controllers/ProfileController.php',
     'App\\Http\\Controllers\\ServicePurchaseController' => $baseDir . '/app/Http/Controllers/ServicePurchaseController.php',
     'App\\Http\\Controllers\\SslCommerzPaymentController' => $baseDir . '/app/Http/Controllers/SslCommerzPaymentController.php',
+    'App\\Http\\Controllers\\User\\MediaController' => $baseDir . '/app/Http/Controllers/User/MediaController.php',
     'App\\Http\\Controllers\\User\\ProfileController' => $baseDir . '/app/Http/Controllers/User/ProfileController.php',
     'App\\Http\\Controllers\\User\\ServiceAssignedController' => $baseDir . '/app/Http/Controllers/User/ServiceAssignedController.php',
     'App\\Http\\Controllers\\User\\ServiceController' => $baseDir . '/app/Http/Controllers/User/ServiceController.php',
@@ -53,6 +55,7 @@ return array(
     'App\\Models\\FacebookAd' => $baseDir . '/app/Models/FacebookAd.php',
     'App\\Models\\FacebookPage' => $baseDir . '/app/Models/FacebookPage.php',
     'App\\Models\\Invoice' => $baseDir . '/app/Models/Invoice.php',
+    'App\\Models\\Media' => $baseDir . '/app/Models/Media.php',
     'App\\Models\\Order' => $baseDir . '/app/Models/Order.php',
     'App\\Models\\PaymentHistory' => $baseDir . '/app/Models/PaymentHistory.php',
     'App\\Models\\Service' => $baseDir . '/app/Models/Service.php',

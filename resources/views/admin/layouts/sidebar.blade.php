@@ -111,6 +111,12 @@
                         <p>Facebook Pages</p>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="{{ route('admin.media.index') }}" class="nav-link">
+                        <i class="nav-icon fab fa-youtube"></i>
+                        <p>Media</p>
+                    </a>
+                </li>
 
                 <li class="nav-item">
                     <a href="{{ route('admin.site-settings.edit') }}" class="nav-link">
