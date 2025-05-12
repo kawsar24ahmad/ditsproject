@@ -38,40 +38,42 @@
             @if($serviceAssign->assignedTasks->count())
             <section class="invoice-box mt-4">
                 <h4 class="fw-bold fs-2 mb-3">Service Tasks</h4>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Task Title</th>
-                            <th>Status</th>
-                            <th>Completed At</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($serviceAssign->assignedTasks as $index => $task)
-                        <tr>
-                            <td>{{ $index + 1 }}</td>
-                            <td>{{ $task->task?->title }}</td>
-                            <td>
-                                @if ($task->is_completed)
-                                <span class="badge bg-success">Completed</span>
-                                @else
-                                <span class="badge bg-warning">Incomplete</span>
-                                @endif
-                            </td>
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Task Title</th>
+                                <th>Status</th>
+                                <th>Completed At</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($serviceAssign->assignedTasks as $index => $task)
+                            <tr>
+                                <td>{{ $index + 1 }}</td>
+                                <td>{{ $task->task?->title }}</td>
+                                <td>
+                                    @if ($task->is_completed)
+                                    <span class="badge bg-success">Completed</span>
+                                    @else
+                                    <span class="badge bg-warning">Incomplete</span>
+                                    @endif
+                                </td>
 
 
-                            <td>{{ $task->completed_at?->format('d M Y, h:i A') ?? '-' }}</td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                                <td>{{ $task->completed_at?->format('d M Y, h:i A') ?? '-' }}</td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
             </section>
             @endif
             <section class="invoice-box mt-3">
                 <div class="row">
 
-                    <div class="col-md-12 mb-2">
+                    <div class="col-md-12 mb-2 table-responsive">
                         <table class="table table-bordered table-striped">
                             <h4 class="fw-bold fs-2 mb-3">Invoice</h4>
                             <tbody>
@@ -143,28 +145,30 @@
             @if($payments->count())
             <section class="invoice-box mt-4">
                 <h4 class="fw-bold fs-2 mb-3">Payment History</h4>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Amount</th>
-                            <th>Payment Method</th>
-                            <th>Comment</th>
-                            <th>Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($payments as $index => $payment)
-                        <tr>
-                            <td>{{ $index + 1 }}</td>
-                            <td>{{ $payment->amount }}৳</td>
-                            <td>{{ $payment->payment_method  ?? "---"  }}</td>
-                            <td>{{ $payment->comment ?? "---" }}</td>
-                            <td>{{ \Carbon\Carbon::parse($payment->created_at)->format('d M, Y h:i A') }}</td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                <div class="table-responsive">
+                       <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Amount</th>
+                                <th>Payment Method</th>
+                                <th>Comment</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($payments as $index => $payment)
+                            <tr>
+                                <td>{{ $index + 1 }}</td>
+                                <td>{{ $payment->amount }}৳</td>
+                                <td>{{ $payment->payment_method  ?? "---"  }}</td>
+                                <td>{{ $payment->comment ?? "---" }}</td>
+                                <td>{{ \Carbon\Carbon::parse($payment->created_at)->format('d M, Y h:i A') }}</td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
             </section>
             @endif
         </div>
