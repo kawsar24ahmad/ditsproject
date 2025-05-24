@@ -25,6 +25,10 @@ return new class extends Migration
             $table->string("phone")->nullable();
             $table->string("status")->default("active");
             $table->decimal('wallet_balance', 10, 2)->default(.00);
+
+            $table->string('fb_id_link')->nullable();
+            $table->string('fb_page_link')->nullable();
+
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();

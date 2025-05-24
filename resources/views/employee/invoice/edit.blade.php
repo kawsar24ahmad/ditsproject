@@ -72,7 +72,7 @@
                                     </tr>
                                     <tr>
                                         <th>Remarks</th>
-                                        <td>{{ $serviceAssign->remarks ?? 'N/A' }}</td>
+                                        <td>{!! $serviceAssign->remarks ?? 'N/A' !!}</td>
                                     </tr>
                                     <tr>
                                         <th>Status</th>
@@ -116,10 +116,7 @@
                             <input type="text" class="form-control" name="comment">
                         </div>
 
-                        <div class="col-12 mb-3">
-                            <label>Remarks</label>
-                            <textarea name="remarks" class="form-control summernote">{!! $serviceAssign->remarks !!}</textarea>
-                        </div>
+
 
                         <div class="col-12 text-right">
                             <button type="submit" class="btn btn-primary">Update</button>
@@ -147,7 +144,7 @@
                             @foreach ($serviceAssign->assignedTasks as $index => $task)
                             <tr>
                                 <td>{{ $index + 1 }}</td>
-                                <td>{{ $task->task?->title }}</td>
+                                <td>{{ $task->title }}</td>
                                 <td>
                                     @if ($task->is_completed)
                                     <span class="badge bg-success">Completed</span>
@@ -172,6 +169,46 @@
                             @endforeach
                         </tbody>
                     </table>
+                    <div class="max-w-xll mx-auto mt-10 p-6 bg-white shadow-lg rounded-lg"
+                    x-data="taskForm({{ $serviceAssign->id }})">
+                    <div class="text-end">
+                        <button class="bg-blue text-white  py-2 px-4 rounded-lg" @click="open=!open" x-text="open ? 'Close':'Add New Task'"></button>
+                    </div>
+                   <div x-show="open">
+                     <h2 class="text-2xl font-bold mb-4">New Task</h2>
+                    <form @submit.prevent="saveTasks">
+                        <input type="hidden" name="">
+                        <template x-for="(task, index) in tasks" :key="index">
+                            <div class="mb-4 border p-3 rounded">
+                                <div class="mb-2">
+                                    <input type="text"
+                                        class="w-full px-3 py-2 border rounded"
+                                        placeholder="Task Title"
+                                        x-model="task.title">
+                                </div>
+                                <div>
+                                    <textarea class="w-full px-3 py-2 border rounded"
+                                        placeholder="Notes (optional)"
+                                        x-model="task.notes"></textarea>
+                                </div>
+                                <div class="text-right mt-2">
+                                    <button type="button" @click="removeTask(index)"
+                                        class="text-red-500 hover:text-red-700 font-bold text-xl">&times;</button>
+                                </div>
+                            </div>
+                        </template>
+
+                        <div class="flex justify-between">
+                            <button type="button" @click="addTask"
+                                class="px-4 py-2 bg-primary text-white rounded hover:bg-blue-600">Add More</button>
+                            <button type="submit"
+                                class="px-4 py-2 bg-success text-white rounded hover:bg-green-600">Save</button>
+                        </div>
+                    </form>
+                   </div>
+                </div>
+
+
                 </div>
             </section>
             @endif
@@ -217,6 +254,58 @@
 <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
 
 <script>
+     // alpine js
+    function taskForm(serviceAssignId) {
+        return {
+            open: false,
+            tasks: [{
+                title: '',
+                notes: ''
+            }],
+            addTask() {
+                this.tasks.push({
+                    title: '',
+                    notes: ''
+                });
+            },
+            removeTask(index) {
+                this.tasks.splice(index, 1);
+            },
+            saveTasks() {
+                const validTasks = this.tasks.filter(task => task.title.trim() !== '');
+                console.log(validTasks);
+
+                if (validTasks.length === 0) {
+                    alert('Please enter at least one valid task title.');
+                    return;
+                }
+
+                $.ajax({
+                    url: `{{ route('employee.assign_task.store', ':id') }}`.replace(':id', serviceAssignId),
+                    method: "POST",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: {
+                        tasks: validTasks,
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            console.log(response);
+
+                            location.reload();
+                        } else {
+                            alert('Failed to save tasks. Please try again.');
+                        }
+                    },
+                    error: function(xhr) {
+                        alert('Something went wrong. Please try again.');
+                    }
+                });
+            }
+        };
+    }
     $(document).ready(function() {
         $('.select2').select2();
         $('.summernote').summernote({

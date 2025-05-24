@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AssignTaskController;
 use App\Models\FacebookPage;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
@@ -90,11 +91,16 @@ Route::middleware(['auth', 'role:admin'])->group(function ()  {
         Route::resource('service-assigns', ServiceAssignController::class)->names('admin.service_assigns');
 
 
+        Route::get('/services/{service}/tasks/create', [ServiceTaskController::class, 'create'])->name('admin.tasks.create');
+        Route::put('/tasks/{task}', [ServiceTaskController::class, 'update'])->name('admin.tasks.update');
         Route::post('/services/{service}/tasks', [ServiceTaskController::class, 'store'])->name('admin.tasks.store');
         Route::patch('/tasks/{task}/toggle', [ServiceTaskController::class, 'toggle'])->name('admin.tasks.toggle');
         Route::delete('/tasks/{task}', [ServiceTaskController::class, 'destroy'])->name('admin.tasks.destroy');
 
         Route::resource('media', MediaController::class)->names('admin.media');
+
+        Route::post('/service-assigns/{id}/assign-task/store', [AssignTaskController::class, 'store'])->name('admin.assign_task.store');
+        Route::get('/service-assigns/{id}/assign-task/index', [AssignTaskController::class, 'index'])->name('admin.assign_task.index');
     });
 });
 
@@ -136,6 +142,7 @@ Route::middleware([ 'auth','role:employee'])->group(function ()  {
         Route::delete('/profile', [CustomerProfileController::class, 'destroy'])->name('employee.profile.destroy');
         Route::resource('service-assigns', EmployeeServiceAssignController::class)->names('employee.service_assigns');
         Route::patch('/tasks/{task}/toggle', [EmployeeServiceAssignController::class, 'toggle'])->name('employee.tasks.toggle');
+        Route::post('/service-assigns/{id}/assign-task/store', [AssignTaskController::class, 'store'])->name('employee.assign_task.store');
     });
 
 });

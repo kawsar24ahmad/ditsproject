@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\ServiceTask;
+use App\Models\ServiceAssign;
 use Illuminate\Cache\Events\CacheEvent;
 use Illuminate\Database\Eloquent\Model;
 
@@ -32,5 +33,10 @@ class Service extends Model
     {
         return $this->hasMany(ServiceTask::class);
     }
+    public function serviceAssign()
+    {
+        return $this->hasMany(ServiceAssign::class);
+    }
+
 
 }

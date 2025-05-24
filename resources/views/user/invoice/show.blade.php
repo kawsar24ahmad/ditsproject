@@ -44,6 +44,7 @@
                             <tr>
                                 <th>#</th>
                                 <th>Task Title</th>
+                                <th>Notes</th>
                                 <th>Status</th>
                                 <th>Completed At</th>
                             </tr>
@@ -52,7 +53,8 @@
                             @foreach ($serviceAssign->assignedTasks as $index => $task)
                             <tr>
                                 <td>{{ $index + 1 }}</td>
-                                <td>{{ $task->task?->title }}</td>
+                                <td>{{ $task->title }}</td>
+                                <td>{{ $task->notes ?? 'N/A' }}</td>
                                 <td>
                                     @if ($task->is_completed)
                                     <span class="badge bg-success">Completed</span>

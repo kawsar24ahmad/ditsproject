@@ -22,35 +22,6 @@ class ServiceController extends Controller
         return view('admin.services.create', compact('categories'));
     }
 
-    // public function store(Request $request)
-    // {
-    //     $validated = $request->validate([
-    //         'title' => 'required|string|max:255',
-    //         'description' => 'required',
-    //         'price' => 'required|numeric',
-    //         'offer_price' => 'nullable|numeric',
-    //         'category_id' => 'nullable|exists:categories,id',
-    //         'thumbnail' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-    //         'icon' => 'nullable',
-    //         'is_active' => 'boolean',
-    //         'type' => 'nullable|in:form,view_only,external_link',
-    //         'form_fields_json' => 'required_if:type,form|nullable|json',
-    //         'view_only_input' => 'required_if:type,view_only|nullable|string',
-    //         'external_link_input' => 'required_if:type,external_link|nullable|url',
-    //     ]);
-    //     if ($request->hasFile('thumbnail')) {
-    //         // Store new photo
-    //         $filename =  uniqid() . '.' . $request->file('thumbnail')->getClientOriginalExtension();
-    //         $request->file('thumbnail')->move(public_path('thumbnails'), $filename);
-    //         $validated['thumbnail'] = 'thumbnails/' . $filename;
-    //     }
-
-    //     $validated['slug'] = Str::slug($validated['title']);
-
-    //     Service::create($validated);
-
-    //     return redirect()->route('admin.services.index')->with('success', 'Service created successfully.');
-    // }
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -85,9 +56,9 @@ class ServiceController extends Controller
         // Default active status if not sent
         $validated['is_active'] = $request->has('is_active') ? 1 : 0;
 
-        Service::create($validated);
+        $service = Service::create($validated);
 
-        return redirect()->route('admin.services.index')->with('success', 'Service created successfully.');
+        return redirect()->route('admin.tasks.create', $service->id)->with('success', 'Service created successfully.');
     }
 
 
@@ -114,38 +85,7 @@ class ServiceController extends Controller
         return view('admin.services.edit', compact('service', 'categories'));
     }
 
-    // public function update(Request $request, string $id)
-    // {
-    //     $service = Service::findOrFail($id);
 
-    //     $validated = $request->validate([
-    //         'title' => 'required|string|max:255',
-    //         'description' => 'required',
-    //         'price' => 'required|numeric',
-    //         'offer_price' => 'nullable|numeric',
-    //         'category_id' => 'nullable|exists:categories,id',
-    //         'thumbnail' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-    //         'icon' => 'nullable',
-    //         'is_active' => 'boolean',
-    //     ]);
-
-    //     if ($request->hasFile('thumbnail')) {
-    //         // delete old
-    //         if ($service->thumbnail && file_exists($service->thumbnail)) {
-    //             unlink(public_path($service->thumbnail));
-    //         }
-    //        // Store new photo
-    //        $filename =  uniqid() . '.' . $request->file('thumbnail')->getClientOriginalExtension();
-    //        $request->file('thumbnail')->move(public_path('thumbnails'), $filename);
-    //        $validated['thumbnail'] = 'thumbnails/' . $filename;
-    //     }
-
-    //     $validated['slug'] = Str::slug($validated['title']);
-
-    //     $service->update($validated);
-
-    //     return redirect()->route('admin.services.index')->with('success', 'Service updated successfully.');
-    // }
     public function update(Request $request, string $id)
     {
         $service = Service::findOrFail($id);

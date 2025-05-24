@@ -49,9 +49,9 @@
                                                     <th>Title</th>
                                                     <th>Price</th>
                                                     <th>Offer Price</th>
-                                                    <th>Category</th>
+                                                    <!-- <th>Category</th>
                                                     <th>Thumbnail</th>
-                                                    <th>Icon</th>
+                                                    <th>Icon</th> -->
                                                     <th>Action</th>
                                                 </tr>
                                             </thead>
@@ -62,7 +62,7 @@
                                                     <td>{{ $service->title }}</td>
                                                     <td>{{ $service->price }}</td>
                                                     <td>{{ $service->offer_price }}</td>
-                                                    <td>{{ $service->category?->title ?? 'N/A' }}</td>
+                                                    <!-- <td>{{ $service->category?->title ?? 'N/A' }}</td>
                                                     <td>
                                                         @if($service->thumbnail)
                                                             <img width="100" src="{{ asset( $service->thumbnail) }}" height="100" alt="thumb">
@@ -70,8 +70,9 @@
                                                             N/A
                                                         @endif
                                                     </td>
-                                                    <td>{{ $service->icon ?? 'N/A' }}</td>
+                                                    <td>{{ $service->icon ?? 'N/A' }}</td> -->
                                                     <td>
+                                                        <a class="badge badge-info" href="{{ route('admin.tasks.create', $service->id) }}">Tasks</a>
                                                         <a href="{{ route('admin.services.edit', $service->id) }}" class="text-primary me-1">
                                                             <i class="fa fa-edit"></i>
                                                         </a>

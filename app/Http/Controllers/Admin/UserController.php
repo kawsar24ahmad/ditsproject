@@ -40,6 +40,8 @@ class UserController extends Controller
             'avatar'   => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'status'   => 'required|in:active,inactive',
             'role'     => 'required|in:user,customer,employee',
+            'fb_id_link' => 'nullable|url',
+            'fb_page_link' => 'nullable|url',
         ]);
 
         // Handle avatar upload if exists
@@ -63,20 +65,37 @@ class UserController extends Controller
         $user->avatar   = $avatar ?? null;
         $user->status   = $request->status;
         $user->role   = $request->role;
+        $user->fb_id_link = $request->fb_id_link;
+        $user->fb_page_link = $request->fb_page_link;
         $user->save();
 
-        // Redirect with success message
-        return redirect()->route('admin_users.index')->with('success', 'User created successfully.');
+        // ✅ Return response based on request type
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'User created successfully.',
+                'user'    => $user
+            ]);
+        } else {
+            return redirect()->route('admin_users.index')->with('success', 'User created successfully.');
+        }
     }
 
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show($id)
     {
-        //
+        $user = User::findOrFail($id);
+
+        return response()->json([
+            'success' => true,
+            'user'    => $user,
+            'message' => 'User retrieved successfully.'
+        ]);
     }
+
 
     /**
      * Show the form for editing the specified resource.

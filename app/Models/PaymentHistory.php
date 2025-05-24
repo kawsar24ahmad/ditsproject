@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Invoice;
 use Illuminate\Database\Eloquent\Model;
 
 class PaymentHistory extends Model
@@ -13,5 +14,9 @@ class PaymentHistory extends Model
         'comment',
         'paid_at',
     ];
+    public function invoice()
+    {
+        return $this->belongsTo(Invoice::class);
+    }
 
 }

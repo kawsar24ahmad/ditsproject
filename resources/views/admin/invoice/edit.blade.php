@@ -45,57 +45,120 @@
                     @csrf
                     @method('PUT')
                     <div class="row">
-                        <div class="col-md-4 mb-2">
-                            <label>Customer</label>
-                            <select name="customer_id" class="form-control select2" required>
-                                @foreach($customers as $customer)
-                                <option value="{{ $customer->id }}" {{ $serviceAssign->customer_id == $customer->id ? 'selected' : '' }}>
-                                    {{ $customer->name }}
-                                </option>
-                                @endforeach
-                            </select>
+                        <div id="customerInfo table-responsive" class="mt-3">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th colspan="2">Customer Information</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th width="30%">Name:</th>
+                                        <td>{{ $serviceAssign->customer->name ?? 'N/A' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Email:</th>
+                                        <td>{{ $serviceAssign->customer->email ?? 'N/A' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Phone:</th>
+                                        <td>{{ $serviceAssign->customer->phone ?? 'N/A' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Facebook ID Link:</th>
+                                        <td>{{ $serviceAssign->customer_fb_id_link ?? 'N/A' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Facebook Page Link:</th>
+                                        <td>{{ $serviceAssign->customer->fb_page_link ?? 'N/A' }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
 
-                        <div class="col-md-4 mb-2">
-                            <label>Service</label>
-                            <select name="service_id" class="form-control" id="service_id" required>
-                                @foreach($services as $service)
-                                <option value="{{ $service->id }}" data-price="{{ $service->price }}" {{ $serviceAssign->service_id == $service->id ? 'selected' : '' }}>
-                                    {{ $service->title }} - ৳{{ $service->price }}
-                                </option>
-                                @endforeach
-                            </select>
+                        <div id="service-info" class="mt-3  table-responsive">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th colspan="2">Service Info:</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th width="30%">Title:</th>
+                                        <td>{{ $serviceAssign->service->title ?? 'N/A' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Price:</th>
+                                        <td>{{ $serviceAssign->price ?? 'N/A' }}</td>
+                                    </tr>
+
+                                    <tr>
+                                        <th>Service Status:</th>
+                                        <td><span class="badge badge-info">{{ strtoupper($serviceAssign->status)  }}</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
 
-                        <div class="col-md-4 mb-2">
-                            <label>Employee</label>
-                            <select name="employee_id" class="form-control select2">
-                                <option value="">Not Assigned</option>
-                                @foreach($employees as $employee)
-                                <option value="{{ $employee->id }}" {{ $serviceAssign->employee_id == $employee->id ? 'selected' : '' }}>
-                                    {{ $employee->name }}
-                                </option>
-                                @endforeach
-                            </select>
+
+
+                        <div class="col-md-12 mb-3">
+                            <label for="employee_id" class="form-label">Employee</label>
+                            <div class="row g-2 align-items-end">
+                                <div class="col-md-9">
+                                    <select name="employee_id" class="form-control select2" id="employee_id">
+                                        <option value="">Not Assigned</option>
+                                        @foreach($employees as $employee)
+                                        <option value="{{ $employee->id }}" {{ $serviceAssign->employee_id == $employee->id ? 'selected' : '' }}>
+                                            {{ $employee->name }}
+                                        </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <a href="javascript:void(0);" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#addEmployeeModal">
+                                        + Add Employee
+                                    </a>
+                                </div>
+                            </div>
                         </div>
 
-                        <div class="col-md-4 mb-2">
-                            <label>Total Price</label>
-                            <input type="text" id="price" class="form-control" readonly value="{{ $serviceAssign->price }}">
+                        <div class="col-12 mb-3">
+                            <label>Remarks</label>
+                            <textarea name="remarks" class="form-control summernote">{!! $serviceAssign->remarks !!}</textarea>
                         </div>
 
-                        <div class="col-md-4 mb-2">
-                            <label>Total Paid</label>
-                            <input type="text" class="form-control" readonly value="{{ $serviceAssign->paid_payment }}">
+                        <div id="service-info" class="mt-3  table-responsive">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th colspan="2">Payment Information:</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th width="20%">Price:</th>
+                                        <td>{{ $serviceAssign->price ?? 'N/A' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Paid Amount:</th>
+                                        <td>{{ $serviceAssign->paid_payment ?? '0.00' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Due:</th>
+                                        <td>{{ $serviceAssign->price - $serviceAssign->paid_payment  }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Payment Status:</th>
+                                        <td><span class="badge badge-{{ $serviceAssign->invoice->status == 'paid' ? 'success' : 'danger' }}" style="font-size: 40px;">{{ strtoupper($serviceAssign->invoice->status)}}</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
 
-                        <div class="col-md-4 mb-2">
-                            <label>Due</label>
-                            <input type="text" id="due" class="form-control" readonly value="{{ $serviceAssign->price - $serviceAssign->paid_payment }}">
-                        </div>
-                        <div class="my-4">
-                            <p><span class="badge badge-{{ $serviceAssign->invoice->status == 'paid' ? 'success' : 'danger' }}" style="font-size: 40px;">{{ strtoupper($serviceAssign->invoice->status)}}</span></p>
-                        </div>
+
                         <div class="col-md-4 mb-2">
                             <label>New Payment</label>
                             <input type="text" class="form-control" name="new_payment">
@@ -116,65 +179,16 @@
                             <input type="text" class="form-control" name="comment">
                         </div>
 
-                        <div class="col-12 mb-3">
-                            <label>Remarks</label>
-                            <textarea name="remarks" class="form-control summernote">{!! $serviceAssign->remarks !!}</textarea>
-                        </div>
 
                         <div class="col-12 text-right">
-                            <button type="submit" class="btn btn-primary">Update Assignment</button>
+                            <button type="submit" class="btn btn-primary">Update</button>
                         </div>
-                    </div>
+
+
                 </form>
             </section>
-
             {{-- Assigned Tasks --}}
-            @if($serviceAssign->assignedTasks->count())
-            <section class="invoice-box mt-4">
-                <h4>Assigned Tasks</h4>
-                <div class="table-responsive">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Task Title</th>
-                                <th>Status</th>
-                                <th>Action</th>
-                                <th>Completed At</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($serviceAssign->assignedTasks as $index => $task)
-                            <tr>
-                                <td>{{ $index + 1 }}</td>
-                                <td>{{ $task->task?->title }}</td>
-                                <td>
-                                    @if ($task->is_completed)
-                                    <span class="badge bg-success">Completed</span>
-                                    @else
-                                    <span class="badge bg-warning">Incomplete</span>
-                                    @endif
-                                </td>
-                                <td>
-                                    <form method="POST" action="{{ route('admin.tasks.toggle', $task->id) }}">
-                                        @csrf
-                                        @method('PATCH')
-                                        @if (!$task->is_completed)
-                                        <button type="submit" class="btn btn-sm btn-primary">Mark as Complete</button>
-                                        @else
-                                        <button type="submit" class="btn btn-sm btn-warning">Mark as Incomplete</button>
-                                        @endif
-                                    </form>
-                                </td>
 
-                                <td>{{ $task->completed_at?->format('d M Y, h:i A') ?? '-' }}</td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            </section>
-            @endif
 
 
 
@@ -208,29 +222,142 @@
                 </div>
             </section>
             @endif
+
+                 @if($serviceAssign->assignedTasks->count())
+            <section class="invoice-box mt-4">
+                <h4>Assigned Tasks</h4>
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Task Title</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                                <th>Completed At</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($serviceAssign->assignedTasks as $index => $task)
+                            <tr>
+                                <td>{{ $index + 1 }}</td>
+                                <td>{{ $task->title }}</td>
+                                <td>
+                                    @if ($task->is_completed)
+                                    <span class="badge bg-success">Completed</span>
+                                    @else
+                                    <span class="badge bg-warning">Incomplete</span>
+                                    @endif
+                                </td>
+                                <td>
+                                    <form method="POST" action="{{ route('admin.tasks.toggle', $task->id) }}">
+                                        @csrf
+                                        @method('PATCH')
+                                        @if (!$task->is_completed)
+                                        <button type="submit" class="btn btn-sm btn-primary">Mark as Complete</button>
+                                        @else
+                                        <button type="submit" class="btn btn-sm btn-warning">Mark as Incomplete</button>
+                                        @endif
+                                    </form>
+                                </td>
+
+                                <td>{{ $task->completed_at?->format('d M Y, h:i A') ?? '-' }}</td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            @endif
         </div>
+    </div>
+</div>
+<!-- Add Customer Modal -->
+<div class="modal fade" id="addEmployeeModal" tabindex="-1" aria-labelledby="addEmployeeModal" aria-hidden="true">
+    <div class="modal-dialog">
+        <form id="addEmployeeForm">
+            @csrf
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addCustomerModalLabel">Add New Employee</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label>Name <span class="text-danger">*</span></label>
+                        <input type="text" name="name" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label>Email <span class="text-danger">*</span></label>
+                        <input type="email" name="email" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label>Mobile <span class="text-danger">*</span></label>
+                        <input type="text" name="phone" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Password <span class="text-danger">*</span></label>
+                        <input type="password" name="password" class="form-control">
+                    </div>
+                    <input type="hidden" name="role" value="user">
+                    <input type="hidden" name="status" value="active">
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Save Employee</button>
+                </div>
+            </div>
+        </form>
     </div>
 </div>
 @endsection
 
 @section('script')
-<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
 
 <script>
+
+
     $(document).ready(function() {
+        // Initialize Select2
         $('.select2').select2();
+
+        // Initialize Summernote
         $('.summernote').summernote({
-            placeholder: 'Write remarks here...',
-            height: 100
+            height: 150,
         });
 
-        $('#service_id').on('change', function() {
-            const price = $(this).find(':selected').data('price') || 0;
-            $('#price').val(price);
-            const paid = parseFloat("{{ $serviceAssign->paid_payment }}") || 0;
-            $('#due').val(price - paid);
+        $('#addEmployeeForm').on('submit', function(e) {
+            e.preventDefault();
+            // alert('Form submitted');
+
+            $.ajax({
+                url: "{{ route('admin_users.store') }}",
+                // csrf
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                method: "POST",
+                data: $(this).serialize(),
+                success: function(response) {
+                    if (response.success) {
+                        // Add new customer to dropdown
+                        let option = new Option(response.user.name, response.user.id, true, true);
+                        // $('select[name="customer_id"]').append(option).trigger('change');
+                        $('select[name="employee_id"]').append(option).trigger('change');
+                        // Update info box
+                        // updateCustomerInfo(response.user);
+                        // Close modal and reset form
+                        $('#addEmployeeModal').modal('hide');
+                        $('#addEmployeeForm')[0].reset();
+                    }
+                },
+                error: function(xhr) {
+                    alert('Something went wrong. Please try again.');
+                }
+            });
         });
     });
 </script>

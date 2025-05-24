@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\ServiceAssign;
+use App\Models\PaymentHistory;
 use Illuminate\Database\Eloquent\Model;
 
 class Invoice extends Model
@@ -15,5 +16,9 @@ class Invoice extends Model
     public function serviceAssign()
     {
         return $this->belongsTo(ServiceAssign::class, 'service_assign_id');
+    }
+    public function paymentHistory()
+    {
+        return $this->hasMany(PaymentHistory::class);
     }
 }

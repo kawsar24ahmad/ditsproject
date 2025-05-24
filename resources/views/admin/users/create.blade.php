@@ -41,7 +41,7 @@
 
                                                 <div class="col-12  col-md-6 col-md-6">
                                                     <div class="form-group">
-                                                        <label for="phone"> Name <span class="text-danger">*</span> </label>
+                                                        <label for="name"> Name <span class="text-danger">*</span> </label>
                                                         <input type="text" class="form-control" name="name" value="{{old('name')}}" placeholder="User Name" required>
                                                         @error('name')
                                                         <small class="text-danger">{{ $message }}</small>
@@ -50,7 +50,7 @@
                                                 </div>
                                                 <div class="col-12  col-md-6">
                                                     <div class="form-group">
-                                                        <label for="first-name-vertical"> email <span class="text-danger">*</span> </label>
+                                                        <label for="first-name-vertical"> Email <span class="text-danger">*</span> </label>
                                                         <input type="text" class="form-control" name="email" value="{{old('email')}}" placeholder="email" required>
                                                         @error('email')
                                                         <small class="text-danger">{{ $message }}</small>
@@ -59,7 +59,7 @@
                                                 </div>
                                                 <div class="col-12  col-md-6">
                                                     <div class="form-group">
-                                                        <label for="phone"> phone <span class="text-danger">*</span> </label>
+                                                        <label for="phone"> WhatsApp Number <span class="text-danger">*</span> </label>
                                                         <input type="text" class="form-control" name="phone" value="{{old('phone')}}" placeholder="phone" required>
                                                         @error('phone')
                                                         <small class="text-danger">{{ $message }}</small>

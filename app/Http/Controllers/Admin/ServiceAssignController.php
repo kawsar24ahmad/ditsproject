@@ -45,37 +45,48 @@ class ServiceAssignController extends Controller
     public function store(Request $request)
     {
         // Validate request
-        $request->validate([
+        $validatedData = $request->validate([
             'customer_id' => 'required|exists:users,id',
             'service_id' => 'required|exists:services,id',
             'employee_id' => 'nullable|exists:users,id',
             'paid_payment' => 'nullable|numeric|min:0',
             'remarks' => 'nullable|string|max:1000',
         ]);
+        // dd($validatedData);
 
         // Get the service price from the DB (prevent tampering)
         $service = Service::findOrFail($request->service_id);
         $price = $service->offer_price > 0 ? $service->offer_price : $service->price;
 
 
-        // Create service assignment
-        $serviceAssign = ServiceAssign::create([
+        $serviceAssign = $service->serviceAssign()->create([
             'customer_id' => $request->customer_id,
             'employee_id' => $request->employee_id,
-            'service_id' => $request->service_id,
             'price' => $price,
             'paid_payment' => $request->paid_payment,
-            'remarks' => $request->remarks,
+            'remarks' => $validatedData['remarks'],
         ]);
+        // Create service assignment
+        // $serviceAssign = ServiceAssign::create([
+        //     'customer_id' => $request->customer_id,
+        //     'employee_id' => $request->employee_id,
+        //     'service_id' => $request->service_id,
+        //     'price' => $price,
+        //     'paid_payment' => $request->paid_payment,
+        //     'remarks' => $validatedData['remarks'],
+        // ]);
 
-        $tasks = ServiceTask::where('service_id', $request->service_id)->get();
+        // $tasks = ServiceTask::where('service_id', $request->service_id)->get();
+        $tasks = $service->load('tasks')->tasks;
+
         foreach ($tasks as $task) {
-            AssignedTask::create([
-                'service_assign_id' => $serviceAssign->id,
+            $serviceAssign->assignedTasks()->create([
                 'service_task_id' => $task->id,
+                'title' => $task->title, // Add title explicitly
                 'is_completed' => false,
             ]);
         }
+
 
         // Create invoice
         // Determine invoice status based on payment
@@ -87,23 +98,24 @@ class ServiceAssignController extends Controller
         }
 
         // Create invoice
-        $invoice = Invoice::create([
-            'service_assign_id' => $serviceAssign->id,
-            'invoice_number' => 'INV-' . str_pad($serviceAssign->id, 6, '0', STR_PAD_LEFT),
+        $invoice = $serviceAssign->invoice()->create([
+            // 'invoice_number' => 'INV-' . str_pad($serviceAssign->id, 6, '0', STR_PAD_LEFT),
+            'invoice_number' => 'INV-' . $serviceAssign->customer->phone,
             'total_amount' => $price,
             'paid_amount' => $request->paid_payment,
             'status' => $status,
         ]);
 
+
+
+
         // Log payment history
-        PaymentHistory::create([
-            'invoice_id' => $invoice->id,
+        $invoice->paymentHistory()->create([
             'amount' => $request->paid_payment,
             'payment_method' => null,
             'comment' => null,
             'paid_at' => now(),
         ]);
-
 
         return redirect()->route('admin.service_assigns.index')->with('success', 'Service assigned and invoice created successfully!');
     }
@@ -125,7 +137,7 @@ class ServiceAssignController extends Controller
         $customers = User::whereIn('role', ['customer', 'user'])->orderByDesc('id')->get();
         $employees = User::where('role', 'employee')->get();
         $services = Service::all();
-        $serviceAssign = ServiceAssign::with('invoice')->findOrFail($id);
+        $serviceAssign = ServiceAssign::with('invoice', 'customer', 'service')->findOrFail($id);
 
 
 
@@ -149,8 +161,6 @@ class ServiceAssignController extends Controller
 
         // Validate request
         $request->validate([
-            'customer_id' => 'required|exists:users,id',
-            'service_id' => 'required|exists:services,id',
             'employee_id' => 'nullable|exists:users,id',
             'new_payment' => 'nullable|numeric|min:0',
             'payment_method' => 'nullable|string|max:100',
@@ -159,20 +169,21 @@ class ServiceAssignController extends Controller
         ]);
 
         // Fetch service price
-        $service = Service::findOrFail($request->service_id);
+        $service = $serviceAssign->service;
+        // dd($service);
+        // $service = Service::findOrFail($request->service_id);
         $price = $service->offer_price > 0 ? $service->offer_price : $service->price;
 
 
         // Update assignment details
         $serviceAssign->update([
-            'customer_id' => $request->customer_id,
-            'service_id' => $request->service_id,
             'employee_id' => $request->employee_id,
             'remarks' => $request->remarks,
         ]);
 
         // Handle new payment (if any)
         if ($request->filled('new_payment') && $request->new_payment > 0) {
+
             // Update total paid payment
             $serviceAssign->paid_payment += $request->new_payment;
             $serviceAssign->save();
@@ -184,27 +195,37 @@ class ServiceAssignController extends Controller
             } elseif ($serviceAssign->paid_payment > 0) {
                 $status = 'partial';
             }
-
-            $invoice = $serviceAssign->invoice;
-            $invoice->update([
-                'service_assign_id' => $serviceAssign->id,
-                'paid_amount' =>  $invoice->paid_amount += $request->new_payment,
+            $invoice = $serviceAssign->invoice->update([
+                'paid_amount' => $serviceAssign->invoice->paid_amount  += $request->new_payment,
                 'status' => $status,
             ]);
 
+            // $invoice = $serviceAssign->invoice;
+            // $invoice->update([
+            //     'service_assign_id' => $serviceAssign->id,
+            //     'paid_amount' =>  $invoice->paid_amount += $request->new_payment,
+            //     'status' => $status,
+            // ]);
 
-            // Log payment history
-            PaymentHistory::create([
-                'invoice_id' => $invoice->id,
+            $serviceAssign->invoice->paymentHistory()->create([
                 'amount' => $request->new_payment,
                 'payment_method' => $request->payment_method,
                 'comment' => $request->comment,
                 'paid_at' => now(),
             ]);
+
+
+            // Log payment history
+            // PaymentHistory::create([
+            //     'invoice_id' => $invoice->id,
+            //     'amount' => $request->new_payment,
+            //     'payment_method' => $request->payment_method,
+            //     'comment' => $request->comment,
+            //     'paid_at' => now(),
+            // ]);
         }
 
-        return redirect()->route('admin.service_assigns.index')
-            ->with('success', 'Service assignment updated and payment (if any) recorded successfully!');
+        return back()->with('success', 'Service assignment updated and payment (if any) recorded successfully!');
     }
 
 

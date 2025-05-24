@@ -55,14 +55,14 @@
                         </p>
                     </a>
                 </li>
-                <li class="nav-item has-treeview">
+                <!-- <li class="nav-item has-treeview">
                     <a href="{{ route('admin_categories.index') }}" class="nav-link ">
                         <i class="nav-icon fas fa-pen"></i>
                         <p>
                             Categories
                         </p>
                     </a>
-                </li>
+                </li> -->
                 <li class="nav-item has-treeview">
                     <a href="{{ route('admin.services.index') }}" class="nav-link ">
                         <i class="nav-icon fas fa-tag"></i>
@@ -83,7 +83,7 @@
                     <a href="{{ route('admin.service_assigns.index') }}" class="nav-link ">
                         <i class="nav-icon fas fa-plus"></i>
                         <p>
-                            Assigned Services
+                            Purchased Services
                         </p>
                     </a>
                 </li>
@@ -93,24 +93,24 @@
                         <p>Transactions</p>
                     </a>
                 </li>
-                <li class="nav-item">
+                <!-- <li class="nav-item">
                     <a href="{{ route('admin.service.purchases') }}" class="nav-link">
                         <i class="nav-icon fas fa-wallet"></i>
                         <p>Service Purchases</p>
                     </a>
-                </li>
-                <li class="nav-item">
+                </li> -->
+                <!-- <li class="nav-item">
                     <a href="{{ route('admin.facebook-ad-requests') }}" class="nav-link">
                         <i class="nav-icon fas fa-wallet"></i>
                         <p>Facebook Ads Orders</p>
                     </a>
-                </li>
-                <li class="nav-item">
+                </li> -->
+                <!-- <li class="nav-item">
                     <a href="{{ route('admin.facebook-pages.index') }}" class="nav-link">
                         <i class="nav-icon fab fa-facebook-f"></i>
                         <p>Facebook Pages</p>
                     </a>
-                </li>
+                </li> -->
                 <li class="nav-item">
                     <a href="{{ route('admin.media.index') }}" class="nav-link">
                         <i class="nav-icon fab fa-youtube"></i>

@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class ServiceAssign extends Model
 {
     protected $fillable = [
-        'customer_id', 'employee_id', 'service_id', 'price', 'paid_payment'
+        'customer_id', 'employee_id', 'service_id', 'price', 'paid_payment', 'remarks', 'status'
     ];
 
     // একে এক সম্পর্ক ইনভয়েসের সাথে

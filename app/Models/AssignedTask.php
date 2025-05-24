@@ -8,7 +8,7 @@ use Illuminate\Console\View\Components\Task;
 class AssignedTask extends Model
 {
     protected $fillable = [
-        'service_assign_id',	'service_task_id',	'is_completed',	'completed_at',
+        'service_assign_id',	'service_task_id',	'is_completed',	'completed_at', 'title',	'notes',	'added_by',
     ];
 
     public function task()

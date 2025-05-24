@@ -84,7 +84,7 @@
                                     <div class="form-body">
                                         <div class="row">
                                             {{-- Title --}}
-                                            <div class="col-md-6">
+                                            <div class="col-12">
                                                 <div class="form-group">
                                                     <label>Title <span class="text-danger">*</span></label>
                                                     <input type="text" name="title" class="form-control" value="{{ old('title', $service->title) }}" required>
@@ -93,7 +93,7 @@
                                             </div>
 
                                             {{-- Price --}}
-                                            <div class="col-md-4">
+                                            <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label>Price</label>
                                                     <input type="number" name="price" class="form-control" value="{{ old('price', $service->price) }}">
@@ -102,7 +102,7 @@
                                             </div>
 
                                             {{-- Offer Price --}}
-                                            <div class="col-md-4">
+                                            <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label>Offer Price</label>
                                                     <input type="number" name="offer_price" class="form-control" value="{{ old('offer_price', $service->offer_price) }}">
@@ -111,7 +111,7 @@
                                             </div>
 
                                             {{-- Category --}}
-                                            <div class="col-md-6">
+                                            <!-- <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label>Category</label>
                                                     <select class="form-control select2" name="category_id">
@@ -124,10 +124,10 @@
                                                     </select>
                                                     @error('category_id') <small class="text-danger">{{ $message }}</small> @enderror
                                                 </div>
-                                            </div>
+                                            </div> -->
 
                                             {{-- Thumbnail --}}
-                                            <div class="col-md-6">
+                                            <!-- <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label>Thumbnail</label>
                                                     <input type="file" name="thumbnail" class="form-control">
@@ -136,16 +136,16 @@
                                                     @endif
                                                     @error('thumbnail') <small class="text-danger">{{ $message }}</small> @enderror
                                                 </div>
-                                            </div>
+                                            </div> -->
 
                                             {{-- Icon --}}
-                                            <div class="col-md-6">
+                                            <!-- <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label>Icon</label>
                                                     <input type="text" name="icon" class="form-control" value="{{ old('icon', $service->icon) }}" placeholder="Enter icon">
                                                     @error('icon') <small class="text-danger">{{ $message }}</small> @enderror
                                                 </div>
-                                            </div>
+                                            </div> -->
 
                                             {{-- Description --}}
                                             <div class="col-md-12">
@@ -156,13 +156,7 @@
                                                 </div>
                                             </div>
 
-                                            {{-- Service Type --}}
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label>Type</label>
-                                                    <input type="text" name="type" class="form-control" value="{{ old('type', $service->type) }}">
-                                                </div>
-                                            </div>
+
 
                                             {{-- Submit --}}
                                             <div class="col-12 text-end">
@@ -176,41 +170,6 @@
                     </div>
                 </form>
             </section>
-
-            {{-- Task Section --}}
-            {{-- Tasks Section --}}
-            <div class="card mt-3">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h4 class="card-title mb-0">Service Tasks for: <span class="text-primary">{{ $service->title }}</span></h4>
-                </div>
-                <div class="card-body">
-                    <form action="{{ route('admin.tasks.store', $service->id) }}" method="POST" class="d-flex align-items-center mb-3 gap-2">
-                        @csrf
-                        <input type="text" name="title" class="form-control" placeholder="Add new task..." required>
-                        <button type="submit" class="btn btn-success"><i class="fas fa-plus"></i> Add</button>
-                    </form>
-
-                    @if($service->tasks->count())
-                    <ul class="list-group">
-                        @foreach($service->tasks as $task)
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <span>{{ $task->title }}</span>
-                            <form action="{{ route('admin.tasks.destroy', $task->id) }}" method="POST" class="mb-0">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to delete this task?')">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </form>
-                        </li>
-                        @endforeach
-                    </ul>
-                    @else
-                    <p class="text-muted">No tasks found for this service.</p>
-                    @endif
-                </div>
-            </div>
-
         </div>
     </div>
 </div>

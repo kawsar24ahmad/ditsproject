@@ -40,10 +40,10 @@
                 <form class="form" action="{{ route('admin.services.store') }}" method="POST" enctype="multipart/form-data" novalidate>
                     @csrf
                     <div class="card">
-                        <div class="card-header"><h4>Add New Service</h4></div>
+                        <div class="card-header fw-bold fs-2"><h4>Add New Service</h4></div>
                         <div class="card-body row">
 
-                            <div class="col-md-6">
+                            <div class="col-md-12">
                                 <div class="form-group">
                                     <label>Title <span class="text-danger">*</span></label>
                                     <input type="text" class="form-control" name="title" value="{{ old('title') }}" required>
@@ -75,7 +75,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-6">
+                            <!-- <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Category <span class="text-danger">*</span></label>
                                     <select class="form-control js-example-basic-single" name="category_id">
@@ -88,22 +88,22 @@
                                     </select>
                                     @error('category_id') <small class="text-danger">{{ $message }}</small> @enderror
                                 </div>
-                            </div>
+                            </div> -->
 
-                            <div class="col-md-6">
+                            <!-- <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Thumbnail <span class="text-danger">*</span></label>
                                     <input type="file" class="form-control" name="thumbnail" >
                                     @error('thumbnail') <small class="text-danger">{{ $message }}</small> @enderror
                                 </div>
-                            </div>
+                            </div> -->
 
-                            <div class="col-md-6">
+                            <!-- <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Icon</label>
                                     <input type="text" name="icon" class="form-control" value="{{ old('icon') }}">
                                 </div>
-                            </div>
+                            </div> -->
 
                             <div class="col-md-6">
                                 <div class="form-group">
@@ -116,12 +116,12 @@
                             </div>
 
                             <!-- Type -->
-                            <div class="col-md-6">
+                            <!-- <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Type</label>
                                     <input type="text" name="type" class="form-control" value="{{ old('type') }}">
                                 </div>
-                            </div>
+                            </div> -->
 
                             <div class="col-12 text-end">
                                 <button type="submit" class="btn btn-primary mt-2">Save</button>
