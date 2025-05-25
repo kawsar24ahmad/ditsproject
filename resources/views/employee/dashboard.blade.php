@@ -4,9 +4,9 @@
 
 @php
 $serviceAssignments = App\Models\ServiceAssign::with(['customer:id,name', 'invoice:id,invoice_number,service_assign_id'])
-        ->where('employee_id',auth()->user()->id)
-        ->orderByDesc('id')
-        ->paginate(10);
+->where('employee_id',auth()->user()->id)
+->orderByDesc('id')
+->paginate(10);
 @endphp
 <div class="app-content content">
     <div class="content-overlay"></div>
@@ -35,7 +35,7 @@ $serviceAssignments = App\Models\ServiceAssign::with(['customer:id,name', 'invoi
                             <div class="card-header">
                                 <h4 class="card-title text-bold text-lg mb-0">All Service Assignments</h4>
                             </div>
-       <div class="card-content">
+                            <div class="card-content">
                                 <div class="card-body card-dashboard">
                                     <div class="table-responsive">
                                         <table class="table table-striped table-bordered">
@@ -44,7 +44,7 @@ $serviceAssignments = App\Models\ServiceAssign::with(['customer:id,name', 'invoi
                                                     <th>#</th>
                                                     <th>Invoice No</th>
                                                     <th>Service ID</th>
-                                                    <th>Customer ID</th>
+                                                    <th>Customer</th>
                                                     <th>Price</th>
                                                     <th>Paid</th>
                                                     <th>Due Payment</th>
@@ -63,7 +63,7 @@ $serviceAssignments = App\Models\ServiceAssign::with(['customer:id,name', 'invoi
                                                     <td>{{ $loop->iteration }}</td>
                                                     <td>{{ $assignment->invoice->invoice_number }}</td>
                                                     <td>{{ $assignment->service_id }}</td>
-                                                    <td>{{ $assignment->employee?->name }}</td>
+                                                    <td>{{ $assignment->customer->name }}</td>
                                                     <td>{{ number_format($assignment->price, 2) }}</td>
                                                     <td>{{ number_format($assignment->paid_payment, 2) }}</td>
                                                     <td>{{ number_format( $assignment->price - $assignment->paid_payment , 2) }}</td>
@@ -71,7 +71,7 @@ $serviceAssignments = App\Models\ServiceAssign::with(['customer:id,name', 'invoi
                                                     <td>{{ $assignment->remarks ?? '—' }}</td>
                                                     <td>{{ \Carbon\Carbon::parse($assignment->created_at)->format('d M, Y') }}</td>
                                                     <td>{{ \Carbon\Carbon::parse($assignment->updated_at)->format('d M, Y') }}</td>
-<td>
+                                                    <td>
                                                         <a href="{{ route('employee.service_assigns.edit', $assignment->id) }}" class="btn btn-sm btn-info"><i class="fas fa-pen"></i></a>
                                                     </td>
 

@@ -37,7 +37,7 @@
                             <div class="card-content">
                                 <div class="card-body card-dashboard">
                                     <div class="table-responsive">
-                                        <table  class="table table-striped table-bordered">
+                                        <table class="table table-striped table-bordered">
                                             <thead>
                                                 <tr>
                                                     <th>#</th>
@@ -67,47 +67,47 @@
                                                     <td>{{ number_format($assignment->paid_payment, 2) }}</td>
                                                     <td>{{ number_format( $assignment->price - $assignment->paid_payment , 2) }}</td>
                                                     <td><span class="badge badge-{{ $assignment->status == 'paid' ? 'success' : ($assignment->status == 'partial' ? 'warning' : 'secondary') }}">{{ ucfirst($assignment->status) }}</span></td>
-                                                    <td>{!! $assignment->remarks ?? '—'  !!} </td>
+                                                    <td>{!! $assignment->remarks ?? '—' !!} </td>
                                                     <td>{{ \Carbon\Carbon::parse($assignment->created_at)->format('d M, Y') }}</td>
                                                     <td>{{ \Carbon\Carbon::parse($assignment->updated_at)->format('d M, Y') }}</td>
                                                     <td class="flex flex-wrap gap-2">
-    <!-- Assign Tasks Button -->
-    <a href="{{ route('admin.assign_task.index', $assignment->id) }}"
-       class="inline-flex items-center px-3 py-1 text-sm font-medium text-white bg-success  rounded"
-       title="Assign New Tasks">
-         Assigned Tasks
-    </a>
+                                                        <!-- Assign Tasks Button -->
+                                                        <a href="{{ route('admin.assign_task.index', $assignment->id) }}"
+                                                            class="inline-flex items-center px-3 py-1 text-sm font-medium text-white bg-success  rounded"
+                                                            title="Assigned Tasks">
+                                                            Assigned Tasks
+                                                        </a>
 
-    <!-- Edit Button -->
-    <a href="{{ route('admin.service_assigns.edit', $assignment->id) }}"
-       class="inline-flex items-center px-3 py-1 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded"
-       title="Edit Assignment">
-        <i class="fas fa-pen mr-1"></i> Edit
-    </a>
-    <a href="{{ route('admin.service_assigns.invoiceGenerate', $assignment->id) }}"
-       class="inline-flex items-center px-3 py-1 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded"
-       title="Edit Assignment">
-        <i class="fas fa-eye mr-1"></i>
-    </a>
-    <a href="{{ route('admin.service_assigns.invoiceGeneratePdf', $assignment->id) }}"
-       class="inline-flex items-center px-3 py-1 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded"
-       title="Edit Assignment">
-        <i class="fas fa-print"></i>
-    </a>
+                                                        <!-- Edit Button -->
+                                                        <a href="{{ route('admin.service_assigns.edit', $assignment->id) }}"
+                                                            class="inline-flex items-center px-3 py-1 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded"
+                                                            title="Edit Assignment">
+                                                            <i class="fas fa-pen mr-1"></i> Edit
+                                                        </a>
+                                                        <a href="{{ route('admin.service_assigns.invoiceGenerate', $assignment->id) }}"
+                                                            class="inline-flex items-center px-3 py-1 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded"
+                                                            title="See Invoice">
+                                                            <i class="fas fa-eye mr-1"></i>
+                                                        </a>
+                                                        <a href="{{ route('admin.service_assigns.invoiceGeneratePdf', $assignment->id) }}"
+                                                            class="inline-flex items-center px-3 py-1 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded"
+                                                            title="Print">
+                                                            <i class="fas fa-print"></i>
+                                                        </a>
 
-    <!-- Delete Button -->
-    <form action="{{ route('admin.service_assigns.destroy', $assignment->id) }}"
-          method="POST"
-          onsubmit="return confirm('Are you sure you want to delete this assignment?');">
-        @csrf
-        @method('DELETE')
-        <button type="submit"
-                class="inline-flex items-center px-3 py-1 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded"
-                title="Delete Assignment">
-            <i class="fas fa-trash mr-1"></i> Delete
-        </button>
-    </form>
-</td>
+                                                        <!-- Delete Button -->
+                                                        <form action="{{ route('admin.service_assigns.destroy', $assignment->id) }}"
+                                                            method="POST"
+                                                            onsubmit="return confirm('Are you sure you want to delete this assignment?');">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit"
+                                                                class="inline-flex items-center px-3 py-1 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded"
+                                                                title="Delete Assignment">
+                                                                <i class="fas fa-trash mr-1"></i> Delete
+                                                            </button>
+                                                        </form>
+                                                    </td>
 
                                                 </tr>
                                                 @endforeach
@@ -131,9 +131,9 @@
 @endsection
 @section('script')
 <script>
-  $(document).ready( function () {
-    $('.table').DataTable();
-} );
+    $(document).ready(function() {
+        $('.table').DataTable();
+    });
 </script>
 
 @endsection
