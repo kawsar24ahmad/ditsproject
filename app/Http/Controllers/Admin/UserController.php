@@ -72,6 +72,7 @@ class UserController extends Controller
         // ✅ Return response based on request type
         if ($request->ajax()) {
             return response()->json([
+                'all' => $request->all(),
                 'success' => true,
                 'message' => 'User created successfully.',
                 'user'    => $user

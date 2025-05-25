@@ -9,6 +9,7 @@ use App\Models\AssignedTask;
 use Illuminate\Http\Request;
 use App\Models\ServiceAssign;
 use App\Models\PaymentHistory;
+use Barryvdh\DomPDF\Facade\Pdf;
 use App\Http\Controllers\Controller;
 
 class ServiceAssignController extends Controller
@@ -147,4 +148,26 @@ class ServiceAssignController extends Controller
 
         return back();
     }
+    public function invoiceGenerate($id)
+    {
+
+        $service = ServiceAssign::with('invoice')->findOrFail($id);
+        $payments = PaymentHistory::where('invoice_id', $service->invoice->id)->get();
+        return view('user.invoice.invoice-generate', compact('service', 'payments'));
+    }
+    public function invoiceGeneratePdf($id)
+    {
+        $service = ServiceAssign::with('invoice')->findOrFail($id);
+
+        if (!$service->invoice) {
+            abort(404, 'Invoice not found');
+        }
+
+        $payments = PaymentHistory::where('invoice_id', $service->invoice->id)->get();
+
+        $pdf = Pdf::loadView('user.invoice.invoice-generate', compact('service', 'payments'));
+
+        return $pdf->download('invoice_' . $service->invoice->invoice_number . '.pdf');
+    }
+
 }

@@ -84,6 +84,16 @@
        title="Edit Assignment">
         <i class="fas fa-pen mr-1"></i> Edit
     </a>
+    <a href="{{ route('admin.service_assigns.invoiceGenerate', $assignment->id) }}"
+       class="inline-flex items-center px-3 py-1 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded"
+       title="Edit Assignment">
+        <i class="fas fa-eye mr-1"></i>
+    </a>
+    <a href="{{ route('admin.service_assigns.invoiceGeneratePdf', $assignment->id) }}"
+       class="inline-flex items-center px-3 py-1 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded"
+       title="Edit Assignment">
+        <i class="fas fa-print"></i>
+    </a>
 
     <!-- Delete Button -->
     <form action="{{ route('admin.service_assigns.destroy', $assignment->id) }}"

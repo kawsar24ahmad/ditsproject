@@ -236,7 +236,7 @@
                         <label>Password <span class="text-danger">*</span></label>
                         <input type="password" name="password" class="form-control">
                     </div>
-                    <input type="hidden" name="role" value="user">
+                    <input type="hidden" name="role" value="employee">
                     <input type="hidden" name="status" value="active">
                 </div>
                 <div class="modal-footer">
@@ -255,6 +255,36 @@
 
 <script>
     $(document).ready(function() {
+        $('#addEmployeeForm').on('submit', function(e) {
+            e.preventDefault();
+            // alert('Form submitted');
+
+            $.ajax({
+                url: "{{ route('admin_users.store') }}",
+                // csrf
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                method: "POST",
+                data: $(this).serialize(),
+                success: function(response) {
+                    if (response.success) {
+                        // Add new customer to dropdown
+                        let option = new Option(response.user.name, response.user.id, true, true);
+                        // $('select[name="customer_id"]').append(option).trigger('change');
+                        $('select[name="employee_id"]').append(option).trigger('change');
+                        // Update info box
+                        // updateCustomerInfo(response.user);
+                        // Close modal and reset form
+                        $('#addEmployeeModal').modal('hide');
+                        $('#addEmployeeForm')[0].reset();
+                    }
+                },
+                error: function(xhr) {
+                    alert('Something went wrong. Please try again.');
+                }
+            });
+        });
         $('#addCustomerForm').on('submit', function(e) {
             e.preventDefault();
             // alert('Form submitted');

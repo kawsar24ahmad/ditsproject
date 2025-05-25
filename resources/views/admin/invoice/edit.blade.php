@@ -300,7 +300,7 @@
                         <label>Password <span class="text-danger">*</span></label>
                         <input type="password" name="password" class="form-control">
                     </div>
-                    <input type="hidden" name="role" value="user">
+                    <input type="hidden" name="role" value="employee">
                     <input type="hidden" name="status" value="active">
                 </div>
                 <div class="modal-footer">
@@ -341,6 +341,7 @@
                 },
                 method: "POST",
                 data: $(this).serialize(),
+
                 success: function(response) {
                     if (response.success) {
                         // Add new customer to dropdown

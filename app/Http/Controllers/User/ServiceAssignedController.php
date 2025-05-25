@@ -17,8 +17,6 @@ class ServiceAssignedController extends Controller
 {
     public function show($id)
     {
-
-
         $serviceAssign = ServiceAssign::with('invoice', 'customer')->where('customer_id', auth()->user()->id)->findOrFail($id);
 
         $payments = collect(); // default empty collection

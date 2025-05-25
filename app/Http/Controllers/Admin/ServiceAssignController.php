@@ -12,7 +12,9 @@ use Illuminate\Http\Request;
 use App\Models\ServiceAssign;
 use App\Models\PaymentHistory;
 
+use Barryvdh\DomPDF\Facade\Pdf;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use function PHPUnit\Framework\isEmpty;
 use League\OAuth1\Client\Server\Server;
 
@@ -24,7 +26,7 @@ class ServiceAssignController extends Controller
     public function index()
     {
         $serviceAssignments =  ServiceAssign::with(['customer:id,name', 'employee:id,name', 'assignedTasks.task', 'invoice:id,invoice_number,service_assign_id', 'service:id,title'])
-        ->orderByDesc('id')->get();
+            ->orderByDesc('id')->get();
         return view('admin.invoice.index', compact('serviceAssignments'));
     }
 
@@ -97,15 +99,26 @@ class ServiceAssignController extends Controller
         } elseif ($request->paid_payment > 0) {
             $status = 'partial';
         }
+        $basePhone = $serviceAssign->customer->phone;
+        $baseInvoice = 'INV-';
+
+        // Count existing invoices for this customer
+        $count = \App\Models\Invoice::where('invoice_number', 'like', $baseInvoice . '%-' . $basePhone)->count();
+
+        // Generate 2-digit suffix
+        $suffix = str_pad($count + 1, 2, '0', STR_PAD_LEFT);
+
+        // Final invoice number
+        $invoiceNumber = $baseInvoice . $suffix . '-' . $basePhone;
 
         // Create invoice
         $invoice = $serviceAssign->invoice()->create([
-            // 'invoice_number' => 'INV-' . str_pad($serviceAssign->id, 6, '0', STR_PAD_LEFT),
-            'invoice_number' => 'INV-' . $serviceAssign->customer->phone,
+            'invoice_number' => $invoiceNumber,
             'total_amount' => $price,
             'paid_amount' => $request->paid_payment,
             'status' => $status,
         ]);
+
 
 
 
@@ -127,7 +140,28 @@ class ServiceAssignController extends Controller
      */
     public function show(string $id)
     {
-        //
+        dd($id);
+    }
+    public function invoiceGenerate($id)
+    {
+
+        $service = ServiceAssign::with('invoice')->findOrFail($id);
+        $payments = PaymentHistory::where('invoice_id', $service->invoice->id)->get();
+        return view('user.invoice.invoice-generate', compact('service', 'payments'));
+    }
+    public function invoiceGeneratePdf($id)
+    {
+        $service = ServiceAssign::with('invoice')->findOrFail($id);
+
+        if (!$service->invoice) {
+            abort(404, 'Invoice not found');
+        }
+
+        $payments = PaymentHistory::where('invoice_id', $service->invoice->id)->get();
+
+        $pdf = Pdf::loadView('user.invoice.invoice-generate', compact('service', 'payments'));
+
+        return $pdf->download('invoice_' . $service->invoice->invoice_number . '.pdf');
     }
 
     /**

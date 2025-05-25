@@ -45,7 +45,7 @@ Route::get('/', function () {
             return redirect()->route('admin.dashboard');
         } elseif (in_array($role, ['user', 'customer'])) {
             return redirect()->route('user.dashboard');
-        }elseif($role === "employee"){
+        } elseif ($role === "employee") {
             return redirect()->route('employee.dashboard');
         }
     }
@@ -69,14 +69,14 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::middleware(['auth', 'role:admin'])->group(function ()  {
-    Route::prefix('admin')->group(function ()  {
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::prefix('admin')->group(function () {
         Route::resource('admin_users', AdminUserController::class);
         Route::get('/profile', [AdminProfileController::class, 'edit'])->name('admin.profile.edit');
         Route::patch('/profile', [AdminProfileController::class, 'update'])->name('admin.profile.update');
         Route::patch('/profile/changePhoto', [AdminProfileController::class, 'changePhoto'])->name('admin.profile.changePhoto');
         Route::delete('/profile', [AdminProfileController::class, 'destroy'])->name('admin.profile.destroy');
-        Route::resource('admin_categories',CategoryController::class);
+        Route::resource('admin_categories', CategoryController::class);
         Route::resource('services', ServiceController::class)->names('admin.services');
 
         Route::get('/wallet-transactions', [WalletTransactionController::class, 'index'])->name('admin.wallet.transactions');
@@ -107,12 +107,22 @@ Route::middleware(['auth', 'role:admin'])->group(function ()  {
         Route::get('/service-assigns/{id}/assign-task/index', [AssignTaskController::class, 'index'])->name('admin.assign_task.index');
 
         Route::get('/payment-history', [PaymentHistoryController::class, 'index'])->name('admin.payment_history.index');
+
+        // Route::get('/service-assigns/{id}', [ServiceAssignController::class, 'show'])->name('admin.service_assigns.show');
+        Route::get('/service-assigns/{id}/generate', [ServiceAssignController::class, 'invoiceGenerate'])->name('admin.service_assigns.invoiceGenerate');
+        Route::get('/service-assigns/{id}/generate/pdf', [ServiceAssignController::class, 'invoiceGeneratePdf'])->name('admin.service_assigns.invoiceGeneratePdf');
+
+
+
     });
+
 });
 
 
-Route::middleware([ 'auth','role:user,customer'])->group(function ()  {
-    Route::prefix('user')->group(function ()  {
+
+
+Route::middleware(['auth', 'role:user,customer'])->group(function () {
+    Route::prefix('user')->group(function () {
         Route::get('/profile', [UserProfileController::class, 'edit'])->name('user.profile.edit');
         Route::patch('/profile', [UserProfileController::class, 'update'])->name('user.profile.update');
         Route::patch('/profile/changePhoto', [UserProfileController::class, 'changePhoto'])->name('user.profile.changePhoto');
@@ -129,8 +139,8 @@ Route::middleware([ 'auth','role:user,customer'])->group(function ()  {
     });
 });
 
-Route::middleware([ 'auth','role:customer'])->group(function ()  {
-    Route::prefix('customer')->group(function ()  {
+Route::middleware(['auth', 'role:customer'])->group(function () {
+    Route::prefix('customer')->group(function () {
         Route::get('/profile', [CustomerProfileController::class, 'edit'])->name('customer.profile.edit');
         Route::patch('/profile', [CustomerProfileController::class, 'update'])->name('customer.profile.update');
         Route::patch('/profile/changePhoto', [CustomerProfileController::class, 'changePhoto'])->name('customer.profile.changePhoto');
@@ -138,10 +148,9 @@ Route::middleware([ 'auth','role:customer'])->group(function ()  {
         Route::get('/videos/{id}', [CustomerFacebookController::class, 'videos'])->name('facebook.videos');
         Route::get('/posts/{id}', [CustomerFacebookController::class, 'posts'])->name('facebook.posts');
     });
-
 });
-Route::middleware([ 'auth','role:employee'])->group(function ()  {
-    Route::prefix('employee')->group(function ()  {
+Route::middleware(['auth', 'role:employee'])->group(function () {
+    Route::prefix('employee')->group(function () {
         Route::get('/profile', [EmployeeProfileController::class, 'edit'])->name('employee.profile.edit');
         Route::patch('/profile', [EmployeeProfileController::class, 'update'])->name('employee.profile.update');
         Route::patch('/profile/changePhoto', [EmployeeProfileController::class, 'changePhoto'])->name('employee.profile.changePhoto');
@@ -149,8 +158,11 @@ Route::middleware([ 'auth','role:employee'])->group(function ()  {
         Route::resource('service-assigns', EmployeeServiceAssignController::class)->names('employee.service_assigns');
         Route::patch('/tasks/{task}/toggle', [EmployeeServiceAssignController::class, 'toggle'])->name('employee.tasks.toggle');
         Route::post('/service-assigns/{id}/assign-task/store', [AssignTaskController::class, 'store'])->name('employee.assign_task.store');
-    });
 
+        Route::get('/service-assigns/{id}/generate', [ServiceAssignController::class, 'invoiceGenerate'])->name('employee.service_assigns.invoiceGenerate');
+        Route::get('/service-assigns/{id}/generate/pdf', [ServiceAssignController::class, 'invoiceGeneratePdf'])->name('employee.service_assigns.invoiceGeneratePdf');
+
+    });
 });
 
 // SSLCOMMERZ Start
@@ -166,4 +178,4 @@ Route::post('/cancel', [SslCommerzPaymentController::class, 'cancel']);
 
 Route::post('/ipn', [SslCommerzPaymentController::class, 'ipn']);
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

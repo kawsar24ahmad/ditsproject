@@ -31,8 +31,8 @@
 
         <div class="content-body">
             <div class="d-flex justify-content-end p-3">
-                <a class="btn btn-danger me-2"  href="{{ route('user.service_assigns.invoiceGeneratePdf', $serviceAssign->id) }}"><i class="fas fa-print"></i></a>
-                <a class="btn btn-success" target="_blank" href="{{ route('user.service_assigns.invoiceGenerate', $serviceAssign->id) }}"><i class="fas fa-eye"></i> View Invoice</a>
+                <a class="btn btn-danger me-2"  href="{{ route('user.service_assigns.invoiceGeneratePdf', $serviceAssign->id) }}">Generate Invoice as PDF</a>
+                <a class="btn btn-success" target="_blank" href="{{ route('user.service_assigns.invoiceGenerate', $serviceAssign->id) }}">View Invoice</a>
             </div>
             {{-- Assigned Tasks --}}
             @if($serviceAssign->assignedTasks->count())

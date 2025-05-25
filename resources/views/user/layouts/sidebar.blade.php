@@ -1,5 +1,5 @@
 <!-- Main Sidebar Container -->
-<aside class="main-sidebar sidebar-dark-primary elevation-4">
+<aside class="main-sidebar sidebar-light-primary elevation-4">
     <!-- Brand Logo -->
     @php
     $settings = App\Models\SiteSetting::first();
@@ -9,7 +9,7 @@
         <a href="{{URL::to('/')}}" class="brand-link d-flex justify-content-center align-items-center">
             <!-- <img src="{{asset('backend/dist/img/AdminLTELogo.png')}}" alt="VGD Logo" class="brand-image img-circle elevation-3"
             style="opacity: .8"> -->
-            <span class="h4 fw-bold text-white">{{ strtoupper(config('app.name', 'Laravel')) }}</span>
+            <span class="h4 fw-bold text-blue">{{ strtoupper(config('app.name', 'Laravel')) }}</span>
         </a>
     </div>
 
@@ -42,7 +42,6 @@
         </div>
 
 
-        <hr>
         <!-- Sidebar Menu -->
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
