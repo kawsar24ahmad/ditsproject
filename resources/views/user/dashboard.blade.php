@@ -23,38 +23,15 @@
 @section('content')
 
 <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
-    <div class="content-header">
-        <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-sm-6">
-                    <div class="d-flex justify-content-between">
-                        <h1 class="m-0 text-dark">User Dashboard</h1>
-
-                    </div>
-
-
-                </div><!-- /.col -->
-
-                <div class="col-sm-6">
-                    <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="#">Home</a></li>
-                        <li class="breadcrumb-item active">Dashboard v1</li>
-                    </ol>
-                </div><!-- /.col -->
-            </div><!-- /.row -->
-        </div><!-- /.container-fluid -->
-    </div>
-    <!-- /.content-header -->
-
-
 
     <!-- Main content -->
     <section class="content">
         <div class="container-fluid">
             <!-- Welcome -->
-            <div class="text-center mb-4">
-                <h4>স্বাগতম, {{ auth()->user()->name }}</h4>
+            <div class="text-center pt-4 mb-4">
+                <h4 class="fs-1">Hello, {{ auth()->user()->name }}.</h4>
+                <p class="text-2xl">Welcome to your dashboard.</p>
+
                 <!-- <button class="btn btn-primary mt-2">একটি সার্ভিস বুকিং করুন</button> -->
             </div>
 
