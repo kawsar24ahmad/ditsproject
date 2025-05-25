@@ -1,150 +1,108 @@
-<?php
+@extends('user.layouts.app')
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
+@section('content')
 
-return new class extends Migration
-{
-    public function up(): void
-    {
-        // Users Table
-        Schema::create('users', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->string('provider')->nullable();
-            $table->string('provider_id')->nullable();
-            $table->string('fb_access_token', 500)->nullable();
-            $table->string('fb_page_id')->nullable();
-            $table->string('fb_page_token', 500)->nullable();
-            $table->enum('role', ['admin', 'user', 'customer'])->default('user');
-            $table->string('avatar')->nullable();
-            $table->string('phone')->nullable();
-            $table->string('status')->nullable();
-            $table->decimal('wallet_balance', 10, 2)->default(0);
-            $table->rememberToken();
-            $table->timestamps();
-            $table->softDeletes();
-        });
+@php
+$services = App\Models\ServiceAssign::with(['invoice:id,invoice_number,service_assign_id', 'service:id,title'])
+    ->where('customer_id', auth()->user()->id)
+    ->orderByDesc('id')
+    ->get();
+@endphp
 
-        // Facebook Pages Table
-        Schema::create('facebook_pages', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('page_id');
-            $table->string('page_name');
-            $table->string('category')->nullable();
-            $table->text('page_access_token');
-            $table->text('profile_picture')->nullable();
-            $table->text('cover_photo')->nullable();
-            $table->string('status')->nullable();
-            $table->string('page_username')->nullable();
-            $table->integer('likes')->default(0);
-            $table->integer('followers')->default(0);
-            $table->timestamps();
-            $table->softDeletes();
-        });
+<div class="container py-4">
+    <!-- User Greeting -->
+    <div class="text-center mb-4">
+        <h2 class="fw-bold">Hello, {{ auth()->user()->name }}</h2>
+        <p class="text-muted">Welcome back! Here is a summary of your services.</p>
+    </div>
 
-        // Wallet Transactions Table
-        Schema::create('wallet_transactions', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->enum('type', ['recharge', 'payment', 'refund', 'bonus', 'manual_adjustment', 'promotion', 'commission']);
-            $table->decimal('amount', 12, 2);
-            $table->string('method')->nullable();
-            $table->string('payment_method')->nullable();
-            $table->text('description')->nullable();
-            $table->string('sender_number')->nullable();
-            $table->string('transaction_id')->nullable();
-            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
-            $table->timestamps();
-        });
+    <!-- Summary Boxes -->
+    <div class="row mb-5 g-3">
+        <div class="col-md-4">
+            <div class="card text-white bg-primary shadow-sm">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Total Services</h5>
+                    <h2 class="fw-bold">{{ $services->count() }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-success shadow-sm">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Total Paid</h5>
+                    <h2 class="fw-bold">৳{{ number_format($services->sum('paid_payment'), 2) }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-danger shadow-sm">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Total Due</h5>
+                    <h2 class="fw-bold">
+                        ৳{{ number_format($services->sum(fn($s) => $s->price - $s->paid_payment), 2) }}
+                    </h2>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        // Facebook Ads Table
-        Schema::create('facebook_ads', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('wallet_transaction_id')->nullable()->constrained('wallet_transactions')->nullOnDelete();
-            $table->foreignId('facebook_page_id')->constrained('facebook_pages')->onDelete('cascade');
-            $table->text('page_link')->nullable();
-            $table->decimal('budget', 10, 2);
-            $table->integer('duration');
-            $table->integer('min_age');
-            $table->integer('max_age');
-            $table->string('location');
-            $table->string('button')->nullable();
-            $table->text('greeting')->nullable();
-            $table->string('status')->nullable();
-            $table->string('url')->nullable();
-            $table->string('number')->nullable();
-            $table->timestamps();
-            $table->softDeletes();
-        });
+    <!-- Service Cards -->
+    <div class="row g-4">
+        @forelse ($services as $assignment)
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title text-primary fw-bold">
+                        {{ $assignment->service->title ?? 'Unnamed Service' }}
+                    </h5>
+                    <h6 class="text-muted">Invoice #: {{ $assignment->invoice->invoice_number ?? 'N/A' }}</h6>
 
-        // Categories Table
-        Schema::create('categories', function (Blueprint $table) {
-            $table->id();
-            $table->string('title');
-            $table->string('slug');
-            $table->integer('serial')->default(0);
-            $table->timestamps();
-        });
+                    <p class="mb-1"><strong>Employee:</strong> {{ $assignment->employee?->name ?? 'N/A' }}</p>
+                    <p class="mb-1"><strong>Price:</strong> ৳{{ number_format($assignment->price, 2) }}</p>
+                    <p class="mb-1"><strong>Paid:</strong> ৳{{ number_format($assignment->paid_payment, 2) }}</p>
+                    <p class="mb-2"><strong>Due:</strong>
+                        <span class="text-danger fw-bold">৳{{ number_format($assignment->price - $assignment->paid_payment, 2) }}</span>
+                    </p>
 
-        // Services Table
-        Schema::create('services', function (Blueprint $table) {
-            $table->id();
-            $table->string('title');
-            $table->string('slug');
-            $table->text('description')->nullable();
-            $table->decimal('price', 10, 2);
-            $table->decimal('offer_price', 10, 2)->nullable();
-            $table->foreignId('category_id')->constrained()->onDelete('cascade');
-            $table->string('thumbnail')->nullable();
-            $table->string('icon')->nullable();
-            $table->boolean('is_active')->default(true);
-            $table->string('type')->nullable();
-            $table->timestamps();
-            $table->softDeletes();
-        });
+                    <span class="badge
+                        @if($assignment->status == 'paid') bg-success
+                        @elseif($assignment->status == 'partial') bg-warning text-dark
+                        @else bg-secondary @endif align-self-start">
+                        {{ ucfirst($assignment->status) }}
+                    </span>
 
-        // Orders Table
-        Schema::create('orders', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('name');
-            $table->string('email');
-            $table->string('phone');
-            $table->text('address');
-            $table->decimal('amount', 10, 2);
-            $table->string('transaction_id')->nullable();
-            $table->string('payment_method')->nullable();
-            $table->timestamps();
-        });
+                    @if($assignment->remarks)
+                        <p class="mt-2 small text-muted fst-italic">"{{ $assignment->remarks }}"</p>
+                    @endif
 
-        // Service Purchases Table
-        Schema::create('service_purchases', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('service_id')->constrained()->onDelete('cascade');
-            $table->foreignId('wallet_transaction_id')->nullable()->constrained()->nullOnDelete();
-            $table->decimal('price', 10, 2);
-            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
-            $table->timestamps();
-        });
-    }
+                    <div class="mt-auto d-flex justify-content-between align-items-center">
+                        <a href="{{ route('user.service_assigns.show', $assignment->id) }}" class="btn btn-sm btn-outline-primary">
+                            View
+                        </a>
+                        <div>
+                            @if($assignment->invoice)
+                                <a href="{{ route('user.service_assigns.invoiceGenerate', $assignment->invoice->id) }}" class="btn btn-sm btn-info text-white me-2">
+                                    See Invoice
+                                </a>
+                                <a href="{{ route('user.service_assigns.invoiceGeneratePdf', $assignment->invoice->id) }}" target="_blank" class="btn btn-sm btn-secondary">
+                                    Print
+                                </a>
+                            @endif
+                        </div>
+                    </div>
+                </div>
 
-    public function down(): void
-    {
-        Schema::dropIfExists('service_purchases');
-        Schema::dropIfExists('orders');
-        Schema::dropIfExists('services');
-        Schema::dropIfExists('categories');
-        Schema::dropIfExists('facebook_ads');
-        Schema::dropIfExists('wallet_transactions');
-        Schema::dropIfExists('facebook_pages');
-        Schema::dropIfExists('users');
-    }
-};
+                <div class="card-footer text-muted small">
+                    Created: {{ $assignment->created_at->format('d M, Y') }}<br>
+                    Updated: {{ $assignment->updated_at->format('d M, Y') }}
+                </div>
+            </div>
+        </div>
+        @empty
+        <div class="col-12 text-center text-muted">
+            <h5>No services found.</h5>
+        </div>
+        @endforelse
+    </div>
+</div>
+@endsection

@@ -1,160 +1,124 @@
-@extends('user.layouts.app')
-
-@section("css")
-<style>
-        body {
-            font-family: "Helvetica Neue", sans-serif;
-            background-color: #f9f9f9;
-        }
-        .service-card {
-            transition: all 0.3s ease;
-        }
-        .service-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        .rounded-icon {
-            font-size: 32px;
-        }
-    </style>
-
-@endsection
+  @php
+            $services = App\Models\ServiceAssign::with(['invoice:id,invoice_number,service_assign_id', 'service:id,title'])->where('customer_id', auth()->user()->id)->orderByDesc('id')->paginate(2);
+            @endphp
+@extends('employee.layouts.app')
 
 @section('content')
 
-<div class="content-wrapper">
 
-    <!-- Main content -->
-    <section class="content">
-        <div class="container-fluid">
-            <!-- Welcome -->
-            <div class="text-center pt-4 mb-4">
-                <h4 class="fs-1">Hello, {{ auth()->user()->name }}.</h4>
-                <p class="text-2xl">Welcome to your dashboard.</p>
+<div class="app-content content">
+    <div class="content-overlay"></div>
+    <div class="header-navbar-shadow"></div>
+    <div class="content-wrapper">
 
-                <!-- <button class="btn btn-primary mt-2">একটি সার্ভিস বুকিং করুন</button> -->
-            </div>
 
-            @php
-            $services = App\Models\ServiceAssign::with(['invoice:id,invoice_number,service_assign_id', 'service:id,title'])->where('customer_id', auth()->user()->id)->orderByDesc('id')->paginate(2);
-            @endphp
-
-            <!-- Services -->
-            <!-- <h5 class="mb-3">আমাদের সার্ভিসসমূহ</h5>
-            <div class="row row-cols-2 row-cols-md-4 g-3 mb-4">
-                <div class="col">
-                    <a href="https://digitalwaveit.com/e-commerce/">
-                        <div class="card text-center service-card p-3">
-                            <div class="rounded-icon text-primary mb-2">🖥️</div>
-                            <div>ওয়েব ডিজাইন</div>
-                        </div>
-                    </a>
-                </div>
-                @if (!empty($services))
-                    @foreach ($services as $service)
-                        <div class="col">
-                            <a href="{{ route('user.services.show', $service->id) }}">
-                            <div class="card text-center service-card p-3">
-                                <div class="rounded-icon text-primary mb-2">{{ $service->icon }}</div>
-                                <div>{{ $service->title }}</div>
-                            </div>
-                            </a>
-                        </div>
-                    @endforeach
-                @endif -->
-                <!-- <div class="col">
-                    <div class="card text-center service-card p-3">
-                        <div class="rounded-icon text-primary mb-2">🎬</div>
-                        <div>ভিডিও মার্কেটিং</div>
-                    </div>
-                </div> -->
-                <!-- <div class="col">
-                    <div class="card text-center service-card p-3">
-                        <div class="rounded-icon text-primary mb-2">📢</div>
-                        <div>ফেসবুক অ্যাডস</div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="card text-center service-card p-3">
-                        <div class="rounded-icon text-primary mb-2">🖥️</div>
-                        <div>ওয়েব ডিজাইন</div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="card text-center service-card p-3">
-                        <div class="rounded-icon text-primary mb-2">⚙️</div>
-                        <div>অন্যান্য</div>
-                    </div>
-                </div> -->
-            </div>
-            <!-- Main row -->
-            <div class="content-body">
-            <section id="data-display">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-header">
-                                <h4 class="card-title text-bold text-lg mb-0">Your Services</h4>
-                            </div>
-
-                            <div class="card-content">
-                                <div class="card-body card-dashboard">
-                                    <div class="table-responsive">
-                                        <table class="table table-striped table-bordered">
-                                            <thead>
-                                                <tr>
-                                                    <th>#</th>
-                                                    <th>Invoice No</th>
-                                                    <th>Service </th>
-                                                    <th>Customer </th>
-                                                    <th>Price</th>
-                                                    <th>Paid</th>
-                                                    <th>Due Payment</th>
-                                                    <th>Status</th>
-                                                    <th>Remarks</th>
-                                                    <th>Created</th>
-                                                    <th>Updated</th>
-                                                    <th>Actions</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach ($services as $assignment)
-                                                <tr>
-                                                    <td>{{ $loop->iteration }}</td>
-                                                    <td>{{ $assignment->invoice->invoice_number }}</td>
-                                                    <td>{{ $assignment->service->title }}</td>
-                                                    <td>{{ $assignment->employee?->name }}</td>
-                                                    <td>{{ number_format($assignment->price, 2) }}</td>
-                                                    <td>{{ number_format($assignment->paid_payment, 2) }}</td>
-                                                    <td>{{ number_format( $assignment->price - $assignment->paid_payment , 2) }}</td>
-                                                    <td><span class="badge badge-{{ $assignment->status == 'paid' ? 'success' : ($assignment->status == 'partial' ? 'warning' : 'secondary') }}">{{ ucfirst($assignment->status) }}</span></td>
-                                                    <td>{{ $assignment->remarks ?? '—' }}</td>
-                                                    <td>{{ \Carbon\Carbon::parse($assignment->created_at)->format('d M, Y') }}</td>
-                                                    <td>{{ \Carbon\Carbon::parse($assignment->updated_at)->format('d M, Y') }}</td>
-                                                    <td>
-                                                        <a  href="{{ route('user.service_assigns.show', $assignment->id) }}" class="badge badge-success" style="font-size: 15px;"><i class="fas fa-eye"></i> View</a>
-
-                                                    </td>
-                                                </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
-
-                                        <div class="mt-2">
-                                            {{ $services->appends(request()->query())->links() }}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
+        <div class="container py-2">
+    <!-- Greeting -->
+  <div class="text-center pt-4">
+            <h4 class="fs-1 text-4xl ">Hello, {{ auth()->user()->name }}</h4>
+            <p class="text-xl text-gray-600">Welcome to your dashboard.</p>
         </div>
-            <!-- /.row (main row) -->
-        </div><!-- /.container-fluid -->
-    </section>
-    <!-- /.content -->
+
+
+    <!-- Summary Boxes -->
+    <div class="row mb-5 g-3 mt-2">
+        <div class="col-md-4">
+            <div class="card text-white bg-primary shadow-sm">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Total Services</h5>
+                    <h2 class="fw-bold">{{ $services->count() }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-success shadow-sm">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Total Paid</h5>
+                    <h2 class="fw-bold">৳{{ number_format($services->sum('paid_payment'), 2) }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-danger shadow-sm">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Total Due</h5>
+                    <h2 class="fw-bold">
+                        ৳{{ number_format($services->sum(fn($s) => $s->price - $s->paid_payment), 2) }}
+                    </h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+ <!-- Services Table -->
+  <!-- Main row -->
+ <div class="content-body ">
+    <section id="data-display">
+        <div class="container">
+            <h4 class="mb-4 fw-bold text-primary">
+                <i class="fas fa-briefcase me-2"></i>Your Services
+                <span class="badge bg-dark text-white ms-2 px-3 py-2 rounded-pill">{{ $services->count() }} total</span>
+            </h4>
+
+            <div class="row">
+                @foreach ($services as $assignment)
+                <div class="col-md-6">
+                    <div class="card shadow-sm border-0 h-100">
+                        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                            <span class="fw-bold">Invoice: {{ $assignment->invoice->invoice_number }}</span>
+                            <span class="badge bg-light text-dark text-capitalize">
+                                {{ $assignment->status }}
+                            </span>
+                        </div>
+
+                       <div class="card-body">
+    <h5 class=" fw-semibold mb-2">
+        {{ $assignment->service->title }} — <span class="fw-normal">৳{{ number_format($assignment->price, 2) }}</span>
+    </h5>
+
+    <p class="mb-1 text-success"><strong>Paid:</strong> ৳{{ number_format($assignment->paid_payment, 2) }}</p>
+    <p class="mb-1 text-danger"><strong>Due:</strong> ৳{{ number_format($assignment->price - $assignment->paid_payment, 2) }}</p>
+    <p class="mb-1"><strong>Created:</strong> {{ \Carbon\Carbon::parse($assignment->created_at)->format('d M, Y') }}</p>
+    <p class="mb-1"><strong>Updated:</strong> {{ \Carbon\Carbon::parse($assignment->updated_at)->format('d M, Y') }}</p>
 </div>
 
-@stop
+
+                       <div class="card-footer bg-light border-top">
+    <div class="d-flex justify-content-between gap-2">
+        <a href="{{ route('user.service_assigns.show', $assignment->id) }}" class="btn btn-outline-success btn-sm w-100">
+            <i class="fas fa-eye me-1"></i> View
+        </a>
+
+        @if ($assignment->invoice)
+            <a href="{{ route('user.service_assigns.invoiceGenerate', $assignment->invoice->id) }}" class="btn btn-info btn-sm text-white w-100">
+                <i class="fas fa-file-invoice me-1"></i> Invoice
+            </a>
+
+            <a href="{{ route('user.service_assigns.invoiceGeneratePdf', $assignment->invoice->id) }}" class="btn btn-secondary btn-sm w-100">
+                <i class="fas fa-print me-1"></i> Print
+            </a>
+        @endif
+    </div>
+</div>
+
+                    </div>
+                </div>
+                @endforeach
+            </div>
+
+            <!-- Pagination -->
+            <div class="mt-5 d-flex justify-content-center">
+                {{ $services->appends(request()->query())->links() }}
+            </div>
+        </div>
+    </section>
+</div>
+
+
+
+            <!-- /.row (main row) -->
+</div>
+    </div>
+</div>
+
+@endsection
