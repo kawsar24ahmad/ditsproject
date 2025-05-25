@@ -167,7 +167,7 @@
                             <div class="max-w-[75%] {{ $bgClass }} border p-3 rounded-lg {{ $roundedClass }}">
                                 <div class="flex items-center justify-between mb-1">
                                     <span class="font-semibold  text-gray-600">
-                                        {{ ucfirst($msg->sender->role ?? 'User') }}
+                                        {{ ucfirst($msg->sender->name ?? 'User') }}
                                     </span>
                                     <span class=" ml-3 text-gray-500">
                                         {{ $msg->created_at->diffForHumans() }}
