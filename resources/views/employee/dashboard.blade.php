@@ -35,8 +35,7 @@ $serviceAssignments = App\Models\ServiceAssign::with(['customer:id,name', 'invoi
                             <div class="card-header">
                                 <h4 class="card-title text-bold text-lg mb-0">All Service Assignments</h4>
                             </div>
-
-                            <div class="card-content">
+       <div class="card-content">
                                 <div class="card-body card-dashboard">
                                     <div class="table-responsive">
                                         <table class="table table-striped table-bordered">
@@ -53,7 +52,9 @@ $serviceAssignments = App\Models\ServiceAssign::with(['customer:id,name', 'invoi
                                                     <th>Remarks</th>
                                                     <th>Created</th>
                                                     <th>Updated</th>
-                                                    <th>Actions</th>
+                                                    <th>Edit</th>
+                                                    <th>Invoice</th>
+                                                    <th>Print</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -70,10 +71,20 @@ $serviceAssignments = App\Models\ServiceAssign::with(['customer:id,name', 'invoi
                                                     <td>{{ $assignment->remarks ?? '—' }}</td>
                                                     <td>{{ \Carbon\Carbon::parse($assignment->created_at)->format('d M, Y') }}</td>
                                                     <td>{{ \Carbon\Carbon::parse($assignment->updated_at)->format('d M, Y') }}</td>
+<td>
+                                                        <a href="{{ route('employee.service_assigns.edit', $assignment->id) }}" class="btn btn-sm btn-info"><i class="fas fa-pen"></i></a>
+                                                    </td>
+
                                                     <td>
-                                                        <a href="{{ route('employee.service_assigns.edit', $assignment->id) }}" class="btn btn-sm btn-info">Edit</a>
+                                                        <a href="{{ route('employee.service_assigns.invoiceGenerate', $assignment->id) }}" class="btn btn-sm btn-success"><i class="fas fa-eye"></i> </a>
 
                                                     </td>
+                                                    <td>
+                                                        <a href="{{ route('employee.service_assigns.invoiceGeneratePdf', $assignment->id) }}" class="btn btn-sm btn-danger"><i class="fas fa-print"></i></a>
+
+                                                    </td>
+
+
                                                 </tr>
                                                 @endforeach
                                             </tbody>
