@@ -272,7 +272,7 @@
         </div>
     </div>
 </div>
-<!-- Add Customer Modal -->
+<!-- Add Employee Modal -->
 <div class="modal fade" id="addEmployeeModal" tabindex="-1" aria-labelledby="addEmployeeModal" aria-hidden="true">
     <div class="modal-dialog">
         <form id="addEmployeeForm">

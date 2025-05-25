@@ -103,8 +103,27 @@
                                 @endforeach
                             </select>
                         </div>
-
-                        <div class="col-md-12 mb-2">
+<div class="col-md-12 mb-3">
+                            <label for="employee_id" class="form-label">Employee</label>
+                            <div class="row g-2 align-items-end">
+                                <div class="col-md-9">
+                                    <select name="employee_id" class="form-control select2" id="employee_id">
+                                        <option value="">Not Assigned</option>
+                                        @foreach($employees as $employee)
+                                        <option value="{{ $employee->id }}" >
+                                            {{ $employee->name }}
+                                        </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <a href="javascript:void(0);" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#addEmployeeModal">
+                                        + Add Employee
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- <div class="col-md-12 mb-2">
                             <label>Employee (optional)</label>
                             <select name="employee_id" class="form-control select2">
                                 <option value="">Not Assigned</option>
@@ -112,7 +131,7 @@
                                 <option value="{{ $employee->id }}">{{ $employee->name }}</option>
                                 @endforeach
                             </select>
-                        </div>
+                        </div> -->
 
                         <div class="col-md-4 mb-2">
                             <label>Total Price</label>
@@ -189,7 +208,44 @@
         </form>
     </div>
 </div>
+<!-- Add Employee Modal -->
+<div class="modal fade" id="addEmployeeModal" tabindex="-1" aria-labelledby="addEmployeeModal" aria-hidden="true">
+    <div class="modal-dialog">
+        <form id="addEmployeeForm">
+            @csrf
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addCustomerModalLabel">Add New Employee</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label>Name <span class="text-danger">*</span></label>
+                        <input type="text" name="name" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label>Email <span class="text-danger">*</span></label>
+                        <input type="email" name="email" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label>Mobile <span class="text-danger">*</span></label>
+                        <input type="text" name="phone" class="form-control" required>
+                    </div>
 
+                    <div class="mb-3">
+                        <label>Password <span class="text-danger">*</span></label>
+                        <input type="password" name="password" class="form-control">
+                    </div>
+                    <input type="hidden" name="role" value="user">
+                    <input type="hidden" name="status" value="active">
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Save Employee</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 @endsection
 
 @section('script')
