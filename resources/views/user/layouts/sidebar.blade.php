@@ -18,7 +18,7 @@
         <!-- Sidebar user panel (optional) -->
         <div class="user-panel mt-3 pb-3 mb-3 d-flex justify-content-center flex-column align-items-center">
 
-            <div>
+            <div class="flex flex-column align-items-center">
                 <div class="image">
                     @if(auth()->user()->avatar != null)
                     @if (file_exists(auth()->user()->avatar))

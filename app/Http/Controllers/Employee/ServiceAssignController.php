@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Employee;
 
 use App\Models\User;
+use App\Models\Message;
 use App\Models\Service;
 use App\Models\AssignedTask;
 use Illuminate\Http\Request;
@@ -21,6 +22,10 @@ class ServiceAssignController extends Controller
         ->where('employee_id',auth()->user()->id)
         ->orderByDesc('id')
         ->paginate(10);
+
+        $assignIds = $serviceAssignments->pluck('id');
+
+
         return view('employee.invoice.index', compact('serviceAssignments'));
     }
 
@@ -65,9 +70,12 @@ class ServiceAssignController extends Controller
             $payments = PaymentHistory::where('invoice_id', $serviceAssign->invoice->id)->get();
         }
 
+        $messages = Message::where('service_assign_id', $serviceAssign->id)
+            ->with('sender')
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
 
-
-        return view('employee.invoice.edit', compact('serviceAssign', 'customers', 'employees', 'services', 'payments'));
+        return view('employee.invoice.edit', compact('serviceAssign', 'customers', 'employees', 'services', 'payments', 'messages'));
     }
 
     /**

@@ -1,18 +1,24 @@
 <!-- Main Sidebar Container -->
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="{{URL::to('/')}}" class="brand-link d-flex justify-content-center align-items-center">
-        <!-- <img src="{{asset('backend/dist/img/AdminLTELogo.png')}}" alt="VGD Logo" class="brand-image img-circle elevation-3"
+    @php
+    $settings = App\Models\SiteSetting::first();
+    @endphp
+    <div class="d-flex justify-content-center align-items-center">
+        <!-- Brand Logo -->
+        <a href="{{URL::to('/')}}" class="brand-link d-flex justify-content-center align-items-center">
+            <!-- <img src="{{asset('backend/dist/img/AdminLTELogo.png')}}" alt="VGD Logo" class="brand-image img-circle elevation-3"
             style="opacity: .8"> -->
-        <span class="h4 fw-bold text-white">{{ strtoupper(config('app.name', 'Laravel')) }}</span>
-    </a>
+            <span class="h4 fw-bold text-white">{{ strtoupper(config('app.name', 'Laravel')) }}</span>
+        </a>
+    </div>
 
     <!-- Sidebar -->
     <div class="sidebar">
         <!-- Sidebar user panel (optional) -->
         <div class="user-panel mt-3 pb-3 mb-3 d-flex justify-content-center flex-column align-items-center">
 
-            <div>
+            <div class="flex flex-column align-items-center">
                 <div class="image">
                     @if(auth()->user()->avatar != null)
                     @if (file_exists(auth()->user()->avatar))

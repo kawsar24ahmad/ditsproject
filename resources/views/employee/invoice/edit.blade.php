@@ -213,6 +213,72 @@
             </section>
             @endif
 
+
+  <section class="mt-4">
+    <div class="row">
+        <div id="customerInfo" class="mt-3 w-full">
+            <div class="bg-white shadow rounded-lg p-4 max-w-3xl mx-auto">
+                <h2 class="text-xl font-semibold mb-4 border-b pb-2">Message Thread</h2>
+
+                <div class="space-y-3 max-h-96 overflow-y-auto mb-4 pr-2">
+                    @forelse ($messages->reverse() as $msg)
+                        @php
+                            $isOwn = $msg->sender_id === auth()->id();
+                            $alignClass = $isOwn ? 'justify-end  ' : 'justify-start text-left';
+                            $bgClass = $isOwn ? 'bg-blue-100' : 'bg-gray-100';
+                            $roundedClass = $isOwn ? 'rounded-br-none' : 'rounded-bl-none';
+                        @endphp
+
+                        <div class="flex {{ $alignClass }}">
+                            @unless($isOwn)
+                                <img src="{{ $msg->sender->avatar ? asset($msg->sender->avatar) : asset('default.png') }}"
+                                     class="w-8 h-8 rounded-full mr-2 mt-2" alt="avatar">
+                            @endunless
+
+                            <div class="max-w-[75%] {{ $bgClass }} border p-3 rounded-lg {{ $roundedClass }}">
+                                <div class="flex items-center justify-between mb-1">
+                                    <span class="font-semibold  text-gray-600">
+                                        {{ ucfirst($msg->sender->role ?? 'User') }}
+                                    </span>
+                                    <span class=" ml-3 text-gray-500">
+                                        {{ $msg->created_at->diffForHumans() }}
+                                    </span>
+                                </div>
+                                <div class=" text-gray-800">{{ $msg->message }}</div>
+                            </div>
+
+                            @if($isOwn)
+                                <img src="{{ auth()->user()->avatar? asset(auth()->user()->avatar) : asset('default.png') }}"
+                                     class="w-8 h-8 rounded-full ml-2  mt-2" alt="avatar">
+                            @endif
+                        </div>
+                    @empty
+                        <div class="text-gray-500 text-sm">No messages yet.</div>
+                    @endforelse
+                </div>
+
+                <div class="mb-4">
+                    {{ $messages->links() }} {{-- Laravel pagination links --}}
+                </div>
+
+                <form action="{{ route('messages.store') }}" method="POST" class="space-y-3">
+                    @csrf
+                    <input type="hidden" name="service_assign_id" value="{{ $serviceAssign->id }}">
+
+                    <textarea name="message" rows="3" required
+                              class="w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-200 text-sm"
+                              placeholder="Type your message..."></textarea>
+
+                    <button type="submit"
+                            class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">
+                        Send
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
             {{-- Payment History --}}
             @if($payments->count())
             <section class="invoice-box mt-4">

@@ -30,4 +30,9 @@ class ServiceAssign extends Model
     {
         return $this->hasMany(AssignedTask::class);
     }
+    public function messages()
+    {
+        return $this->hasMany(Message::class, 'service_assign_id');
+    }
+
 }

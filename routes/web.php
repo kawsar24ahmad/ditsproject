@@ -1,32 +1,35 @@
 <?php
 
-use App\Http\Controllers\Admin\AssignTaskController;
 use App\Models\FacebookPage;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 use Laravel\Socialite\Facades\Socialite;
-use App\Http\Controllers\Admin\MediaController;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Admin\MediaController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Auth\FacebookController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\ServicePurchaseController;
+use App\Http\Controllers\Admin\AssignTaskController;
 use App\Http\Controllers\Admin\ServiceTaskController;
 use App\Http\Controllers\SslCommerzPaymentController;
 use App\Http\Controllers\Admin\FacebookPageController;
 use App\Http\Controllers\Admin\ServiceAssignController;
+use App\Http\Controllers\Admin\PaymentHistoryController;
 use App\Http\Controllers\User\ServiceAssignedController;
 use App\Http\Controllers\Admin\WalletTransactionController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
+use App\Http\Controllers\User\MediaController as UserMediaController;
 use App\Http\Controllers\User\WalletController as UserWalletController;
 use App\Http\Controllers\User\ProfileController as UserProfileController;
 use App\Http\Controllers\User\ServiceController as UserServiceController;
 use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
 use App\Http\Controllers\Customer\ProfileController as CustomerProfileController;
+use App\Http\Controllers\Employee\ProfileController as EmployeeProfileController;
 use App\Http\Controllers\Customer\FacebookController as CustomerFacebookController;
 use App\Http\Controllers\Employee\ServiceAssignController as EmployeeServiceAssignController;
-use App\Http\Controllers\User\MediaController as UserMediaController;
 use App\Http\Controllers\User\WalletTransactionController as UserWalletTransactionController;
 
 
@@ -58,6 +61,7 @@ Route::view('/privacy-policy', 'privacy-policy')->name('privacy.policy');
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+Route::post('/message/store', [MessageController::class, 'store'])->middleware(['auth', 'verified'])->name('messages.store');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -101,6 +105,8 @@ Route::middleware(['auth', 'role:admin'])->group(function ()  {
 
         Route::post('/service-assigns/{id}/assign-task/store', [AssignTaskController::class, 'store'])->name('admin.assign_task.store');
         Route::get('/service-assigns/{id}/assign-task/index', [AssignTaskController::class, 'index'])->name('admin.assign_task.index');
+
+        Route::get('/payment-history', [PaymentHistoryController::class, 'index'])->name('admin.payment_history.index');
     });
 });
 
@@ -136,10 +142,10 @@ Route::middleware([ 'auth','role:customer'])->group(function ()  {
 });
 Route::middleware([ 'auth','role:employee'])->group(function ()  {
     Route::prefix('employee')->group(function ()  {
-        Route::get('/profile', [CustomerProfileController::class, 'edit'])->name('employee.profile.edit');
-        Route::patch('/profile', [CustomerProfileController::class, 'update'])->name('employee.profile.update');
-        Route::patch('/profile/changePhoto', [CustomerProfileController::class, 'changePhoto'])->name('employee.profile.changePhoto');
-        Route::delete('/profile', [CustomerProfileController::class, 'destroy'])->name('employee.profile.destroy');
+        Route::get('/profile', [EmployeeProfileController::class, 'edit'])->name('employee.profile.edit');
+        Route::patch('/profile', [EmployeeProfileController::class, 'update'])->name('employee.profile.update');
+        Route::patch('/profile/changePhoto', [EmployeeProfileController::class, 'changePhoto'])->name('employee.profile.changePhoto');
+        Route::delete('/profile', [EmployeeProfileController::class, 'destroy'])->name('employee.profile.destroy');
         Route::resource('service-assigns', EmployeeServiceAssignController::class)->names('employee.service_assigns');
         Route::patch('/tasks/{task}/toggle', [EmployeeServiceAssignController::class, 'toggle'])->name('employee.tasks.toggle');
         Route::post('/service-assigns/{id}/assign-task/store', [AssignTaskController::class, 'store'])->name('employee.assign_task.store');
