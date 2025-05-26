@@ -30,6 +30,7 @@ use App\Http\Controllers\Customer\ProfileController as CustomerProfileController
 use App\Http\Controllers\Employee\ProfileController as EmployeeProfileController;
 use App\Http\Controllers\Customer\FacebookController as CustomerFacebookController;
 use App\Http\Controllers\Employee\ServiceAssignController as EmployeeServiceAssignController;
+use App\Http\Controllers\ServiceTaskReportController;
 use App\Http\Controllers\User\WalletTransactionController as UserWalletTransactionController;
 
 
@@ -112,7 +113,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
         Route::get('/service-assigns/{id}/generate', [ServiceAssignController::class, 'invoiceGenerate'])->name('admin.service_assigns.invoiceGenerate');
         Route::get('/service-assigns/{id}/generate/pdf', [ServiceAssignController::class, 'invoiceGeneratePdf'])->name('admin.service_assigns.invoiceGeneratePdf');
 
-
+        Route::resource('service-tasks-reports', ServiceTaskReportController::class)->names('admin.service_tasks_reports');
 
     });
 
@@ -161,7 +162,7 @@ Route::middleware(['auth', 'role:employee'])->group(function () {
 
         Route::get('/service-assigns/{id}/generate', [ServiceAssignController::class, 'invoiceGenerate'])->name('employee.service_assigns.invoiceGenerate');
         Route::get('/service-assigns/{id}/generate/pdf', [ServiceAssignController::class, 'invoiceGeneratePdf'])->name('employee.service_assigns.invoiceGeneratePdf');
-
+        Route::resource('service-tasks-reports', ServiceTaskReportController::class)->names('employee.service_tasks_reports');
     });
 });
 

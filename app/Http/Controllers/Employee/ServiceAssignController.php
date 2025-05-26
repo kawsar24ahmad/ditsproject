@@ -62,7 +62,7 @@ class ServiceAssignController extends Controller
         $customers = User::whereIn('role', ['customer', 'user'])->orderByDesc('id')->get();
         $employees = User::where('role', 'employee')->get();
         $services = Service::all();
-        $serviceAssign = ServiceAssign::with('invoice', 'customer')->findOrFail($id);
+        $serviceAssign = ServiceAssign::with('invoice', 'customer', 'taskReports')->findOrFail($id);
 
 
 

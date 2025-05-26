@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\AssignedTask;
+use App\Models\ServiceTaskReport;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -33,6 +34,11 @@ class ServiceAssign extends Model
     public function messages()
     {
         return $this->hasMany(Message::class, 'service_assign_id');
+    }
+
+    public function taskReports()
+    {
+        return $this->hasMany(ServiceTaskReport::class, 'service_assign_id');
     }
 
 }

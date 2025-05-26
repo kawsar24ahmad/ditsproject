@@ -12,7 +12,7 @@
       </ul>
 
       <!-- SEARCH FORM -->
-      <form class="form-inline ml-3 d-none d-md-block">
+      <!-- <form class="form-inline ml-3 d-none d-md-block">
           <div class="input-group input-group-sm">
               <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
               <div class="input-group-append">
@@ -21,7 +21,7 @@
                   </button>
               </div>
           </div>
-      </form>
+      </form> -->
       <!-- Right navbar links -->
       <ul class="navbar-nav ms-auto align-items-center">
         @php

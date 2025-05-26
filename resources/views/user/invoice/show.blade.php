@@ -36,7 +36,7 @@
             </div>
             {{-- Assigned Tasks --}}
             @if($serviceAssign->assignedTasks->count())
-            <section class="invoice-box mt-4">
+            <section class="invoice-box mt-4 mx-4">
                 <h4 class="fw-bold fs-2 mb-3">Service Tasks</h4>
                 <div class="table-responsive">
                     <table class="table table-bordered">
@@ -74,7 +74,7 @@
             @endif
 
 
-            <section class="invoice-box mt-3">
+            <section class="invoice-box mt-3 mx-4">
                 <div class="row">
 
                     <div class="col-md-12 mb-2 table-responsive">
@@ -143,7 +143,48 @@
                 </div>
             </section>
 
-            <section class="mt-4">
+
+             <section class=" px-4 mt-5">
+                <div class="max-w-4xl mx-auto bg-white shadow-xl rounded-2xl p-6 border border-gray-200">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-4">📝 Service Task Report</h2>
+
+                    {{-- Existing Reports Table --}}
+                    <div class="overflow-x-auto mb-8">
+                        <table class="w-full table-fixed border border-gray-300 text-sm text-gray-800 rounded-md">
+                            <thead class="bg-gray-100 text-2xl">
+                                <tr>
+                                    <th class="border border-gray-300 px-4 py-3 text-left font-semibold" style="width: 20%;">📅 Date</th>
+                                    <th class="border border-gray-300 px-4 py-3 text-left font-semibold">🛠️ Work Details</th>
+
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white text-lg">
+                                @forelse ($serviceAssign->taskReports as $report)
+                                <tr class="hover:bg-gray-50">
+                                    <td class="border border-gray-300 px-4 py-3 whitespace-nowrap w-32">
+                                        {{ \Carbon\Carbon::parse($report->date)->format('d M, Y') }}
+                                    </td>
+                                    <td class="border border-gray-300 px-4 py-3">
+                                        {!! $report->work_details !!}
+                                    </td>
+
+                                </tr>
+                                @empty
+                                <tr>
+                                    <td colspan="2" class="text-center text-gray-500 border px-4 py-4">No reports found.</td>
+                                </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+
+                    </div>
+
+
+
+                </div>
+            </section>
+
+            <section class="mt-4 mx-4">
                 <div class="row">
                     <div id="customerInfo" class="mt-3 w-full">
                         <div class="bg-white shadow rounded-lg p-4 max-w-3xl mx-auto">
@@ -158,7 +199,7 @@
                                 $roundedClass = $isOwn ? 'rounded-br-none' : 'rounded-bl-none';
                                 @endphp
 
-                                <div class="flex {{ $alignClass }}">
+                                <div class="flex {{ $alignClass }} my-2">
                                     @unless($isOwn)
                                     <img src="{{ $msg->sender->avatar ? asset($msg->sender->avatar) : asset('default.png') }}"
                                         class="w-8 h-8 rounded-full mr-2" alt="avatar">
@@ -211,7 +252,7 @@
 
             {{-- Payment History --}}
             @if($payments->count())
-            <section class="invoice-box mt-4">
+            <section class="invoice-box mt-4 mx-4">
                 <h4 class="fw-bold fs-2 mb-3">Payment History</h4>
                 <div class="table-responsive">
                     <table class="table table-bordered">
