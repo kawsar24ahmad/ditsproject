@@ -26,7 +26,6 @@ class ServiceAssignController extends Controller
 
         $assignIds = $serviceAssignments->pluck('id');
 
-
         return view('employee.invoice.index', compact('serviceAssignments'));
     }
 

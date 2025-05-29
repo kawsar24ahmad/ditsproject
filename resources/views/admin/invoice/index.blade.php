@@ -29,98 +29,94 @@
             <section id="data-display">
                 <div class="row">
                     <div class="col-12">
-                        <div class="card">
-                            <div class="card-header">
-                                <h4 class="card-title text-bold text-lg mb-0">All Service Assignments</h4>
-                            </div>
+                        <div class="px-6 py-3 border-b">
+                            <h2 class="text-xl font-semibold text-secondary">Sold Services</h2>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 p-4">
+                            @foreach ($serviceAssignments as $assignment)
+                            <div class="bg-white shadow rounded-2xl overflow-hidden border border-gray-100">
+                                <div class="p-4">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <h3 class="text-lg font-semibold text-dark">
+                                            Invoice: {{ $assignment->invoice->invoice_number }}
+                                        </h3>
+                                        <span class="text-xs px-2 py-1 rounded-full text-white
+                        {{ $assignment->status === 'paid' ? 'bg-success' : ($assignment->status === 'partial' ? 'bg-warning text-dark' : 'bg-secondary') }}">
+                                            {{ ucfirst($assignment->status) }}
+                                        </span>
+                                    </div>
 
-                            <div class="card-content">
-                                <div class="card-body card-dashboard">
-                                    <div class="table-responsive">
-                                        <table class="table table-striped table-bordered">
-                                            <thead>
-                                                <tr>
-                                                    <th>#</th>
-                                                    <th>Invoice No</th>
-                                                    <th>Service</th>
-                                                    <th>Customer</th>
-                                                    <th>Employee</th>
-                                                    <th>Price</th>
-                                                    <th>Paid</th>
-                                                    <th>Due Payment</th>
-                                                    <th>Status</th>
-                                                    <th>Remarks</th>
-                                                    <th>Created</th>
-                                                    <th>Updated</th>
-                                                    <th>Actions</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach ($serviceAssignments as $assignment)
-                                                <tr>
-                                                    <td>{{ $loop->iteration }}</td>
-                                                    <td>{{ $assignment->invoice->invoice_number  }}</td>
-                                                    <td>{{ $assignment->service->title }}</td>
-                                                    <td>{{ $assignment->customer->name }}</td>
-                                                    <td>{{ $assignment->employee?->name }}</td>
-                                                    <td>{{ number_format($assignment->price, 2) }}</td>
-                                                    <td>{{ number_format($assignment->paid_payment, 2) }}</td>
-                                                    <td>{{ number_format( $assignment->price - $assignment->paid_payment , 2) }}</td>
-                                                    <td><span class="badge badge-{{ $assignment->status == 'paid' ? 'success' : ($assignment->status == 'partial' ? 'warning' : 'secondary') }}">{{ ucfirst($assignment->status) }}</span></td>
-                                                    <td>{!! $assignment->remarks ?? '—' !!} </td>
-                                                    <td>{{ \Carbon\Carbon::parse($assignment->created_at)->format('d M, Y') }}</td>
-                                                    <td>{{ \Carbon\Carbon::parse($assignment->updated_at)->format('d M, Y') }}</td>
-                                                    <td class="flex flex-wrap gap-2">
-                                                        <!-- Assign Tasks Button -->
-                                                        <a href="{{ route('admin.assign_task.index', $assignment->id) }}"
-                                                            class="inline-flex items-center px-3 py-1 text-sm font-medium text-white bg-success  rounded"
-                                                            title="Assigned Tasks">
-                                                            Assigned Tasks
-                                                        </a>
+                                    <div class="text-sm text-gray-700 space-y-1">
+                                        <p><strong>Service:</strong> {{ $assignment->service->title }}</p>
+                                        <p><strong>Customer:</strong> {{ $assignment->customer->name }}</p>
+                                        <p><strong>Employee:</strong> {{ $assignment->employee?->name ?? '—' }}</p>
+                                        <p><strong>Price:</strong> <span class="text-dark">{{ number_format($assignment->price, 2) }}</span></p>
+                                        <p><strong>Paid:</strong> <span class="text-success">{{ number_format($assignment->paid_payment, 2) }}</span></p>
+                                        <p><strong>Due:</strong> <span class="text-danger">{{ number_format($assignment->price - $assignment->paid_payment, 2) }}</span></p>
+                                        <p><strong>Remarks:</strong>
+                                            @if (!empty(strip_tags($assignment->remarks)))
+                                            <span x-data="{ expanded: false }">
+                                                <template x-if="!expanded">
+                                                    <span>
+                                                        {{ \Illuminate\Support\Str::words(strip_tags($assignment->remarks), 10, '...') }}
+                                                        <button @click="expanded = true" class="text-primary text-xs ml-1">more</button>
+                                                    </span>
+                                                </template>
+                                                <template x-if="expanded">
+                                                    <span>
+                                                        {!! $assignment->remarks !!}
+                                                        <button @click="expanded = false" class="text-primary text-xs ml-1">less</button>
+                                                    </span>
+                                                </template>
+                                            </span>
+                                            @else
+                                            —
+                                            @endif
+                                        </p>
 
-                                                        <!-- Edit Button -->
-                                                        <a href="{{ route('admin.service_assigns.edit', $assignment->id) }}"
-                                                            class="inline-flex items-center px-3 py-1 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded"
-                                                            title="Edit Assignment">
-                                                            <i class="fas fa-pen mr-1"></i> Edit
-                                                        </a>
-                                                        <a href="{{ route('admin.service_assigns.invoiceGenerate', $assignment->id) }}"
-                                                            class="inline-flex items-center px-3 py-1 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded"
-                                                            title="See Invoice">
-                                                            <i class="fas fa-eye mr-1"></i>
-                                                        </a>
-                                                        <a href="{{ route('admin.service_assigns.invoiceGeneratePdf', $assignment->id) }}"
-                                                            class="inline-flex items-center px-3 py-1 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded"
-                                                            title="Print">
-                                                            <i class="fas fa-print"></i>
-                                                        </a>
 
-                                                        <!-- Delete Button -->
-                                                        <form action="{{ route('admin.service_assigns.destroy', $assignment->id) }}"
-                                                            method="POST"
-                                                            onsubmit="return confirm('Are you sure you want to delete this assignment?');">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit"
-                                                                class="inline-flex items-center px-3 py-1 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded"
-                                                                title="Delete Assignment">
-                                                                <i class="fas fa-trash mr-1"></i> Delete
-                                                            </button>
-                                                        </form>
-                                                    </td>
+                                        <p><strong>Created:</strong> {{ \Carbon\Carbon::parse($assignment->created_at)->format('d M, Y') }}</p>
+                                        <p><strong>Updated:</strong> {{ \Carbon\Carbon::parse($assignment->updated_at)->format('d M, Y') }}</p>
+                                    </div>
 
-                                                </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
+                                    <div class="mt-4 flex flex-wrap gap-2">
+                                        <a href="{{ route('admin.assign_task.index', $assignment->id) }}"
+                                            class="text-sm px-3 py-1 rounded bg-success text-white hover:opacity-90 transition">
+                                            Assigned Tasks
+                                        </a>
 
-                                        <div class="mt-2">
+                                        <a href="{{ route('admin.service_assigns.edit', $assignment->id) }}"
+                                            class="text-sm px-3 py-1 rounded bg-primary text-white hover:opacity-90 transition">
+                                            <i class="fas fa-pen mr-1"></i> Edit
+                                        </a>
 
-                                        </div>
+                                        <a href="{{ route('admin.service_assigns.invoiceGenerate', $assignment->id) }}"
+                                            class="text-sm px-3 py-1 rounded bg-info text-white hover:opacity-90 transition"
+                                            title="See Invoice">
+                                            <i class="fas fa-eye mr-1"></i>
+                                        </a>
+
+                                        <a href="{{ route('admin.service_assigns.invoiceGeneratePdf', $assignment->id) }}"
+                                            class="text-sm px-3 py-1 rounded bg-dark text-white hover:opacity-90 transition"
+                                            title="Print">
+                                            <i class="fas fa-print"></i>
+                                        </a>
+
+                                        <form action="{{ route('admin.service_assigns.destroy', $assignment->id) }}"
+                                            method="POST" onsubmit="return confirm('Are you sure you want to delete this assignment?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit"
+                                                class="text-sm px-3 py-1 rounded bg-danger text-white hover:opacity-90 transition">
+                                                <i class="fas fa-trash mr-1"></i> Delete
+                                            </button>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
+                            @endforeach
                         </div>
+
                     </div>
                 </div>
             </section>

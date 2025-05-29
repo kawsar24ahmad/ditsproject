@@ -56,7 +56,7 @@
             }
         });
     "
-                      class="dropdown-item course-pointer">
+                      class="dropdown-item  course-pointer">
                       <strong>{{ $notification->data['sender_name'] }}</strong> sent a message<br>
                       <small class="text-muted">{{ $notification->created_at->diffForHumans() }}</small>
                   </a>

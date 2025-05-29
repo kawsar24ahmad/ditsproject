@@ -26,6 +26,21 @@
       <!-- Right navbar links -->
       <ul class="navbar-nav ms-auto align-items-center">
 
+       @php
+          $services = App\Models\ServiceAssign::where('customer_id', auth()->user()->id)->get();
+          $status = false;
+          foreach($services as $service){
+          if($service->paid_payment >= $service->price){
+          $status = true;
+          }
+          }
+
+          @endphp
+          @if ($status)
+          <li class="nav-item me-3 ">
+              <a class="btn btn-danger" href="{{ route('user.support') }}">সাপোর্টে জয়েন করুন</a>
+          </li>
+          @endif
           <!-- ধরো এটি তোমার navigation bar এর অংশ -->
           <!-- Notification Dropdown Blade -->
           <li class="nav-item dropdown">
@@ -74,21 +89,7 @@
               </div>
           </li>
 
-          @php
-          $services = App\Models\ServiceAssign::where('customer_id', auth()->user()->id)->get();
-          $status = false;
-          foreach($services as $service){
-          if($service->paid_payment >= $service->price){
-          $status = true;
-          }
-          }
 
-          @endphp
-          @if ($status)
-          <li class="nav-item me-3 ">
-              <a class="btn btn-danger" href="{{ route('user.support') }}">সাপোর্টে জয়েন করুন</a>
-          </li>
-          @endif
 
 
           <li class="nav-item dropdown">
