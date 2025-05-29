@@ -120,6 +120,19 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 });
 
 
+// web.php
+// web.php
+Route::post('/notifications/{id}/read', function ($id) {
+    $notification = auth()->user()->unreadNotifications()->findOrFail($id);
+    $notification->markAsRead();
+    return response()->json(['status' => 'ok']);
+})->name('notifications.markAsRead');
+
+// web.php
+Route::get('/notifications/mark-all-read', function () {
+    auth()->user()->unreadNotifications->markAsRead();
+    return back();
+})->name('notifications.markAllRead');
 
 
 Route::middleware(['auth', 'role:user,customer'])->group(function () {

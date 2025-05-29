@@ -12,7 +12,7 @@
       </ul>
 
       <!-- SEARCH FORM -->
-      <form class="form-inline ml-3">
+      <!-- <form class="form-inline ml-3">
           <div class="input-group input-group-sm">
               <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
               <div class="input-group-append">
@@ -21,11 +21,54 @@
                   </button>
               </div>
           </div>
-      </form>
+      </form> -->
       <!-- Right navbar links -->
       <ul class="navbar-nav ms-auto align-items-center">
-         
-         
+
+         <!-- Notification Dropdown Blade -->
+<li class="nav-item dropdown">
+    <a class="nav-link" data-bs-toggle="dropdown" href="#">
+        <i class="far fa-bell"></i>
+        @if(auth()->user()->unreadNotifications->count())
+            <span class="badge bg-danger">{{ auth()->user()->unreadNotifications->count() }}</span>
+        @endif
+    </a>
+    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
+        <span class="dropdown-item dropdown-header">
+            {{ auth()->user()->unreadNotifications->count() }} New Notifications
+        </span>
+
+        <div class="dropdown-divider"></div>
+
+        @forelse(auth()->user()->unreadNotifications as $notification)
+             <a
+                      x-init
+                      @click.prevent="
+        $.ajax({
+            url: '{{ route('notifications.markAsRead', $notification->id) }}',
+            type: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            success: function () {
+                window.location.href = '{{ route('admin.assign_task.index', $notification->data['service_assign_id']) }}';
+            }
+        });
+    "
+                      class="dropdown-item course-pointer">
+                      <strong>{{ $notification->data['sender_name'] }}</strong> sent a message<br>
+                      <small class="text-muted">{{ $notification->created_at->diffForHumans() }}</small>
+                  </a>
+            <div class="dropdown-divider"></div>
+        @empty
+            <span class="dropdown-item text-center text-muted">No new notifications</span>
+        @endforelse
+
+        <a href="{{ route('notifications.markAllRead') }}" class="dropdown-item dropdown-footer">
+            Mark all as read
+        </a>
+    </div>
+</li>
 
           <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">

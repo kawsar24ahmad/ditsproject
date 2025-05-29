@@ -11,6 +11,7 @@
 
       </ul>
 
+
       <!-- SEARCH FORM -->
       <!-- <form class="form-inline ml-3 d-none d-md-block">
           <div class="input-group input-group-sm">
@@ -24,19 +25,68 @@
       </form> -->
       <!-- Right navbar links -->
       <ul class="navbar-nav ms-auto align-items-center">
-        @php
-        $services = App\Models\ServiceAssign::where('customer_id', auth()->user()->id)->get();
-        $status = false;
-        foreach($services as $service){
-            if($service->paid_payment >= $service->price){
-                $status = true;
-            }
-        }
 
-        @endphp
+          <!-- ধরো এটি তোমার navigation bar এর অংশ -->
+          <!-- Notification Dropdown Blade -->
+          <li class="nav-item dropdown">
+              <a class="nav-link" data-bs-toggle="dropdown" href="#">
+                  <i class="far fa-bell"></i>
+                  @if(auth()->user()->unreadNotifications->count())
+                  <span class="badge bg-danger">{{ auth()->user()->unreadNotifications->count() }}</span>
+                  @endif
+              </a>
+              <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
+                  <span class="dropdown-item dropdown-header">
+                      {{ auth()->user()->unreadNotifications->count() }} New Notifications
+                  </span>
+
+                  <div class="dropdown-divider"></div>
+
+                  @forelse(auth()->user()->unreadNotifications as $notification)
+                  <a
+                      x-init
+                      @click.prevent="
+        $.ajax({
+            url: '{{ route('notifications.markAsRead', $notification->id) }}',
+            type: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            success: function () {
+                window.location.href = '{{ route('user.service_assigns.show', $notification->data['service_assign_id']) }}';
+            }
+        });
+    "
+                      class="dropdown-item course-pointer">
+                      <strong>{{ $notification->data['sender_name'] }}</strong> sent a message<br>
+                      <small class="text-muted">{{ $notification->created_at->diffForHumans() }}</small>
+                  </a>
+
+
+                  <div class="dropdown-divider"></div>
+                  @empty
+                  <span class="dropdown-item text-center text-muted">No new notifications</span>
+                  @endforelse
+
+                  <a href="{{ route('notifications.markAllRead') }}" class="dropdown-item dropdown-footer">
+                      Mark all as read
+                  </a>
+              </div>
+          </li>
+
+          @php
+          $services = App\Models\ServiceAssign::where('customer_id', auth()->user()->id)->get();
+          $status = false;
+          foreach($services as $service){
+          if($service->paid_payment >= $service->price){
+          $status = true;
+          }
+          }
+
+          @endphp
           @if ($status)
           <li class="nav-item me-3 ">
-              <a   class="btn btn-danger"  href="{{ route('user.support') }}">সাপোর্টে জয়েন করুন</a>
+              <a class="btn btn-danger" href="{{ route('user.support') }}">সাপোর্টে জয়েন করুন</a>
           </li>
           @endif
 

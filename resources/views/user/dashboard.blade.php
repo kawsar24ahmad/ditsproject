@@ -1,7 +1,7 @@
   @php
             $services = App\Models\ServiceAssign::with(['invoice:id,invoice_number,service_assign_id', 'service:id,title'])->where('customer_id', auth()->user()->id)->orderByDesc('id')->paginate(2);
             @endphp
-@extends('employee.layouts.app')
+@extends('user.layouts.app')
 
 @section('content')
 
@@ -49,6 +49,7 @@
             </div>
         </div>
     </div>
+
 
  <!-- Services Table -->
   <!-- Main row -->
