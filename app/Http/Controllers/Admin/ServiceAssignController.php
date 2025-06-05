@@ -268,8 +268,9 @@ class ServiceAssignController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(ServiceAssign $serviceAssign)
     {
-        //
+        $serviceAssign->delete();
+        return back();
     }
 }
