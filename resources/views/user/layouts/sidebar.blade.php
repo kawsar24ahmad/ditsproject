@@ -51,7 +51,8 @@
                     </a>
                 </li>
 @php
-    $services = App\Models\ServiceAssign::where('customer_id', auth()->user()->id)->get();
+    $services = App\Models\ServiceAssign::with('invoice')->where('customer_id', auth()->user()->id)->get();
+    dd($services);
     $status = true;
     foreach($services as $service){
         if($service->invoice->status === 'unpaid' || $service->status == 'completed'){

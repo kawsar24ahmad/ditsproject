@@ -79,6 +79,7 @@
 
     <p class="mb-1 text-success"><strong>Paid:</strong> ৳{{ number_format($assignment->paid_payment, 2) }}</p>
     <p class="mb-1 text-danger"><strong>Due:</strong> ৳{{ number_format($assignment->price - $assignment->paid_payment, 2) }}</p>
+    <p class="mb-1"><strong>Delivery Date:</strong> {{ \Carbon\Carbon::parse($assignment->delivery_date)->format('d M, Y') }}</p>
     <p class="mb-1"><strong>Created:</strong> {{ \Carbon\Carbon::parse($assignment->created_at)->format('d M, Y') }}</p>
     <p class="mb-1"><strong>Updated:</strong> {{ \Carbon\Carbon::parse($assignment->updated_at)->format('d M, Y') }}</p>
 </div>

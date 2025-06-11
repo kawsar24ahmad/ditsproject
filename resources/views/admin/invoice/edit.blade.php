@@ -129,6 +129,12 @@
                             <label>Remarks</label>
                             <textarea name="remarks" class="form-control summernote">{!! $serviceAssign->remarks !!}</textarea>
                         </div>
+                        <div class="col-12 mb-3">
+    <label>Delivery Date</label>
+    <input type="date" name="delivery_date" class="form-control"
+           value="{{ old('delivery_date', $serviceAssign->delivery_date ? \Carbon\Carbon::parse($serviceAssign->delivery_date)->format('Y-m-d') : '') }}">
+</div>
+
 
                         <div id="service-info" class="mt-3  table-responsive">
                             <table class="table table-bordered">

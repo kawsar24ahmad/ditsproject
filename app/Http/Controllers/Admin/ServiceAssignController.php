@@ -193,6 +193,7 @@ class ServiceAssignController extends Controller
             'payment_method' => 'nullable|string|max:100',
             'comment' => 'nullable|string|max:1000',
             'remarks' => 'nullable|string|max:1000',
+            'delivery_date' => 'nullable'
         ]);
 
         // Fetch service price
@@ -206,6 +207,7 @@ class ServiceAssignController extends Controller
         $serviceAssign->update([
             'employee_id' => $request->employee_id,
             'remarks' => $request->remarks,
+            'delivery_date' => $request->delivery_date,
         ]);
 
         // Handle new payment (if any)

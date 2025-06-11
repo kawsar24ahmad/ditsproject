@@ -75,6 +75,11 @@
                                         <td>{!! $serviceAssign->remarks ?? 'N/A' !!}</td>
                                     </tr>
                                     <tr>
+                                        <th>Delivery Date</th>
+                                        <td>{{  \Carbon\Carbon::parse($serviceAssign->delivery_date)->format('d M, Y') }}</td>
+                                    </tr>
+
+                                    <tr>
                                         <th>Status</th>
                                         <td><span class="badge badge-{{ $serviceAssign->status == 'completed' ? 'success' : ($serviceAssign->status == 'pending' ? 'warning' : 'secondary') }}">{{ ucfirst($serviceAssign->status) }}</span></td>
                                     </tr>
