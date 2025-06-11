@@ -40,7 +40,7 @@ class LiveClassController extends Controller
     public function edit($id)
     {
         $liveClass = LiveClass::findOrFail($id);
-        return view('admin.live_class.edit', compact('liveClass'));
+        return view('live_class.edit', compact('liveClass'));
     }
 
 
