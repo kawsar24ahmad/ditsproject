@@ -49,10 +49,15 @@
                                     <div class="text-sm text-gray-700 space-y-1">
                                         <p><strong>Service:</strong> {{ $assignment->service->title }}</p>
                                         <p><strong>Customer:</strong> {{ $assignment->customer->name }}</p>
+                                        <p><strong>Starting Followers:</strong> {{ $assignment->customer->starting_followers ?? '-'}}</p>
                                         <p><strong>Employee:</strong> {{ $assignment->employee?->name ?? '—' }}</p>
                                         <p><strong>Price:</strong> <span class="text-dark">{{ number_format($assignment->price, 2) }}</span></p>
                                         <p><strong>Paid:</strong> <span class="text-success">{{ number_format($assignment->paid_payment, 2) }}</span></p>
                                         <p><strong>Due:</strong> <span class="text-danger">{{ number_format($assignment->price - $assignment->paid_payment, 2) }}</span></p>
+<p>
+    <strong>Delivery Date:</strong>
+    {{ $assignment->delivery_date ? \Carbon\Carbon::parse($assignment->delivery_date)->format('F j, Y') : '-' }}
+</p>
                                         <p><strong>Remarks:</strong>
                                             @if (!empty(strip_tags($assignment->remarks)))
                                             <span x-data="{ expanded: false }">

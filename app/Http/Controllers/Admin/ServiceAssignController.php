@@ -25,7 +25,7 @@ class ServiceAssignController extends Controller
      */
     public function index()
     {
-        $serviceAssignments =  ServiceAssign::with(['customer:id,name', 'employee:id,name', 'assignedTasks.task', 'invoice:id,invoice_number,service_assign_id', 'service:id,title'])
+        $serviceAssignments =  ServiceAssign::with(['customer:id,name,starting_followers', 'employee:id,name', 'assignedTasks.task', 'invoice:id,invoice_number,service_assign_id', 'service:id,title'])
             ->orderByDesc('id')->get();
         return view('admin.invoice.index', compact('serviceAssignments'));
     }
@@ -54,6 +54,7 @@ class ServiceAssignController extends Controller
             'employee_id' => 'nullable|exists:users,id',
             'paid_payment' => 'nullable|numeric|min:0',
             'remarks' => 'nullable|string|max:1000',
+            'delivery_date' => 'nullable'
         ]);
         // dd($validatedData);
 
@@ -68,18 +69,9 @@ class ServiceAssignController extends Controller
             'price' => $price,
             'paid_payment' => $request->paid_payment,
             'remarks' => $validatedData['remarks'],
+            'delivery_date' => $validatedData['delivery_date'],
         ]);
-        // Create service assignment
-        // $serviceAssign = ServiceAssign::create([
-        //     'customer_id' => $request->customer_id,
-        //     'employee_id' => $request->employee_id,
-        //     'service_id' => $request->service_id,
-        //     'price' => $price,
-        //     'paid_payment' => $request->paid_payment,
-        //     'remarks' => $validatedData['remarks'],
-        // ]);
 
-        // $tasks = ServiceTask::where('service_id', $request->service_id)->get();
         $tasks = $service->load('tasks')->tasks;
 
         foreach ($tasks as $task) {

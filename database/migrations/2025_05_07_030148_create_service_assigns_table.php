@@ -26,6 +26,7 @@ return new class extends Migration
 
             $table->enum('status', ['pending', 'in_progress', 'completed', 'cancelled'])->default('pending');
             $table->text('remarks')->nullable();
+            $table->date('delivery_date')->nullable();
 
             $table->timestamps();
 

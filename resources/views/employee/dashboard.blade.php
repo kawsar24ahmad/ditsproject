@@ -3,7 +3,7 @@
 @section('content')
 
 @php
-$serviceAssignments = App\Models\ServiceAssign::with(['customer:id,name', 'invoice:id,invoice_number,service_assign_id'])
+$serviceAssignments = App\Models\ServiceAssign::with(['customer:id,name,starting_followers', 'invoice:id,invoice_number,service_assign_id'])
 ->where('employee_id',auth()->user()->id)
 ->orderByDesc('id')
 ->paginate(10);
@@ -94,10 +94,16 @@ $serviceAssignments = App\Models\ServiceAssign::with(['customer:id,name', 'invoi
                                     <div class="text-sm text-gray-700 space-y-1">
                                         <p><strong>Service ID:</strong> {{ $assignment->service_id }}</p>
                                         <p><strong>Customer:</strong> {{ $assignment->customer->name }}</p>
+                                        <P><strong>Starting Followers:</strong> {{ $assignment->customer->starting_followers ?? '-'}}</P>
                                         <p><strong>Price:</strong> <span class="text-dark">{{ number_format($assignment->price, 2) }}</span></p>
                                         <p><strong>Paid:</strong> <span class="text-success">{{ number_format($assignment->paid_payment, 2) }}</span></p>
                                         <p><strong>Due:</strong> <span class="text-danger">{{ number_format($assignment->price - $assignment->paid_payment, 2) }}</span></p>
                                         <p><strong>Remarks:</strong>
+                                        <p>
+    <strong>Delivery Date:</strong>
+    {{ $assignment->delivery_date ? \Carbon\Carbon::parse($assignment->delivery_date)->format('F j, Y') : '-' }}
+</p>
+
                                             @if (!empty(strip_tags($assignment->remarks)))
                                             <span x-data="{ expanded: false }">
                                                 <template x-if="!expanded">

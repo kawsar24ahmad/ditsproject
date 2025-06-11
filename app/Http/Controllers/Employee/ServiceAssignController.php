@@ -53,6 +53,7 @@ class ServiceAssignController extends Controller
             'employee_id' => 'nullable|exists:users,id',
             'paid_payment' => 'nullable|numeric|min:0',
             'remarks' => 'nullable|string|max:1000',
+            'delivery_date' => 'nullable',
         ]);
         // dd($validatedData);
 
@@ -67,6 +68,7 @@ class ServiceAssignController extends Controller
             'price' => $price,
             'paid_payment' => $request->paid_payment,
             'remarks' => $validatedData['remarks'],
+            'delivery_date' => $validatedData['delivery_date'],
         ]);
         // Create service assignment
         // $serviceAssign = ServiceAssign::create([

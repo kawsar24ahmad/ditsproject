@@ -156,6 +156,10 @@
                             <label>Remarks</label>
                             <textarea name="remarks" id="remarks" class="form-control summernote"></textarea>
                         </div>
+                         <div class="col-12 mb-3">
+                            <label>Delivery Date</label>
+                            <input type="date" name="delivery_date" class="form-control" id="">
+                        </div>
 
                         <div class="col-12 text-right">
                             <button type="submit" class="btn btn-primary">Assign & Create Invoice</button>
