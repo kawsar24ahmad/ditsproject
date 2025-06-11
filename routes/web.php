@@ -200,7 +200,7 @@ Route::middleware(['auth', 'role:employee'])->group(function () {
         Route::get('/service-assigns/{id}/generate/pdf', [ServiceAssignController::class, 'invoiceGeneratePdf'])->name('employee.service_assigns.invoiceGeneratePdf');
         Route::resource('service-tasks-reports', ServiceTaskReportController::class)->names('employee.service_tasks_reports');
 
-        Route::resource('admin_users', AdminUserController::class);
+        Route::resource('employee_users', AdminUserController::class);
         // Route::resource('service-assigns', ServiceAssignController::class)->names('admin.service_assigns');
     });
 });

@@ -268,7 +268,7 @@
             // alert('Form submitted');
 
             $.ajax({
-                url: "{{ route('admin_users.store') }}",
+                url: "{{ route('employee_users.store') }}",
                 // csrf
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -298,7 +298,7 @@
             // alert('Form submitted');
 
             $.ajax({
-                url: "{{ route('admin_users.store') }}",
+                url: "{{ route('employee_users.store') }}",
                 // csrf
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -367,7 +367,7 @@
             };
             // alert(customer_id);
             $.ajax({
-                url: `{{ route('admin_users.show', ':id') }}`.replace(':id', customer_id),
+                url: `{{ route('employee_users.show', ':id') }}`.replace(':id', customer_id),
 
                 method: 'GET',
                 success: function(response) {

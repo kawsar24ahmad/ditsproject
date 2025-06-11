@@ -32,7 +32,7 @@ $serviceAssignments = App\Models\ServiceAssign::with(['customer:id,name', 'invoi
 
         <!-- Summary Boxes -->
         <div class="row mb-5 g-3 m-2">
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <div class="card text-white bg-primary shadow-sm">
                     <div class="card-body text-center">
                         <h5 class="card-title">Total Services</h5>
@@ -40,20 +40,28 @@ $serviceAssignments = App\Models\ServiceAssign::with(['customer:id,name', 'invoi
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="card text-white bg-success shadow-sm">
+            <div class="col-md-3">
+                <div class="card text-white bg-warning shadow-sm">
                     <div class="card-body text-center">
-                        <h5 class="card-title">Completed Services</h5>
-                        <h2 class="fw-bold">{{ $serviceAssignments->where('status', 'completed')->count()}}</h2>
+                        <h5 class="card-title">Pending Services</h5>
+                        <h2 class="fw-bold">{{ $serviceAssignments->where('status', 'pending')->count()}}</h2>
                     </div>
                 </div>
             </div>
 
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <div class="card text-white bg-danger shadow-sm">
                     <div class="card-body text-center">
                         <h5 class="card-title">In Progress Services</h5>
                         <h2 class="fw-bold">{{ $serviceAssignments->where('status', 'in_progress')->count() }}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-white bg-success shadow-sm">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Completed Services</h5>
+                        <h2 class="fw-bold">{{ $serviceAssignments->where('status', 'completed')->count()}}</h2>
                     </div>
                 </div>
             </div>
