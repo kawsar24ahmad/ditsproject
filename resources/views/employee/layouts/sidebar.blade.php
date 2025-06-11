@@ -1,7 +1,14 @@
 <!-- Main Sidebar Container -->
 <aside class="main-sidebar sidebar-light-primary elevation-4">
     @php
-        $settings = App\Models\SiteSetting::first();
+    $settings = App\Models\SiteSetting::first();
+    $baseQuery = App\Models\ServiceAssign::where('employee_id', auth()->user()->id);
+
+    $total = (clone $baseQuery)->count();
+    $total_pending = (clone $baseQuery)->where('status', 'pending')->count();
+    $total_progress = (clone $baseQuery)->where('status', 'in_progress')->count();
+    $total_completed = (clone $baseQuery)->where('status', 'completed')->count();
+
     @endphp
 
     <!-- Brand Logo -->
@@ -18,13 +25,13 @@
             <div class="flex flex-column align-items-center">
                 <div class="image">
                     @if(auth()->user()->avatar != null)
-                        @if (file_exists(auth()->user()->avatar))
-                            <img src="{{ asset(auth()->user()->avatar) }}" class="img-circle elevation-2" alt="User Image">
-                        @else
-                            <img src="{{ auth()->user()->avatar }}" class="img-circle elevation-2" alt="User Image">
-                        @endif
+                    @if (file_exists(auth()->user()->avatar))
+                    <img src="{{ asset(auth()->user()->avatar) }}" class="img-circle elevation-2" alt="User Image">
                     @else
-                        <img src="{{ asset('default.png') }}" class="img-circle elevation-2" alt="User Image">
+                    <img src="{{ auth()->user()->avatar }}" class="img-circle elevation-2" alt="User Image">
+                    @endif
+                    @else
+                    <img src="{{ asset('default.png') }}" class="img-circle elevation-2" alt="User Image">
                     @endif
                 </div>
                 <div class="info">
@@ -52,6 +59,31 @@
                         <p>Sell Service</p>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="{{ route('employee.service_assigns.index') }}" class="nav-link {{ request()->routeIs('employee.service_assigns.index') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-tasks"></i>
+                        <p>Total Services <span class="badge badge-success">{{ $total }}</span></p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('employee.pending') }}" class="nav-link {{ request()->routeIs('employee.pending') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-hourglass-start"></i>
+                        <p>Pending Services <span class="badge badge-warning">{{ $total_pending }}</span></p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('employee.progress') }}" class="nav-link {{ request()->routeIs('employee.progress') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-spinner fa-spin"></i>
+                        <p>In Progress Services <span class="badge badge-info">{{ $total_progress }}</span></p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('employee.completed') }}" class="nav-link {{ request()->routeIs('employee.completed') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-check-circle"></i>
+                        <p>Completed Services <span class="badge badge-primary">{{ $total_completed }}</span></p>
+                    </a>
+                </li>
+
 
                 <!-- Assigned Services Link (optional) -->
                 <!-- <li class="nav-item has-treeview">

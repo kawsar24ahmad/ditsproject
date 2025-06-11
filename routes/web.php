@@ -198,6 +198,12 @@ Route::middleware(['auth', 'role:employee'])->group(function () {
 
         Route::get('/service-assigns/{id}/generate', [ServiceAssignController::class, 'invoiceGenerate'])->name('employee.service_assigns.invoiceGenerate');
         Route::get('/service-assigns/{id}/generate/pdf', [ServiceAssignController::class, 'invoiceGeneratePdf'])->name('employee.service_assigns.invoiceGeneratePdf');
+
+        Route::get('/pending', [EmployeeServiceAssignController::class, 'pending'])->name('employee.pending');
+        Route::get('/progress', [EmployeeServiceAssignController::class, 'progress'])->name('employee.progress');
+        Route::get('/completed', [EmployeeServiceAssignController::class, 'completed'])->name('employee.completed');
+
+
         Route::resource('service-tasks-reports', ServiceTaskReportController::class)->names('employee.service_tasks_reports');
 
         Route::resource('employee_users', AdminUserController::class);

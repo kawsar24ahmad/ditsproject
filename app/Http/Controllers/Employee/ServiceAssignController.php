@@ -41,6 +41,28 @@ class ServiceAssignController extends Controller
         return view('employee.invoice.create', compact('customers', 'services', 'employees'));
     }
 
+    public function pending()
+    {
+        $serviceAssignments =  ServiceAssign::with(['customer:id,name,starting_followers', 'employee:id,name', 'assignedTasks.task', 'invoice:id,invoice_number,service_assign_id', 'service:id,title'])
+            ->where('status', 'pending')
+            ->orderByDesc('id')->get();
+        return view('employee.invoice.pending', compact('serviceAssignments'));
+    }
+    public function completed()
+    {
+        $serviceAssignments =  ServiceAssign::with(['customer:id,name,starting_followers', 'employee:id,name', 'assignedTasks.task', 'invoice:id,invoice_number,service_assign_id', 'service:id,title'])
+            ->where('status', 'completed')
+            ->orderByDesc('id')->get();
+        return view('employee.invoice.completed', compact('serviceAssignments'));
+    }
+    public function progress()
+    {
+        $serviceAssignments =  ServiceAssign::with(['customer:id,name,starting_followers', 'employee:id,name', 'assignedTasks.task', 'invoice:id,invoice_number,service_assign_id', 'service:id,title'])
+            ->where('status', 'in_progress')
+            ->orderByDesc('id')->get();
+        return view('employee.invoice.progress', compact('serviceAssignments'));
+    }
+
     /**
      * Store a newly created resource in storage.
      */
