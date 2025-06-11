@@ -51,16 +51,23 @@
                     </a>
                 </li>
 @php
-    $services = App\Models\ServiceAssign::with('invoice')->where('customer_id', auth()->user()->id)->get();
-    dd($services);
+    use App\Models\ServiceAssign;
+
+    $services = ServiceAssign::with('invoice')->where('customer_id', auth()->id())->get();
     $status = true;
-    foreach($services as $service){
-        if($service->invoice->status === 'unpaid' || $service->status == 'completed'){
-            $status = false;
-            break;
+
+    if ($services->isEmpty()) {
+        $status = false;
+    } else {
+        foreach($services as $service){
+            if (($service->invoice && $service->invoice->status === 'unpaid') || $service->status == 'completed') {
+                $status = false;
+                break;
+            }
         }
     }
 @endphp
+
 
 <li class="nav-item has-treeview">
     <a href="{{ $status ? route('user.live_class') : 'javascript:void(0)' }}"
