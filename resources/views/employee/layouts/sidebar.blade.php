@@ -1,21 +1,19 @@
 <!-- Main Sidebar Container -->
 <aside class="main-sidebar sidebar-light-primary elevation-4">
-    <!-- Brand Logo -->
     @php
-    $settings = App\Models\SiteSetting::first();
+        $settings = App\Models\SiteSetting::first();
     @endphp
+
+    <!-- Brand Logo -->
     <div class="d-flex justify-content-center align-items-center">
-        <!-- Brand Logo -->
         <a href="{{ URL::to('/') }}" class="brand-link d-flex justify-content-center align-items-center">
-            <!-- <img src="{{ asset('backend/dist/img/AdminLTELogo.png') }}" alt="VGD Logo" class="brand-image img-circle elevation-3"
-            style="opacity: .8"> -->
             <span class="h4 fw-bold text-blue">{{ strtoupper(config('app.name', 'Laravel')) }}</span>
         </a>
     </div>
 
     <!-- Sidebar -->
     <div class="sidebar">
-        <!-- Sidebar user panel (optional) -->
+        <!-- Sidebar user panel -->
         <div class="user-panel mt-3 pb-3 mb-3 d-flex justify-content-center flex-column align-items-center">
             <div class="flex flex-column align-items-center">
                 <div class="image">
@@ -33,11 +31,6 @@
                     <a href="#" class="d-block">{{ auth()->user()->name }}</a>
                 </div>
             </div>
-            <!-- <div class="info d-flex justify-content-center text-center">
-                <a href="#" class="d-block">
-                    Wallet Balance: ৳{{ auth()->user()->wallet_balance }}
-                </a>
-            </div> -->
         </div>
 
         <!-- Sidebar Menu -->
@@ -52,15 +45,21 @@
                     </a>
                 </li>
 
-                <!-- Assigned Services Link -->
-                <!--
-                <li class="nav-item has-treeview">
+                <!-- Sell Service Link -->
+                <li class="nav-item">
+                    <a href="{{ route('employee.service_assigns.create') }}" class="nav-link {{ request()->routeIs('employee.service_assigns.create') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-plus"></i>
+                        <p>Sell Service</p>
+                    </a>
+                </li>
+
+                <!-- Assigned Services Link (optional) -->
+                <!-- <li class="nav-item has-treeview">
                     <a href="{{ route('employee.service_assigns.index') }}" class="nav-link {{ request()->routeIs('employee.service_assigns.index') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-tools"></i>
                         <p>Assigned Services</p>
                     </a>
-                </li>
-                -->
+                </li> -->
 
             </ul>
         </nav>

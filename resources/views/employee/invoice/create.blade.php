@@ -1,4 +1,4 @@
-@extends('admin.layouts.app')
+@extends('employee.layouts.app')
 
 @section('css')
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
@@ -43,7 +43,7 @@
                 <h3 class="content-header-title fw-bold fs-2 mb-4">নতুন বিক্রয়</h3>
                 <hr>
 
-                <form action="{{ route('admin.service_assigns.store') }}" method="POST" class="mt-3">
+                <form action="{{ route('employee.service_assigns.store') }}" method="POST" class="mt-3">
                     @csrf
                     <div class="row">
                         <div class="col-md-12 mb-2">

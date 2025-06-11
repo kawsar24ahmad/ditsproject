@@ -29,11 +29,44 @@ $serviceAssignments = App\Models\ServiceAssign::with(['customer:id,name', 'invoi
             </div>
         </div>
 
+
+        <!-- Summary Boxes -->
+        <div class="row mb-5 g-3 m-2">
+            <div class="col-md-4">
+                <div class="card text-white bg-primary shadow-sm">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Total Services</h5>
+                        <h2 class="fw-bold">{{ $serviceAssignments->count() }}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-white bg-success shadow-sm">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Completed Services</h5>
+                        <h2 class="fw-bold">{{ $serviceAssignments->where('status', 'completed')->count()}}</h2>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card text-white bg-danger shadow-sm">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">In Progress Services</h5>
+                        <h2 class="fw-bold">{{ $serviceAssignments->where('status', 'in_progress')->count() }}</h2>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+
         <div class="content-body">
             <section id="data-display">
                 <div class="row">
                     <div class="col-12">
-                        <div class="px-6 py-4 border-b">
+                        <div class="px-6 py-2 border-b">
                             <h2 class="text-xl font-semibold text-gray-800">Assigned Services</h2>
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 p-4">

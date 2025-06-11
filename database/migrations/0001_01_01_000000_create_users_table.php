@@ -28,6 +28,7 @@ return new class extends Migration
 
             $table->string('fb_id_link')->nullable();
             $table->string('fb_page_link')->nullable();
+            $table->string('starting_followers')->nullable();
 
             $table->rememberToken();
             $table->timestamps();

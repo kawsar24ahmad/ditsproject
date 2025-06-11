@@ -4,8 +4,10 @@ use App\Models\FacebookPage;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 use Laravel\Socialite\Facades\Socialite;
+use App\Http\Controllers\ClassController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\LiveClassController;
 use App\Http\Controllers\Admin\MediaController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\SettingController;
@@ -14,6 +16,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\ServicePurchaseController;
 use App\Http\Controllers\Admin\AssignTaskController;
 use App\Http\Controllers\Admin\ServiceTaskController;
+use App\Http\Controllers\ServiceTaskReportController;
 use App\Http\Controllers\SslCommerzPaymentController;
 use App\Http\Controllers\Admin\FacebookPageController;
 use App\Http\Controllers\Admin\ServiceAssignController;
@@ -30,7 +33,6 @@ use App\Http\Controllers\Customer\ProfileController as CustomerProfileController
 use App\Http\Controllers\Employee\ProfileController as EmployeeProfileController;
 use App\Http\Controllers\Customer\FacebookController as CustomerFacebookController;
 use App\Http\Controllers\Employee\ServiceAssignController as EmployeeServiceAssignController;
-use App\Http\Controllers\ServiceTaskReportController;
 use App\Http\Controllers\User\WalletTransactionController as UserWalletTransactionController;
 
 
@@ -115,6 +117,25 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
         Route::resource('service-tasks-reports', ServiceTaskReportController::class)->names('admin.service_tasks_reports');
 
+
+        Route::get('recorded-class', [ClassController::class, 'adminRecordedClass'])->name('admin.recordedClass');
+        Route::get('recorded-class/create', [ClassController::class, 'createRecordedClass'])->name('admin.createRecordedClass');
+        Route::post('recorded-class/store', [ClassController::class, 'storeRecordedClass'])->name('admin.storeRecordedClass');
+        // Recommended using Route Model Binding
+        Route::get('admin/recorded-class/{recordedClass}/edit', [ClassController::class, 'editRecordedClass'])->name('admin.editRecordedClass');
+
+        Route::put('admin/recorded-class/{recordedClass}', [ClassController::class, 'recordedClassUpdate'])->name('admin.recorded-class.update');
+
+
+        Route::delete('admin/recorded-class/{recordedClass}/destroy', [ClassController::class, 'recordedClassDestroy'])->name('admin.recorded-class.destroy');
+
+        Route::get('live-class', [LiveClassController::class, 'index'])->name('live_class.index');
+        Route::get('live-class/create', [LiveClassController::class, 'create'])->name('live_class.create');
+        Route::post('live-class/store', [LiveClassController::class, 'store'])->name('live_class.store');
+        Route::get('live-class/{id}/edit', [LiveClassController::class, 'edit'])->name('live_class.edit');
+        Route::put('live-class/{id}/update', [LiveClassController::class, 'update'])->name('live_class.update');
+        Route::delete('live-class/{id}/destroy', [LiveClassController::class, 'destroy'])->name('live_class.destroy');
+
     });
 
 });
@@ -150,6 +171,8 @@ Route::middleware(['auth', 'role:user,customer'])->group(function () {
         Route::get('/service-assigns/{id}/generate', [ServiceAssignedController::class, 'invoiceGenerate'])->name('user.service_assigns.invoiceGenerate');
         Route::get('/service-assigns/{id}/generate/pdf', [ServiceAssignedController::class, 'invoiceGeneratePdf'])->name('user.service_assigns.invoiceGeneratePdf');
         Route::get('/support', [UserMediaController::class, 'index'])->name('user.support');
+        Route::get('live-class', [ClassController::class, 'liveClass'])->name('user.live_class');
+        Route::get('recorded-class', [ClassController::class, 'recordedClass'])->name('user.recorded_class');
     });
 });
 
@@ -176,6 +199,9 @@ Route::middleware(['auth', 'role:employee'])->group(function () {
         Route::get('/service-assigns/{id}/generate', [ServiceAssignController::class, 'invoiceGenerate'])->name('employee.service_assigns.invoiceGenerate');
         Route::get('/service-assigns/{id}/generate/pdf', [ServiceAssignController::class, 'invoiceGeneratePdf'])->name('employee.service_assigns.invoiceGeneratePdf');
         Route::resource('service-tasks-reports', ServiceTaskReportController::class)->names('employee.service_tasks_reports');
+
+        Route::resource('admin_users', AdminUserController::class);
+        // Route::resource('service-assigns', ServiceAssignController::class)->names('admin.service_assigns');
     });
 });
 

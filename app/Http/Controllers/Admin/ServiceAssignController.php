@@ -140,7 +140,7 @@ class ServiceAssignController extends Controller
      */
     public function show(string $id)
     {
-        dd($id);
+
     }
     public function invoiceGenerate($id)
     {

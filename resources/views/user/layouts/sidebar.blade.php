@@ -1,8 +1,9 @@
+
 <!-- Main Sidebar Container -->
 <aside class="main-sidebar sidebar-light-primary elevation-4">
     <!-- Brand Logo -->
     @php
-        $settings = App\Models\SiteSetting::first();
+    $settings = App\Models\SiteSetting::first();
     @endphp
     <div class="d-flex justify-content-center align-items-center">
         <a href="{{ URL::to('/') }}" class="brand-link d-flex justify-content-center align-items-center">
@@ -18,13 +19,13 @@
             <div class="flex flex-column align-items-center">
                 <div class="image">
                     @if(auth()->user()->avatar != null)
-                        @if (file_exists(auth()->user()->avatar))
-                            <img src="{{ asset(auth()->user()->avatar) }}" class="img-circle elevation-2" alt="User Image">
-                        @else
-                            <img src="{{ auth()->user()->avatar }}" class="img-circle elevation-2" alt="User Image">
-                        @endif
+                    @if (file_exists(auth()->user()->avatar))
+                    <img src="{{ asset(auth()->user()->avatar) }}" class="img-circle elevation-2" alt="User Image">
                     @else
-                        <img src="{{ asset('default.png') }}" class="img-circle elevation-2" alt="User Image">
+                    <img src="{{ auth()->user()->avatar }}" class="img-circle elevation-2" alt="User Image">
+                    @endif
+                    @else
+                    <img src="{{ asset('default.png') }}" class="img-circle elevation-2" alt="User Image">
                     @endif
                 </div>
                 <div class="info">
@@ -49,6 +50,56 @@
                         <p>Dashboard</p>
                     </a>
                 </li>
+@php
+    $services = App\Models\ServiceAssign::where('customer_id', auth()->user()->id)->get();
+    $status = true;
+    foreach($services as $service){
+        if($service->invoice->status === 'unpaid' || $service->status == 'completed'){
+            $status = false;
+            break;
+        }
+    }
+@endphp
+
+<li class="nav-item has-treeview">
+    <a href="{{ $status ? route('user.live_class') : 'javascript:void(0)' }}"
+       class="nav-link {{ request()->routeIs('user.live_class') ? 'active' : '' }}"
+       style="{{ !$status ? 'pointer-events: none; cursor: not-allowed; opacity: 0.6; color: #6c757d;' : '' }}">
+        <i class="nav-icon fas fa-broadcast-tower"></i>
+        <p>Live Class</p>
+    </a>
+</li>
+
+<li class="nav-item has-treeview">
+    <a href="{{ $status ? route('user.recorded_class') : 'javascript:void(0)' }}"
+       class="nav-link {{ request()->routeIs('user.recorded_class') ? 'active' : '' }}"
+       style="{{ !$status ? 'pointer-events: none; cursor: not-allowed; opacity: 0.6; color: #6c757d;' : '' }}">
+        <i class="nav-icon fas fa-play-circle"></i>
+        <p>Recorded Class</p>
+    </a>
+</li>
+
+<li class="nav-item has-treeview">
+    <a href="{{ $status ? route('user.support') : 'javascript:void(0)' }}"
+       class="nav-link {{ request()->routeIs('user.support') ? 'active' : '' }}"
+       style="{{ !$status ? 'pointer-events: none; cursor: not-allowed; opacity: 0.6; color: #6c757d;' : '' }}">
+        <i class="nav-icon fas fa-shield-alt"></i>
+        <p>Copyright Media</p>
+    </a>
+</li>
+
+
+
+          <li class="nav-item has-treeview">
+    <a href="{{ $status ? "#" : 'javascript:void(0)' }}"
+       class="nav-link {{ request()->routeIs('user.capcut_pro') ? 'active' : '' }}"
+       style="{{ !$status ? 'pointer-events: none; cursor: not-allowed; opacity: 0.6; color: #6c757d;' : '' }}">
+        <i class="nav-icon fab fa-creative-commons-nd"></i>
+        <p>CapCut Pro</p>
+    </a>
+</li>
+
+
 
                 <!-- Uncomment the following for Wallet and Transactions -->
 

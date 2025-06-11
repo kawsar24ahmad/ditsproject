@@ -84,6 +84,24 @@
                         <p>Media</p>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="{{ route('admin.createRecordedClass') }}" class="nav-link {{ request()->routeIs('admin.createRecordedClass') ? 'active' : '' }}">
+                        <i class="nav-icon fab fa-youtube"></i>
+                        <p>Add Recorded Class</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('admin.recordedClass') }}" class="nav-link {{ request()->routeIs('admin.recordedClass') ? 'active' : '' }}">
+                        <i class="nav-icon fab fa-youtube"></i>
+                        <p>Recorded Class</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('live_class.index') }}" class="nav-link {{ request()->routeIs('live_class.index') ? 'active' : '' }}">
+                        <i class="nav-icon fab fa-youtube"></i>
+                        <p>Live Class</p>
+                    </a>
+                </li>
 
                 <li class="nav-item">
                     <a href="{{ route('admin.site-settings.edit') }}" class="nav-link {{ request()->routeIs('admin.site-settings.*') ? 'active' : '' }}">

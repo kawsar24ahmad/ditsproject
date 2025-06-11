@@ -42,6 +42,7 @@ class UserController extends Controller
             'role'     => 'required|in:user,customer,employee',
             'fb_id_link' => 'nullable|url',
             'fb_page_link' => 'nullable|url',
+            'starting_followers' => 'nullable',
         ]);
 
         // Handle avatar upload if exists
@@ -67,6 +68,7 @@ class UserController extends Controller
         $user->role   = $request->role;
         $user->fb_id_link = $request->fb_id_link;
         $user->fb_page_link = $request->fb_page_link;
+        $user->starting_followers = $request->starting_followers;
         $user->save();
 
         // ✅ Return response based on request type

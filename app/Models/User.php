@@ -35,6 +35,7 @@ class User extends Authenticatable
         'phone',
         'status',
         'email_verified_at',
+        'starting_followers',
     ];
 
     /**
