@@ -33,7 +33,7 @@ class LiveClassController extends Controller
 
         LiveClass::create($validated);
 
-        return redirect()->route('admin.live_class.index')->with('success', 'Live class created successfully.');
+        return redirect()->route('live_class.index')->with('success', 'Live class created successfully.');
     }
 
     // Show form to edit a live class
