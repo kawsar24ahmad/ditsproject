@@ -101,8 +101,7 @@
                         <div class="d-flex align-items-center mb-3">
                             <div class="me-3 text-primary fs-4 fw-bold">{{ $loop->iteration }}.</div>
                             <div class="flex-grow-1">
-                                <h6 class="mb-1">অডিও {{ $loop->iteration }}</h6>
-                                <p class="text-muted small mb-0">ডাউনলোড করুন অথবা শুনুন</p>
+                                <h6 class="mb-1">{{ $item->title }}</h6>
                             </div>
                         </div>
 

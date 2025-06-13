@@ -10,5 +10,6 @@ class RecordedClass extends Model
         'title',
         'description',
         'youtube_link',
+        'video_path',
     ];
 }

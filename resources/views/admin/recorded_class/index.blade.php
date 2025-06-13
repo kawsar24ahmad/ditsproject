@@ -42,6 +42,7 @@
                                     <div class="col-md-6 col-lg-4 mb-4">
                                         <div class="card border shadow-sm h-100">
                                             @if ($videoId)
+                                                {{-- YouTube Video --}}
                                                 <div class="ratio ratio-16x9">
                                                     <iframe
                                                         src="https://www.youtube.com/embed/{{ $videoId }}"
@@ -49,16 +50,30 @@
                                                         allowfullscreen>
                                                     </iframe>
                                                 </div>
+                                            @elseif($class->video_path)
+                                                {{-- MP4 Video --}}
+                                                <div class="ratio ratio-16x9">
+                                                    <video controls>
+                                                        <source src="{{ asset($class->video_path) }}" type="video/mp4">
+                                                        Your browser does not support the video tag.
+                                                    </video>
+                                                </div>
+                                            @else
+                                                <div class="p-3 text-center text-muted">
+                                                    No video available.
+                                                </div>
                                             @endif
-                                            <div class="card-body">
-                                                <h5 class="card-title mb-1">{{ $class->title }}</h5>
 
-                                                <span class="badge bg-info">Uploaded: {{ $class->created_at->format('d M, Y') }}</span>
+                                            <div class="card-body">
+                                                <div>
+                                                    <h5 class="card-title mb-1">{{ $class->title }}</h5>
+                                                </div>
                                             </div>
+
                                             <div class="card-footer text-end">
-                                                <a href="{{ route('admin.editRecordedClass', $class->id) }}" class="btn btn-sm btn-outline-primary">
+                                                <!-- <a href="{{ route('admin.editRecordedClass', $class->id) }}" class="btn btn-sm btn-outline-primary">
                                                     ✏️ Edit
-                                                </a>
+                                                </a> -->
 
                                                 <form action="{{ route('admin.recorded-class.destroy', $class->id) }}" method="POST" class="d-inline" onsubmit="return confirm('আপনি কি নিশ্চিতভাবে মুছতে চান?');">
                                                     @csrf

@@ -29,24 +29,51 @@ class ClassController extends Controller
     public function editRecordedClass(RecordedClass $recordedClass)  {
         return view('admin.recorded_class.edit', compact('recordedClass'));
     }
-    public function storeRecordedClass(Request $request)  {
-      // Validate the form inputs
-        $validated = $request->validate([
-            'title'        => 'required|string|max:255',
-            'description'  => 'nullable|string',
-            'youtube_link' => 'required|url',
+   public function storeRecordedClass(Request $request)
+    {
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'youtube_link' => 'nullable|url',
+            'video_file' => 'nullable|file|mimes:mp4',
         ]);
 
-        // Store the new recorded class
-        RecordedClass::create([
-            'title'        => $validated['title'],
-            'description'  => $validated['description'] ?? null,
-            'youtube_link' => $validated['youtube_link'],
-        ]);
+        // Ensure one of them is provided
+        if (!$request->youtube_link && !$request->hasFile('video_file')) {
+            return back()->with(['youtube_link' => 'You must provide either a YouTube link or upload a video file.'])->withInput();
+        }
 
-        // Redirect or respond
-        return redirect()->back()->with('success', 'Recorded class added successfully.');
+        if ($request->youtube_link && $request->hasFile('video_file')) {
+            return back()->withErrors(['youtube_link' => 'Please provide only one: YouTube link OR video file, not both.'])->withInput();
+        }
+
+        $recordedClass = new RecordedClass();
+        $recordedClass->title = $request->title;
+        $recordedClass->description = $request->description;
+
+        if ($request->youtube_link) {
+            $recordedClass->youtube_link = $request->youtube_link;
+        } elseif ($request->hasFile('video_file')) {
+            $file = $request->file('video_file');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $destinationPath = public_path('videos');
+
+            // ফোল্ডার না থাকলে তৈরি করো
+            if (!file_exists($destinationPath)) {
+                mkdir($destinationPath, 0755, true);
+            }
+
+            $file->move($destinationPath, $filename);
+
+            $recordedClass->video_path = 'videos/' . $filename;
+
+        }
+
+        $recordedClass->save();
+
+        return redirect()->back()->with('success', 'Recorded class saved successfully!');
     }
+
    public function recordedClassUpdate(Request $request, RecordedClass $recordedClass)
     {
         // Validate the form inputs
