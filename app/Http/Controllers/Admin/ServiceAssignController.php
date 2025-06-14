@@ -23,12 +23,35 @@ class ServiceAssignController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    // public function index()
+    // {
+    //     $serviceAssignments =  ServiceAssign::with(['customer:id,name,starting_followers', 'employee:id,name', 'assignedTasks.task', 'invoice:id,invoice_number,service_assign_id', 'service:id,title'])
+    //         ->orderByDesc('id')->get();
+    //     return view('admin.invoice.index', compact('serviceAssignments'));
+    // }
+
+   public function index(Request $request)
     {
-        $serviceAssignments =  ServiceAssign::with(['customer:id,name,starting_followers', 'employee:id,name', 'assignedTasks.task', 'invoice:id,invoice_number,service_assign_id', 'service:id,title'])
-            ->orderByDesc('id')->get();
+        $search = $request->input('search');
+
+        $serviceAssignments = ServiceAssign::with([
+            'customer:id,name,starting_followers',
+            'employee:id,name',
+            'assignedTasks.task',
+            'invoice:id,invoice_number,service_assign_id',
+            'service:id,title'
+        ])
+        ->when($search, function ($query) use ($search) {
+            $query->whereHas('invoice', function ($q) use ($search) {
+                $q->where('invoice_number', 'like', '%' . $search . '%');
+            });
+        })
+        ->orderByDesc('id')
+        ->paginate(2); // Show 9 per page
+
         return view('admin.invoice.index', compact('serviceAssignments'));
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -130,10 +153,7 @@ class ServiceAssignController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
-    {
-
-    }
+    public function show(string $id) {}
     public function invoiceGenerate($id)
     {
 

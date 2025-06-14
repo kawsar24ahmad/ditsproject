@@ -75,6 +75,9 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::prefix('admin')->group(function () {
         Route::resource('admin_users', AdminUserController::class);
+        Route::get('employee', [AdminUserController::class, 'employeeIndex'])->name('admin.employee.index');
+        Route::get('/assignments', [AdminUserController::class, 'employeeAssignments'])->name('assignments.index');
+
         Route::get('/profile', [AdminProfileController::class, 'edit'])->name('admin.profile.edit');
         Route::patch('/profile', [AdminProfileController::class, 'update'])->name('admin.profile.update');
         Route::patch('/profile/changePhoto', [AdminProfileController::class, 'changePhoto'])->name('admin.profile.changePhoto');

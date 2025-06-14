@@ -28,7 +28,7 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="px-6 py-3 border-b">
-                            <h2 class="text-xl font-semibold text-secondary">Sold Services</h2>
+                            <h2 class="text-xl font-semibold text-secondary">Service Assignments</h2>
                         </div>
 
                         <!-- Search Box -->
@@ -46,7 +46,7 @@
                         <!-- Service Assignments Grid -->
                         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 p-4">
 
-                            @forelse ($serviceAssignments as $assignment)
+                            @forelse ($assignments as $assignment)
                             <div class="bg-white shadow rounded-2xl overflow-hidden border border-gray-100">
                                 <div class="p-4">
                                     <div class="flex justify-between items-center mb-2">
@@ -54,7 +54,7 @@
                                             Invoice: {{ $assignment->invoice->invoice_number }}
                                         </h3>
                                         <span class="text-xs px-2 py-1 rounded-full text-white
-                        {{ $assignment->status === 'paid' ? 'bg-success' : ($assignment->status === 'partial' ? 'bg-warning text-dark' : 'bg-secondary') }}">
+                                            {{ $assignment->status === 'paid' ? 'bg-success' : ($assignment->status === 'partial' ? 'bg-warning text-dark' : 'bg-secondary') }}">
                                             {{ ucfirst($assignment->status) }}
                                         </span>
                                     </div>
@@ -63,7 +63,15 @@
                                         <p><strong>Service:</strong> {{ $assignment->service->title }}</p>
                                         <p><strong>Customer:</strong> {{ $assignment->customer->name }}</p>
                                         <p><strong>Starting Followers:</strong> {{ $assignment->customer->starting_followers ?? '-'}}</p>
-                                        <p><strong>Employee:</strong> {{ $assignment->employee?->name ?? '—' }}</p>
+                                        <p>
+                                            <strong>Employee:</strong>
+                                            @if($assignment->employee)
+                                                {{ $assignment->employee->name }}
+                                                <span class="text-xs text-muted">({{ $assignment->employee->title ?? 'No title' }})</span>
+                                            @else
+                                                —
+                                            @endif
+                                        </p>
                                         <p><strong>Price:</strong> <span class="text-dark">{{ number_format($assignment->price, 2) }}</span></p>
                                         <p><strong>Paid:</strong> <span class="text-success">{{ number_format($assignment->paid_payment, 2) }}</span></p>
                                         <p><strong>Due:</strong> <span class="text-danger">{{ number_format($assignment->price - $assignment->paid_payment, 2) }}</span></p>
@@ -137,13 +145,8 @@
                                 No service assignments found for this invoice number.
                             </div>
                             @endforelse
-            <div class="mt-6">
-                {{ $serviceAssignments->appends(request()->query())->links() }}
-            </div>
 
                         </div>
-
-
                     </div>
                 </div>
             </section>
@@ -155,7 +158,7 @@
 
 @section('script')
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
         $('.table').DataTable();
     });
 </script>

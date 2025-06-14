@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\ServiceAssign;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -17,6 +18,29 @@ class UserController extends Controller
         $users = User::paginate(10);
         return view('admin.users.index', compact('users'));
     }
+    public function employeeIndex()
+    {
+        $users = User::where('role', 'employee')->paginate(10);
+        return view('admin.employee.index', compact('users'));
+    }
+
+    public function employeeAssignments(Request $request)
+    {
+        $query = ServiceAssign::query();
+
+        if ($request->has('user_id')) {
+            $query->where('employee_id', $request->user_id);
+        }
+
+        if ($request->has('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $assignments = $query->get();
+
+        return view('admin.employee.assignment', compact('assignments'));
+    }
+
 
     /**
      * Show the form for creating a new resource.
