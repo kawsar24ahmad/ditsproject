@@ -56,6 +56,8 @@
     $services = ServiceAssign::with('invoice')->where('customer_id', auth()->id())->get();
     $status = true;
 
+    $isPermission = false;
+
     if ($services->isEmpty()) {
         $status = false;
     } else {
@@ -63,6 +65,9 @@
             if (($service->invoice && $service->invoice->status === 'unpaid') || $service->status == 'completed') {
                 $status = false;
                 break;
+            }
+            if($service->invoice->status === 'paid'){
+                $isPermission = true;
             }
         }
     }
@@ -79,20 +84,20 @@
 </li>
 
 <li class="nav-item has-treeview">
-    <a href="{{ $status ? route('user.recorded_class') : 'javascript:void(0)' }}"
+    <a href="{{ $isPermission ? route('user.recorded_class') : 'javascript:void(0)' }}"
        class="nav-link {{ request()->routeIs('user.recorded_class') ? 'active' : '' }}"
-       style="{{ !$status ? 'pointer-events: none; cursor: not-allowed; opacity: 0.6; color: #6c757d;' : '' }}">
+       style="{{ !$isPermission ? 'pointer-events: none; cursor: not-allowed; opacity: 0.6; color: #6c757d;' : '' }}">
         <i class="nav-icon fas fa-play-circle"></i>
         <p>Recorded Class</p>
     </a>
 </li>
 
 <li class="nav-item has-treeview">
-    <a href="{{ $status ? route('user.support') : 'javascript:void(0)' }}"
+    <a href="{{ $isPermission ? route('user.support') : 'javascript:void(0)' }}"
        class="nav-link {{ request()->routeIs('user.support') ? 'active' : '' }}"
-       style="{{ !$status ? 'pointer-events: none; cursor: not-allowed; opacity: 0.6; color: #6c757d;' : '' }}">
+       style="{{ !$isPermission ? 'pointer-events: none; cursor: not-allowed; opacity: 0.6; color: #6c757d;' : '' }}">
         <i class="nav-icon fas fa-shield-alt"></i>
-        <p>Copyright Media</p>
+        <p>Copyright Music</p>
     </a>
 </li>
 
