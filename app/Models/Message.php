@@ -11,6 +11,7 @@ class Message extends Model
         'service_assign_id',
         'sender_id',
         'message',
+        'file'
     ];
 
     public function serviceAssign()

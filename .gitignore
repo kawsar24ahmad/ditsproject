@@ -21,3 +21,4 @@ yarn-error.log
 /.zed
 # .gitignore
 /public/videos/*.mp4
+/public/

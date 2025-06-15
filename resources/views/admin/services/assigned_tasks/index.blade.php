@@ -250,70 +250,138 @@
                 </div>
             </section>
 
-            <section class="mt-4 mx-4">
-                <div class="row">
-                    <div id="customerInfo" class="mt-3 w-full">
-                        <div class="bg-white shadow rounded-lg p-4 max-w-3xl mx-auto">
-                            <h2 class="text-xl font-semibold mb-4 border-b pb-2">Message Thread</h2>
+       <section class="mt-6 mx-4">
+    <div class="max-w-4xl mx-auto bg-white shadow-lg rounded-lg p-6">
+        <h2 class="text-2xl font-semibold mb-6 border-b pb-3">Message Thread</h2>
 
-                            <div class="space-y-3 max-h-96 overflow-y-auto mb-4 pr-2 py-2">
-                                @forelse ($messages->reverse() as $msg)
-                                @php
-                                $isOwn = $msg->sender_id === auth()->id();
-                                $alignClass = $isOwn ? 'justify-end ' : 'justify-start text-left';
-                                $bgClass = $isOwn ? 'bg-blue-100' : 'bg-gray-100';
-                                $roundedClass = $isOwn ? 'rounded-br-none' : 'rounded-bl-none';
-                                @endphp
+        {{-- Message Container --}}
+        <div id="message-container" class="space-y-5 max-h-[400px] overflow-y-auto pr-4 pb-2" style="scroll-behavior: smooth;">
+            @forelse ($messages->reverse() as $msg)
+                @php
+                    $isOwn = $msg->sender_id === auth()->id();
+                    $alignClass = $isOwn ? 'justify-end' : 'justify-start';
+                    $bgClass = $isOwn ? 'bg-blue-50 text-blue-900' : 'bg-gray-100 text-gray-900';
+                    $roundedClass = $isOwn ? 'rounded-tr-none' : 'rounded-tl-none';
+                    $fileExt = $msg->file ? pathinfo($msg->file, PATHINFO_EXTENSION) : '';
+                @endphp
 
-                                <div class="flex {{ $alignClass }} py-2">
-                                    @unless($isOwn)
-                                    <img src="{{ $msg->sender->avatar ? asset($msg->sender->avatar ) : asset('default.png') }}"
-                                        class="w-8 h-8 rounded-full mr-2 mt-2" alt="avatar">
-                                    @endunless
+                <div class="flex {{ $alignClass }} items-start space-x-3">
+                    {{-- Avatar --}}
+                    @unless($isOwn)
+                        <img src="{{ $msg->sender->avatar ? asset($msg->sender->avatar) : asset('default.png') }}"
+                             alt="avatar" class="w-10 h-10 rounded-full flex-shrink-0"  style="width: 48px; height: 48px; object-fit: cover; border-radius: 50%;">
+                    @endunless
 
-                                    <div class="max-w-[75%] {{ $bgClass }} border p-3 rounded-lg {{ $roundedClass }}">
-                                        <div class="flex items-center justify-between mb-1">
-                                            <span class="font-semibold  text-gray-600">
-                                                {{ ucfirst($msg->sender->name ?? 'User') }}
-                                            </span>
-                                            <span class=" ml-3 text-gray-500">
-                                                {{ $msg->created_at->diffForHumans() }}
-                                            </span>
-                                        </div>
-                                        <div class=" text-gray-800">{{ $msg->message }}</div>
-                                    </div>
-
-                                    @if($isOwn)
-                                    <img src="{{ auth()->user()->avatar ? asset(auth()->user()->avatar) : asset('default.png') }}"
-                                        class="w-8 h-8 rounded-full ml-2 mt-2" alt="avatar">
-                                    @endif
-                                </div>
-                                @empty
-                                <div class="text-gray-500 text-sm">No messages yet.</div>
-                                @endforelse
-                            </div>
-
-                            <div class="mb-4">
-                                {{ $messages->links() }} {{-- Laravel pagination links --}}
-                            </div>
-
-                            <form action="{{ route('messages.store') }}" method="POST" class="space-y-3">
-                                @csrf
-                                <input type="hidden" name="service_assign_id" value="{{ $serviceAssign->id }}">
-
-                                <textarea name="message" rows="3" required
-                                    class="w-full p-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-200 text-sm"
-                                    placeholder="Type your message..."></textarea>
-
-                                <button type="submit"
-                                    class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">
-                                    Send
-                                </button>
-                            </form>
+                    {{-- Message bubble --}}
+                    <div class="max-w-[70%] {{ $bgClass }} p-4 rounded-lg {{ $roundedClass }} shadow-sm my-2">
+                        <div class="flex items-center justify-between mb-1">
+                            <h3 class="font-semibold">{{ ucfirst($msg->sender->name ?? 'User') }}</h3>
+                            <time class="text-xs text-gray-500">{{ $msg->created_at->diffForHumans() }}</time>
                         </div>
+
+                        <p class="mb-3 whitespace-pre-wrap break-words">{{ $msg->message }}</p>
+
+                       @if ($msg->file)
+    @php
+        $fileUrl = asset($msg->file);
+        $fileName = basename($msg->file);
+    @endphp
+
+    @if(in_array($fileExt, ['jpg','jpeg','png','gif']))
+        <img width="200" height="300" src="{{ $fileUrl }}" alt="image" class="rounded-md shadow-md max-w-xs" />
+    @elseif(in_array($fileExt, ['mp4','webm','mov','avi']))
+        <video controls class="rounded-md shadow-md max-w-full h-auto">
+            <source src="{{ $fileUrl }}" type="video/{{ $fileExt }}">
+            Your browser does not support the video tag.
+        </video>
+    @endif
+    <a href="{{ $fileUrl }}" download="{{ $fileName }}"
+           class="inline-block mt-2 px-4 py-2 text-blue-600 font-semibold rounded-md
+                  hover:bg-blue-100 hover:text-blue-800 transition
+                  focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50
+                  "
+           aria-label="Download file {{ $fileName }}">
+            Download File ({{ strtoupper($fileExt) }})
+        </a>
+@endif
+
                     </div>
+
+                    @if($isOwn)
+                        <img src="{{ auth()->user()->avatar ? asset(auth()->user()->avatar) : asset('default.png') }}"
+                             alt="avatar" class="w-10 h-10 rounded-full flex-shrink-0"  style="width: 48px; height: 48px; object-fit: cover; border-radius: 50%;">
+                    @endif
                 </div>
-            </section>
+            @empty
+                <p class="text-center text-gray-500 italic">No messages yet.</p>
+            @endforelse
+        </div>
+
+        {{-- Pagination --}}
+        <div class="mt-6">
+            {{ $messages->links() }}
+        </div>
+
+        {{-- Message Form --}}
+        <div x-data="messageForm()" x-init="scrollToBottom()" class="mt-6 p-6 bg-gray-50 rounded-lg shadow-md">
+            <form action="{{ route('messages.store') }}" method="POST" enctype="multipart/form-data"
+                  @submit="isSubmitting = true" x-ref="form" class="space-y-4">
+                @csrf
+                <input type="hidden" name="service_assign_id" value="{{ $serviceAssign->id }}">
+
+                <textarea name="message" rows="3" x-ref="messageInput"
+                          class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 resize-none text-sm"
+                          placeholder="Type your message..."></textarea>
+
+                <div class="flex items-center justify-between">
+                    <label for="file-upload" class="flex items-center space-x-2 cursor-pointer text-gray-600 hover:text-blue-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none"
+                             viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                  d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828L18 9.828a4 4 0 00-5.656-5.656L7.757 8.757a6 6 0 108.486 8.486"/>
+                        </svg>
+                        <span class="text-sm">Attach file</span>
+                    </label>
+                    <input type="file" id="file-upload" name="file" class="hidden" @change="previewFile($event)">
+
+                    <button type="submit" :disabled="isSubmitting"
+                            class="inline-flex items-center gap-2 px-6 py-2 bg-blue-600 text-white rounded-lg font-semibold shadow hover:bg-blue-700 disabled:opacity-60 transition">
+                        <template x-if="isSubmitting">
+                            <svg class="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="white" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="white" d="M4 12a8 8 0 018-8v8H4z"></path>
+                            </svg>
+                        </template>
+                        <template x-if="!isSubmitting">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
+                                 viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                      d="M3 10l9 9m0 0l9-9m-9 9V3"/>
+                            </svg>
+                        </template>
+                        <span x-text="isSubmitting ? 'Sending...' : 'Send'"></span>
+                    </button>
+                </div>
+
+                <div x-show="fileUrl" class="mt-3 space-y-2">
+                    <template x-if="isImage(fileUrl)">
+                        <img :src="fileUrl" alt="Preview" class="max-w-xs rounded shadow-md" />
+                    </template>
+                    <template x-if="isVideo(fileUrl)">
+                        <video controls class="max-w-md rounded shadow-md">
+                            <source :src="fileUrl" :type="getMimeType(fileUrl)" />
+                        </video>
+                    </template>
+                    <template x-if="!isImage(fileUrl) && !isVideo(fileUrl)">
+                        <p class="text-gray-700">Selected file: <span x-text="getFileName(fileUrl)"></span></p>
+                    </template>
+                    <button type="button" @click="clearFile()" class="text-red-500 hover:underline text-sm">Clear File</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
         </div>
     </div>
 </div>
@@ -418,5 +486,80 @@
             });
         });
     });
+
+
+  function messageForm() {
+    return {
+        isSubmitting: false,
+        fileUrl: null,
+        fileInput: null, // To store the file input element
+
+        init() {
+            this.scrollToBottom();
+            this.fileInput = this.$refs.form.querySelector('input[name="file"]');
+        },
+
+        previewFile(event) {
+            const file = event.target.files[0];
+            if (!file) {
+                this.fileUrl = null;
+                return;
+            }
+
+            if (this.fileUrl) {
+                URL.revokeObjectURL(this.fileUrl);
+            }
+
+            this.fileUrl = URL.createObjectURL(file);
+        },
+
+        clearFile() {
+            if (this.fileUrl) {
+                URL.revokeObjectURL(this.fileUrl);
+            }
+            this.fileUrl = null;
+            if (this.fileInput) {
+                this.fileInput.value = ''; // Clear the file input
+            }
+        },
+
+        isImage(url) {
+            return /\.(jpg|jpeg|png|gif)$/i.test(url);
+        },
+
+        isVideo(url) {
+            return /\.(mp4|webm|mov|avi)$/i.test(url);
+        },
+
+        getMimeType(url) {
+            const ext = url.split('.').pop().toLowerCase();
+            switch (ext) {
+                case 'mp4': return 'video/mp4';
+                case 'webm': return 'video/webm';
+                case 'mov': return 'video/quicktime';
+                case 'avi': return 'video/x-msvideo';
+                default: return '';
+            }
+        },
+
+        getFileName(url) {
+            if (!url) return '';
+            const parts = url.split('/');
+            return parts[parts.length - 1];
+        },
+
+        scrollToBottom() {
+            const container = document.getElementById('message-container');
+            if (container) {
+                // Use a slight delay to ensure content is rendered before scrolling
+                setTimeout(() => {
+                    container.scrollTop = container.scrollHeight;
+                }, 100);
+            }
+        }
+    }
+}
+
 </script>
 @endsection
+
