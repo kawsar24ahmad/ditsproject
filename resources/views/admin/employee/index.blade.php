@@ -79,7 +79,7 @@
                                                     </a>
                                                 </td>
                                                 <td>
-                                                    <a href="{{ route('assignments.index', ['user_id' => $user->id]) }}" class="btn btn-sm btn-success">
+                                                    <a href="{{ route('assignments.index', ['user_id' => $user->id, 'today_only' => 1]) }}" class="btn btn-sm btn-danger">
                                                         {{ $user->assignments->where('updated_at', '>=', now()->startOfDay())->count() }}
                                                     </a>
                                                 </td>
