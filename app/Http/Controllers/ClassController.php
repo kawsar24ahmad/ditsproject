@@ -15,14 +15,16 @@ class ClassController extends Controller
     public function createLiveClass()  {
         return view('user.live_class.index');
     }
-    public function recordedClass()  {
-        $classes = RecordedClass::all();
+    public function recordedClass() {
+        $classes = RecordedClass::orderBy('id', 'desc')->get();
         return view('user.recorded_class.index', compact('classes'));
     }
-    public function adminRecordedClass()  {
-        $classes = RecordedClass::all();
+
+    public function adminRecordedClass() {
+        $classes = RecordedClass::orderBy('id', 'desc')->get();
         return view('admin.recorded_class.index', compact('classes'));
     }
+
     public function createRecordedClass()  {
         return view('admin.recorded_class.create');
     }
