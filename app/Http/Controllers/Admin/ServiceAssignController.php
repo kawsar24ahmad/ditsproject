@@ -47,7 +47,7 @@ class ServiceAssignController extends Controller
             });
         })
         ->orderByDesc('id')
-        ->paginate(2); // Show 9 per page
+        ->paginate(10); // Show 10 per page
 
         return view('admin.invoice.index', compact('serviceAssignments'));
     }
