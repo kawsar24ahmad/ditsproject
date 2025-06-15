@@ -24,22 +24,43 @@ class UserController extends Controller
         return view('admin.employee.index', compact('users'));
     }
 
+    // public function employeeAssignments(Request $request)
+    // {
+    //     $query = ServiceAssign::query();
+
+    //     if ($request->has('user_id')) {
+    //         $query->where('employee_id', $request->user_id);
+    //     }
+
+    //     if ($request->has('status')) {
+    //         $query->where('status', $request->status);
+    //     }
+
+    //     $assignments = $query->get();
+
+    //     return view('admin.employee.assignment', compact('assignments'));
+    // }
+
     public function employeeAssignments(Request $request)
-    {
-        $query = ServiceAssign::query();
+{
+    $query = ServiceAssign::query();
 
-        if ($request->has('user_id')) {
-            $query->where('employee_id', $request->user_id);
-        }
-
-        if ($request->has('status')) {
-            $query->where('status', $request->status);
-        }
-
-        $assignments = $query->get();
-
-        return view('admin.employee.assignment', compact('assignments'));
+    if ($request->has('user_id')) {
+        $query->where('employee_id', $request->user_id);
     }
+
+    // Filter only assignments updated today
+    $query->where('updated_at', '>=', now()->startOfDay());
+
+    // Optional: if status is given, then filter by status
+    if ($request->filled('status')) {
+        $query->where('status', $request->status);
+    }
+
+    $assignments = $query->get();
+
+    return view('admin.employee.assignment', compact('assignments'));
+}
 
 
     /**

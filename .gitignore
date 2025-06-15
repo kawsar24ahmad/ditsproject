@@ -19,3 +19,5 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
+# .gitignore
+/public/videos/*.mp4

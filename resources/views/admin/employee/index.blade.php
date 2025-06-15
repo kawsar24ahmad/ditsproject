@@ -40,12 +40,12 @@
                                             <tr>
                                                 <th>#</th>
                                                 <th>Name</th>
-                                                <th>Email</th>
                                                 <th>Phone</th>
                                                 <th>Total Tasks</th>
                                                 <th>Pending</th>
                                                 <th>In Progress</th>
                                                 <th>Completed</th>
+                                                <th>Today worked</th>
                                                 <th>Role</th>
                                                 <th>Image</th>
                                                 <th>Actions</th>
@@ -56,9 +56,7 @@
                                             <tr>
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $user->name }}</td>
-                                                <td>{{ $user->email }}</td>
                                                 <td>{{ $user->phone }}</td>
-
                                                 <!-- Task Counts -->
                                                 <td>
                                                     <a href="{{ route('assignments.index', ['user_id' => $user->id]) }}" class="btn btn-sm btn-primary">
@@ -78,6 +76,11 @@
                                                 <td>
                                                     <a href="{{ route('assignments.index', ['user_id' => $user->id, 'status' => 'completed']) }}" class="btn btn-sm btn-success">
                                                         {{ $user->assignments->where('status', 'completed')->count() }}
+                                                    </a>
+                                                </td>
+                                                <td>
+                                                    <a href="{{ route('assignments.index', ['user_id' => $user->id]) }}" class="btn btn-sm btn-success">
+                                                        {{ $user->assignments->where('updated_at', '>=', now()->startOfDay())->count() }}
                                                     </a>
                                                 </td>
 
