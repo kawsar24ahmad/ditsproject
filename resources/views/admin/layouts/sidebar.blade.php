@@ -38,122 +38,87 @@
 
                 <li class="nav-item">
                     <a href="{{ route('admin.dashboard') }}" class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
-                        <i class="nav-icon fas fa-tachometer-alt"></i>
+                        <i class="nav-icon fas fa-tachometer-alt"></i> <!-- Dashboard icon is good -->
                         <p>Dashboard</p>
                     </a>
                 </li>
 
                 <li class="nav-item">
                     <a href="{{ route('admin_users.index') }}" class="nav-link {{ request()->routeIs('admin_users.*') ? 'active' : '' }}">
-                        <i class="nav-icon fas fa-users"></i>
+                        <i class="nav-icon fas fa-users"></i> <!-- Users icon -->
                         <p>Users</p>
                     </a>
                 </li>
+
                 <li class="nav-item">
                     <a href="{{ route('admin.employee.index') }}" class="nav-link {{ request()->routeIs('admin.employee.*') ? 'active' : '' }}">
-                        <i class="nav-icon fas fa-users"></i>
+                        <i class="nav-icon fas fa-user-tie"></i> <!-- Employee icon: user-tie -->
                         <p>Employees</p>
                     </a>
                 </li>
 
                 <li class="nav-item">
                     <a href="{{ route('admin.services.index') }}" class="nav-link {{ request()->routeIs('admin.services.*') ? 'active' : '' }}">
-                        <i class="nav-icon fas fa-tag"></i>
+                        <i class="nav-icon fas fa-tags"></i> <!-- Services icon plural tags -->
                         <p>Services</p>
                     </a>
                 </li>
 
                 <li class="nav-item">
                     <a href="{{ route('admin.service_assigns.create') }}" class="nav-link {{ request()->routeIs('admin.service_assigns.create') ? 'active' : '' }}">
-                        <i class="nav-icon fas fa-plus"></i>
+                        <i class="nav-icon fas fa-cart-plus"></i> <!-- Add service as Sell Service -->
                         <p>Sell Service</p>
                     </a>
                 </li>
 
                 <li class="nav-item">
-                    <a href="{{ route('admin.service_assigns.index') }}" class="nav-link {{ request()->routeIs('admin.service_assigns.index') || request()->routeIs('admin.assign_task.index')  || request()->routeIs('admin.service_assigns.edit')    ? 'active' : '' }}">
-                        <i class="nav-icon fas fa-tools"></i>
+                    <a href="{{ route('admin.service_assigns.index') }}" class="nav-link {{ request()->routeIs('admin.service_assigns.index') || request()->routeIs('admin.assign_task.index')  || request()->routeIs('admin.service_assigns.edit') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-clipboard-list"></i> <!-- Sold services: clipboard-list -->
                         <p>Sold Services</p>
                     </a>
                 </li>
 
                 <li class="nav-item">
                     <a href="{{ route('admin.payment_history.index') }}" class="nav-link {{ request()->routeIs('admin.payment_history.*') ? 'active' : '' }}">
-                        <i class="nav-icon fas fa-wallet"></i>
+                        <i class="nav-icon fas fa-wallet"></i> <!-- Payments icon -->
                         <p>All Payments</p>
                     </a>
                 </li>
 
                 <li class="nav-item">
                     <a href="{{ route('admin.media.index') }}" class="nav-link {{ request()->routeIs('admin.media.*') ? 'active' : '' }}">
-                        <i class="nav-icon fab fa-youtube"></i>
+                        <i class="nav-icon fab fa-youtube"></i> <!-- Media YouTube icon -->
                         <p>Media</p>
                     </a>
                 </li>
+
                 <li class="nav-item">
                     <a href="{{ route('admin.createRecordedClass') }}" class="nav-link {{ request()->routeIs('admin.createRecordedClass') ? 'active' : '' }}">
-                        <i class="nav-icon fab fa-youtube"></i>
+                        <i class="nav-icon fas fa-plus-circle"></i> <!-- Add Recorded Class -->
                         <p>Add Recorded Class</p>
                     </a>
                 </li>
+
                 <li class="nav-item">
                     <a href="{{ route('admin.recordedClass') }}" class="nav-link {{ request()->routeIs('admin.recordedClass') ? 'active' : '' }}">
-                        <i class="nav-icon fab fa-youtube"></i>
+                        <i class="nav-icon fas fa-video"></i> <!-- Recorded class: video icon -->
                         <p>Recorded Class</p>
                     </a>
                 </li>
+
                 <li class="nav-item">
                     <a href="{{ route('live_class.index') }}" class="nav-link {{ request()->routeIs('live_class.index') ? 'active' : '' }}">
-                        <i class="nav-icon fab fa-youtube"></i>
+                        <i class="nav-icon fas fa-broadcast-tower"></i> <!-- Live class: broadcast tower -->
                         <p>Live Class</p>
                     </a>
                 </li>
 
                 <li class="nav-item">
                     <a href="{{ route('admin.site-settings.edit') }}" class="nav-link {{ request()->routeIs('admin.site-settings.*') ? 'active' : '' }}">
-                        <i class="nav-icon fas fa-cog"></i>
+                        <i class="nav-icon fas fa-cogs"></i> <!-- Settings icon -->
                         <p>Settings</p>
                     </a>
                 </li>
-
-
-                <!-- <li class="nav-item has-treeview">
-    <a href="{{ route('admin_categories.index') }}" class="nav-link ">
-        <i class="nav-icon fas fa-pen"></i>
-        <p>
-            Categories
-        </p>
-    </a>
-</li> -->
-
-<!-- <li class="nav-item">
-    <a href="{{ route('admin.wallet.transactions') }}" class="nav-link">
-        <i class="nav-icon fas fa-wallet"></i>
-        <p>Transactions</p>
-    </a>
-</li> -->
-
-<!-- <li class="nav-item">
-    <a href="{{ route('admin.service.purchases') }}" class="nav-link">
-        <i class="nav-icon fas fa-wallet"></i>
-        <p>Service Purchases</p>
-    </a>
-</li> -->
-
-<!-- <li class="nav-item">
-    <a href="{{ route('admin.facebook-ad-requests') }}" class="nav-link">
-        <i class="nav-icon fas fa-wallet"></i>
-        <p>Facebook Ads Orders</p>
-    </a>
-</li> -->
-
-<!-- <li class="nav-item">
-    <a href="{{ route('admin.facebook-pages.index') }}" class="nav-link">
-        <i class="nav-icon fab fa-facebook-f"></i>
-        <p>Facebook Pages</p>
-    </a>
-</li> -->
-
 
             </ul>
         </nav>
