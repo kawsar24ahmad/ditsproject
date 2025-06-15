@@ -91,6 +91,31 @@ $serviceAssignments = App\Models\ServiceAssign::with(['customer:id,name,starting
                                         </span>
                                     </div>
 
+                                     @php
+                                $totalTasks = $assignment->assignedTasks->count();
+                                $completedTasks = $assignment->assignedTasks->where('is_completed', 1)->count();
+                                $percentage = $totalTasks > 0 ? round(($completedTasks / $totalTasks) * 100) : 0;
+                                @endphp
+
+                                    <div class="mb-3 px-2">
+                                    <div class="progress mt-2" style="height: 18px;">
+                                        <div class="progress-bar
+                                            @if($percentage == 100)
+                                                bg-success
+                                            @elseif($percentage >= 50)
+                                                bg-info
+                                            @elseif($percentage >= 20)
+                                                bg-warning
+                                            @else
+                                                bg-danger
+                                            @endif"
+                                            role="progressbar" style="width: {{ $percentage }}%;" aria-valuenow="{{ $percentage }}" aria-valuemin="0" aria-valuemax="100">
+                                            {{ $percentage }}%
+                                        </div>
+                                    </div>
+                                    <small class="text-muted">{{ $completedTasks }} of {{ $totalTasks }} tasks completed</small>
+                                </div>
+
                                     <div class="text-sm text-gray-700 space-y-1">
                                         <p><strong>Service ID:</strong> {{ $assignment->service_id }}</p>
                                         <p><strong>Customer:</strong> {{ $assignment->customer->name }}</p>
