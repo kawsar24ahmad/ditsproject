@@ -45,6 +45,7 @@ class ServiceAssignController extends Controller
     {
         $serviceAssignments =  ServiceAssign::with(['customer:id,name,starting_followers', 'employee:id,name', 'assignedTasks.task', 'invoice:id,invoice_number,service_assign_id', 'service:id,title'])
             ->where('status', 'pending')
+            ->where('employee_id', auth()->user()->id)
             ->orderByDesc('id')->get();
         return view('employee.invoice.pending', compact('serviceAssignments'));
     }
@@ -52,6 +53,7 @@ class ServiceAssignController extends Controller
     {
         $serviceAssignments =  ServiceAssign::with(['customer:id,name,starting_followers', 'employee:id,name', 'assignedTasks.task', 'invoice:id,invoice_number,service_assign_id', 'service:id,title'])
             ->where('status', 'completed')
+            ->where('employee_id', auth()->user()->id)
             ->orderByDesc('id')->get();
         return view('employee.invoice.completed', compact('serviceAssignments'));
     }
@@ -59,6 +61,7 @@ class ServiceAssignController extends Controller
     {
         $serviceAssignments =  ServiceAssign::with(['customer:id,name,starting_followers', 'employee:id,name', 'assignedTasks.task', 'invoice:id,invoice_number,service_assign_id', 'service:id,title'])
             ->where('status', 'in_progress')
+            ->where('employee_id', auth()->user()->id)
             ->orderByDesc('id')->get();
         return view('employee.invoice.progress', compact('serviceAssignments'));
     }
