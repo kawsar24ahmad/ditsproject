@@ -20,23 +20,26 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
-    protected $fillable = [
+   protected $fillable = [
         'name',
         'email',
         'password',
         'provider_id',
         'provider',
         'fb_access_token',
-        'fb_page_id',
-        'fb_page_token',
-        'wallet_ballance',
+        'fb_id_link',        // Added this
+        'fb_page_link',      // Added this (instead of fb_page_id & fb_page_token if you're using link)
+        'wallet_balance',    // Fixed typo: 'wallet_ballance' → 'wallet_balance'
         'avatar',
         'role',
         'phone',
         'status',
         'email_verified_at',
         'starting_followers',
+        'added_by',
     ];
+
+
 
     /**
      * The attributes that should be hidden for serialization.
@@ -80,6 +83,10 @@ class User extends Authenticatable
 
     public function assignments()  {
         return $this->hasMany(ServiceAssign::class, 'employee_id');
+    }
+    public function addedBy()
+    {
+        return $this->belongsTo(User::class, 'added_by');
     }
 
 

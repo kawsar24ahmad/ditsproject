@@ -101,6 +101,7 @@ class UserController extends Controller
         $user->fb_id_link = $request->fb_id_link;
         $user->fb_page_link = $request->fb_page_link;
         $user->starting_followers = $request->starting_followers;
+        $user->added_by = auth()->id();
         $user->save();
 
         // ✅ Return response based on request type

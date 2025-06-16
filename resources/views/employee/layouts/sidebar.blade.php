@@ -83,6 +83,12 @@
                         <p>Completed Services <span class="badge badge-primary">{{ $total_completed }}</span></p>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="{{ route('employeeUsers') }}" class="nav-link {{ request()->routeIs('employeeUsers') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-users"></i>
+                        <p>Users</p>
+                    </a>
+                </li>
 
 
                 <!-- Assigned Services Link (optional) -->

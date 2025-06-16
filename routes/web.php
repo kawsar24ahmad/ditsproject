@@ -34,11 +34,7 @@ use App\Http\Controllers\Employee\ProfileController as EmployeeProfileController
 use App\Http\Controllers\Customer\FacebookController as CustomerFacebookController;
 use App\Http\Controllers\Employee\ServiceAssignController as EmployeeServiceAssignController;
 use App\Http\Controllers\User\WalletTransactionController as UserWalletTransactionController;
-
-
-
-
-
+use App\Models\User;
 
 Route::get('/', function () {
     if (auth()->check()) {
@@ -210,6 +206,27 @@ Route::middleware(['auth', 'role:employee'])->group(function () {
         Route::resource('service-tasks-reports', ServiceTaskReportController::class)->names('employee.service_tasks_reports');
 
         Route::resource('employee_users', AdminUserController::class);
+
+        Route::get('users', function () {
+            $users = User::where('added_by', auth()->id())->get();
+            return view('employee.users.index', compact('users'));
+        })->name('employeeUsers'); // singular 'User'
+        Route::get('users/edit/{id}', function ($id) {
+            $user = User::where('added_by', auth()->id())->findOrFail($id);
+            return view('employee.users.edit', compact('user'));
+        })->name('employeeUsers.edit');
+
+        Route::put('users/update/{id}', function ($id) {
+            $user = User::where('added_by', auth()->id())->findOrFail($id);
+            $user->update(request()->all());
+            return redirect()->route('employeeUsers')->with('success', 'User updated successfully');
+        })->name('employeeUsers.update');
+        Route::delete('users/delete/{id}', function ($id) {
+            $user = User::where('added_by', auth()->id())->findOrFail($id);
+            $user->delete();
+            return redirect()->route('employeeUsers')->with('success', 'User deleted successfully');
+        })->name('employeeUsers.delete');
+
         // Route::resource('service-assigns', ServiceAssignController::class)->names('admin.service_assigns');
     });
 });

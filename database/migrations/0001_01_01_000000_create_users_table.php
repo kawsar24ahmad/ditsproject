@@ -30,6 +30,9 @@ return new class extends Migration
             $table->string('fb_page_link')->nullable();
             $table->string('starting_followers')->nullable();
 
+            $table->unsignedBigInteger('added_by')->nullable(); // ID of the user who added this user
+            $table->foreign('added_by')->references('id')->on('users')->nullOnDelete();
+
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();

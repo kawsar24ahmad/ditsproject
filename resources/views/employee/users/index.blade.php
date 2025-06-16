@@ -1,4 +1,4 @@
-@extends('admin.layouts.app')
+@extends('employee.layouts.app')
 
 @section('content')
 
@@ -13,9 +13,9 @@
                         {{-- <h2 class="content-header-title float-left mb-0">Brand</h2> --}}
                         <div class="breadcrumb-wrapper col-12">
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">Home</a>
+                                <li class="breadcrumb-item"><a href="{{route('employee.dashboard')}}">Home</a>
                                 </li>
-                                <li class="breadcrumb-item active"><a href="{{route('admin_users.index')}}">Products</a>
+                                <li class="breadcrumb-item active"><a href="{{route('employeeUsers')}}">users</a>
                                 </li>
                             </ol>
                         </div>
@@ -34,11 +34,7 @@
                                     <div class="col">
                                         <h4 class="card-title text-bold text-lg mb-0">User List</h4>
                                     </div>
-                                    <div class="col-auto text-end">
-                                        <a href="{{ route('admin_users.create') }}" class="btn btn-primary rounded text-white">
-                                            <i class="fa fa-plus"></i> Add User
-                                        </a>
-                                    </div>
+
                                 </div>
                             </div>
 
@@ -55,7 +51,9 @@
                                                     <th>Name</th>
                                                     <th>Email</th>
                                                     <th>Phone</th>
+                                                    <th>Starting Followers</th>
                                                     <th>Facebook id</th>
+                                                    <th>Page link</th>
                                                     <th>Role</th>
                                                     <th>Image</th>
                                                     <th>Status</th>
@@ -70,7 +68,9 @@
                                                     <td>{{$user->name}}</td>
                                                     <td>{{$user->email}}</td>
                                                     <td>{{$user->phone}}</td>
-                                                    <td>{{$user->facebook_id ?? ''}}</td>
+                                                    <td>{{$user->starting_followers}}</td>
+                                                    <td>{{$user->fb_id_link ?? ''}}</td>
+                                                    <td>{{$user->fb_page_link ?? ''}}</td>
                                                     <td>{{$user->role}}</td>
                                                     <td>
                                                         @if ($user->avatar)
@@ -98,10 +98,10 @@
                                                         @endif
                                                     </td>
                                                     <td>
-                                                        <a href="{{route('admin_users.edit',$user->id)}}">
+                                                        <a href="{{route('employeeUsers.edit',$user->id)}}">
                                                             <i class="fa fa-edit"></i>
                                                         </a>
-                                                        <form action="{{ route('admin_users.destroy', $user->id) }}" method="POST" style="display:inline-block;" onsubmit="return confirm('Are you sure to delete this user?');">
+                                                        <form action="{{ route('employeeUsers.delete', $user->id) }}" method="POST" style="display:inline-block;" onsubmit="return confirm('Are you sure to delete this user?');">
                                                             @csrf
                                                             @method('DELETE')
                                                             <button type="submit" class="btn btn-link text-danger p-0 m-0 align-baseline" title="Delete">
@@ -114,7 +114,7 @@
                                                 @endforeach
                                             </tbody>
                                         </table>
-                                        {{ $users->appends(request()->query())->links() }}
+
                                     </div>
                                 </div>
                             </div>
