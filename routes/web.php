@@ -71,6 +71,11 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::prefix('admin')->group(function () {
         Route::resource('admin_users', AdminUserController::class);
+
+        Route::get('/users/search', [AdminUserController::class, 'search'])->name('admin_users.search');
+
+
+
         Route::get('employee', [AdminUserController::class, 'employeeIndex'])->name('admin.employee.index');
         Route::get('/assignments', [AdminUserController::class, 'employeeAssignments'])->name('assignments.index');
 
@@ -95,6 +100,13 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
         Route::post('/site-settings', [SettingController::class, 'update'])->name('admin.site-settings.update');
 
         Route::resource('service-assigns', ServiceAssignController::class)->names('admin.service_assigns');
+
+        Route::put('/service-assigns/{id}/update-paid-amount', [ServiceAssignController::class, 'updatePaidAmount'])->name('admin.service-assigns.updatePaidAmount');
+
+
+        Route::post('/service-assigns/{id}/add-payment', [ServiceAssignController::class, 'addNewPayment'])->name('admin.service-assigns.addPayment');
+
+
 
 
         Route::get('/services/{service}/tasks/create', [ServiceTaskController::class, 'create'])->name('admin.tasks.create');

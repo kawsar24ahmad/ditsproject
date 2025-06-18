@@ -55,26 +55,37 @@
                                 <tbody>
                                     <tr>
                                         <th width="30%">Name:</th>
-                                        <td>{{ $serviceAssign->customer->name ?? 'N/A' }}</td>
+                                        <td>
+                                            <input type="text" name="customer[name]" class="form-control" value="{{ old('customer.name', $serviceAssign->customer->name ?? '') }}">
+                                        </td>
                                     </tr>
                                     <tr>
                                         <th>Email:</th>
-                                        <td>{{ $serviceAssign->customer->email ?? 'N/A' }}</td>
+                                        <td>
+                                            <input type="email" name="customer[email]" class="form-control" value="{{ old('customer.email', $serviceAssign->customer->email ?? '') }}">
+                                        </td>
                                     </tr>
                                     <tr>
                                         <th>Phone:</th>
-                                        <td>{{ $serviceAssign->customer->phone ?? 'N/A' }}</td>
+                                        <td>
+                                            <input type="text" name="customer[phone]" class="form-control" value="{{ old('customer.phone', $serviceAssign->customer->phone ?? '') }}">
+                                        </td>
                                     </tr>
                                     <tr>
                                         <th>Facebook ID Link:</th>
-                                        <td>{{ $serviceAssign->customer_fb_id_link ?? 'N/A' }}</td>
+                                        <td>
+                                            <input type="text" name="customer[fb_id_link]" class="form-control" value="{{ old('customer.fb_id_link', $serviceAssign->customer->fb_id_link ?? '') }}">
+                                        </td>
                                     </tr>
                                     <tr>
                                         <th>Facebook Page Link:</th>
-                                        <td>{{ $serviceAssign->customer->fb_page_link ?? 'N/A' }}</td>
+                                        <td>
+                                            <input type="text" name="customer[fb_page_link]" class="form-control" value="{{ old('customer.fb_page_link', $serviceAssign->customer->fb_page_link ?? '') }}">
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
+
                         </div>
 
                         <div id="service-info" class="mt-3  table-responsive">
@@ -103,7 +114,6 @@
                         </div>
 
 
-
                         <div class="col-md-12 mb-3">
                             <label for="employee_id" class="form-label">Employee</label>
                             <div class="row g-2 align-items-end">
@@ -130,45 +140,77 @@
                             <textarea name="remarks" class="form-control summernote">{!! $serviceAssign->remarks !!}</textarea>
                         </div>
                         <div class="col-12 mb-3">
-    <label>Delivery Date</label>
-    <input type="date" name="delivery_date" class="form-control"
-           value="{{ old('delivery_date', $serviceAssign->delivery_date ? \Carbon\Carbon::parse($serviceAssign->delivery_date)->format('Y-m-d') : '') }}">
-</div>
-
-
-                        <div id="service-info" class="mt-3  table-responsive">
-                            <table class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th colspan="2">Payment Information:</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <th width="20%">Price:</th>
-                                        <td>{{ $serviceAssign->price ?? 'N/A' }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Paid Amount:</th>
-                                        <td>{{ $serviceAssign->paid_payment ?? '0.00' }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Due:</th>
-                                        <td>{{ $serviceAssign->price - $serviceAssign->paid_payment  }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Payment Status:</th>
-                                        <td><span class="badge badge-{{ $serviceAssign->invoice->status == 'paid' ? 'success' : 'danger' }}" style="font-size: 40px;">{{ strtoupper($serviceAssign->invoice->status)}}</span></td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            <label>Delivery Date</label>
+                            <input type="date" name="delivery_date" class="form-control"
+                                value="{{ old('delivery_date', $serviceAssign->delivery_date ? \Carbon\Carbon::parse($serviceAssign->delivery_date)->format('Y-m-d') : '') }}">
                         </div>
+                         <div class="col-12 text-right">
+                    <button type="submit" class="btn btn-primary">Update</button>
+                </div>
+                </form>
+            </section>
 
 
+            <section class="invoice-box mt-4">
+                <div id="service-info" class="mt-3  table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th colspan="2">Payment Information:</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th width="20%">Price:</th>
+                                <td>{{ $serviceAssign->price ?? 'N/A' }}</td>
+                            </tr>
+                            <tr>
+                                <th>Paid Amount:</th>
+                                <td class="flex justify-between">
+                                    <form action="{{ route('admin.service-assigns.updatePaidAmount', $serviceAssign->id) }}" method="POST">
+                                        @csrf
+                                        @method('PUT')
+
+                                        <input type="text" name="paid_amount" class="form-control" value="{{ old('paid_amount', $serviceAssign->paid_payment ?? '0.00') }}">
+
+                                        <button type="submit" class="btn btn-primary">Update</button>
+                                    </form>
+
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Due:</th>
+                                <td>{{ $serviceAssign->price - $serviceAssign->paid_payment  }}</td>
+                            </tr>
+                            <tr>
+                                <th>Payment Status:</th>
+                                <td><span class="badge badge-{{ $serviceAssign->invoice->status == 'paid' ? 'success' : 'danger' }}" style="font-size: 40px;">{{ strtoupper($serviceAssign->invoice->status)}}</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+
+
+
+
+
+
+
+            </section>
+            {{-- Assigned Tasks --}}
+
+            <section class="invoice-box mt-4">
+
+                <form action="{{ route('admin.service-assigns.addPayment', $serviceAssign->id) }}" method="POST">
+                    @csrf
+
+                    <div class="row">
                         <div class="col-md-4 mb-2">
                             <label>New Payment</label>
-                            <input type="text" class="form-control" name="new_payment">
+                            <input type="number" placeholder="Enter Amount" class="form-control" name="new_payment" required>
                         </div>
+
                         <div class="col-md-4 mb-2">
                             <label for="payment_method">Payment Method</label>
                             <select name="payment_method" id="payment_method" class="form-control">
@@ -181,21 +223,17 @@
                         </div>
 
                         <div class="col-md-4 mb-2">
-                            <label> Comment</label>
+                            <label>Comment</label>
                             <input type="text" class="form-control" name="comment">
                         </div>
 
-
-                        <div class="col-12 text-right">
-                            <button type="submit" class="btn btn-primary">Update</button>
+                        <div class="col-12 mt-2">
+                            <button type="submit" class="btn btn-success">Add Payment</button>
                         </div>
-
-
+                    </div>
                 </form>
+
             </section>
-            {{-- Assigned Tasks --}}
-
-
 
 
             {{-- Payment History --}}
@@ -229,7 +267,7 @@
             </section>
             @endif
 
-                 @if($serviceAssign->assignedTasks->count())
+            @if($serviceAssign->assignedTasks->count())
             <section class="invoice-box mt-4">
                 <h4>Assigned Tasks</h4>
                 <div class="table-responsive">
@@ -324,8 +362,6 @@
 <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
 
 <script>
-
-
     $(document).ready(function() {
         // Initialize Select2
         $('.select2').select2();

@@ -13,11 +13,30 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    // public function index()
+    // {
+    //     $users = User::paginate(10);
+    //     return view('admin.users.index', compact('users'));
+    // }
+
+    public function index(Request $request)
     {
-        $users = User::paginate(10);
+        $query = User::query();
+
+        if ($request->has('search') && $request->search != '') {
+            $searchTerm = $request->search;
+            $query->where(function ($q) use ($searchTerm) {
+                $q->where('name', 'like', "%{$searchTerm}%")
+                ->orWhere('email', 'like', "%{$searchTerm}%")
+                ->orWhere('phone', 'like', "%{$searchTerm}%");
+            });
+        }
+
+        $users = $query->paginate(10);
         return view('admin.users.index', compact('users'));
     }
+
+
     public function employeeIndex()
     {
         $users = User::where('role', 'employee')->paginate(10);

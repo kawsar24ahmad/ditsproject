@@ -13,6 +13,7 @@ use App\Models\ServiceAssign;
 use App\Models\PaymentHistory;
 
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use function PHPUnit\Framework\isEmpty;
@@ -30,7 +31,7 @@ class ServiceAssignController extends Controller
     //     return view('admin.invoice.index', compact('serviceAssignments'));
     // }
 
-   public function index(Request $request)
+    public function index(Request $request)
     {
         $search = $request->input('search');
 
@@ -41,13 +42,13 @@ class ServiceAssignController extends Controller
             'invoice:id,invoice_number,service_assign_id',
             'service:id,title'
         ])
-        ->when($search, function ($query) use ($search) {
-            $query->whereHas('invoice', function ($q) use ($search) {
-                $q->where('invoice_number', 'like', '%' . $search . '%');
-            });
-        })
-        ->orderByDesc('id')
-        ->paginate(10); // Show 10 per page
+            ->when($search, function ($query) use ($search) {
+                $query->whereHas('invoice', function ($q) use ($search) {
+                    $q->where('invoice_number', 'like', '%' . $search . '%');
+                });
+            })
+            ->orderByDesc('id')
+            ->paginate(10); // Show 10 per page
 
         return view('admin.invoice.index', compact('serviceAssignments'));
     }
@@ -201,81 +202,188 @@ class ServiceAssignController extends Controller
     /**
      * Update the specified resource in storage.
      */
+    // public function update(Request $request, string $id)
+    // {
+    //     dd($request->all());
+    //     $serviceAssign = ServiceAssign::findOrFail($id);
+
+    //     // Validate request
+    //     $request->validate([
+    //         'employee_id' => 'nullable|exists:users,id',
+    //         'new_payment' => 'nullable|numeric|min:0',
+    //         'payment_method' => 'nullable|string|max:100',
+    //         'comment' => 'nullable|string|max:1000',
+    //         'remarks' => 'nullable|string|max:1000',
+    //         'delivery_date' => 'nullable'
+    //     ]);
+
+    //     // Fetch service price
+    //     $service = $serviceAssign->service;
+    //     // dd($service);
+    //     // $service = Service::findOrFail($request->service_id);
+    //     $price = $service->offer_price > 0 ? $service->offer_price : $service->price;
+
+
+    //     // Update assignment details
+    //     $serviceAssign->update([
+    //         'employee_id' => $request->employee_id,
+    //         'remarks' => $request->remarks,
+    //         'delivery_date' => $request->delivery_date,
+    //     ]);
+
+    //     // Handle new payment (if any)
+    //     if ($request->filled('new_payment') && $request->new_payment > 0) {
+
+    //         // Update total paid payment
+    //         $serviceAssign->paid_payment += $request->new_payment;
+    //         $serviceAssign->save();
+
+    //         // Determine new status
+    //         $status = $serviceAssign->invoice->status;
+    //         if ($serviceAssign->paid_payment >= $price) {
+    //             $status = 'paid';
+    //         } elseif ($serviceAssign->paid_payment > 0) {
+    //             $status = 'partial';
+    //         }
+    //         $invoice = $serviceAssign->invoice->update([
+    //             'paid_amount' => $serviceAssign->invoice->paid_amount  += $request->new_payment,
+    //             'status' => $status,
+    //         ]);
+
+    //         // $invoice = $serviceAssign->invoice;
+    //         // $invoice->update([
+    //         //     'service_assign_id' => $serviceAssign->id,
+    //         //     'paid_amount' =>  $invoice->paid_amount += $request->new_payment,
+    //         //     'status' => $status,
+    //         // ]);
+
+    //         $serviceAssign->invoice->paymentHistory()->create([
+    //             'amount' => $request->new_payment,
+    //             'payment_method' => $request->payment_method,
+    //             'comment' => $request->comment,
+    //             'paid_at' => now(),
+    //         ]);
+
+
+    //         // Log payment history
+    //         // PaymentHistory::create([
+    //         //     'invoice_id' => $invoice->id,
+    //         //     'amount' => $request->new_payment,
+    //         //     'payment_method' => $request->payment_method,
+    //         //     'comment' => $request->comment,
+    //         //     'paid_at' => now(),
+    //         // ]);
+    //     }
+
+    //     return back()->with('success', 'Service assignment updated and payment (if any) recorded successfully!');
+    // }
+
     public function update(Request $request, string $id)
     {
-        // dd($request->all());
         $serviceAssign = ServiceAssign::findOrFail($id);
 
-        // Validate request
-        $request->validate([
-            'employee_id' => 'nullable|exists:users,id',
-            'new_payment' => 'nullable|numeric|min:0',
-            'payment_method' => 'nullable|string|max:100',
-            'comment' => 'nullable|string|max:1000',
-            'remarks' => 'nullable|string|max:1000',
-            'delivery_date' => 'nullable'
+        // ✅ Validate input
+        $validated = $request->validate([
+            'employee_id'         => 'nullable|exists:users,id',
+            'remarks'             => 'nullable|string|max:1000',
+            'delivery_date'       => 'nullable|date',
+            'customer.name'       => 'nullable|string|max:255',
+            'customer.email'      => 'nullable|email|max:255',
+            'customer.phone'      => 'nullable|string|max:20',
+            'customer.fb_id_link' => 'nullable|url',
+            'customer.fb_page_link' => 'nullable|url',
         ]);
 
-        // Fetch service price
+        DB::transaction(function () use ($request, $serviceAssign) {
+            $service = $serviceAssign->service;
+            $price = $service->offer_price > 0 ? $service->offer_price : $service->price;
+
+            // ✅ Update assignment
+            $serviceAssign->update([
+                'employee_id'   => $request->employee_id,
+                'remarks'       => $request->remarks,
+                'delivery_date' => $request->delivery_date,
+            ]);
+
+            // ✅ Optional: Update customer info
+            if ($request->filled('customer')) {
+                $customer = $serviceAssign->customer;
+                if ($customer) {
+                    $customer->update($request->customer);
+                }
+            }
+        });
+
+        return back()->with('success', 'Service assignment updated successfully!');
+    }
+
+    public function updatePaidAmount(Request $request, $id)
+    {
+        $request->validate([
+            'paid_amount' => 'required|numeric|min:0',
+        ]);
+
+        $serviceAssign = ServiceAssign::findOrFail($id);
+        $invoice = $serviceAssign->invoice;
+
+        $newPaidAmount = floatval($request->paid_amount);
+        $price = $serviceAssign->service->offer_price > 0
+            ? $serviceAssign->service->offer_price
+            : $serviceAssign->service->price;
+
+        $serviceAssign->paid_payment = $newPaidAmount;
+        $serviceAssign->save();
+
+        $invoice->paid_amount = $newPaidAmount;
+        $invoice->status = $newPaidAmount >= $price ? 'paid' : ($newPaidAmount > 0 ? 'partial' : 'unpaid');
+        $invoice->save();
+
+        return back()->with('success', 'Paid amount updated successfully.');
+    }
+
+    public function addNewPayment(Request $request, $id)
+    {
+        $request->validate([
+            'new_payment'     => 'required|numeric|min:0.01',
+            'payment_method'  => 'nullable|string|max:100',
+            'comment'         => 'nullable|string|max:1000',
+        ]);
+
+        $serviceAssign = ServiceAssign::findOrFail($id);
+        $invoice = $serviceAssign->invoice;
         $service = $serviceAssign->service;
-        // dd($service);
-        // $service = Service::findOrFail($request->service_id);
+
+        $payment = floatval($request->new_payment);
+        $serviceAssign->paid_payment += $payment;
+        $serviceAssign->save();
+
+        $invoice->paid_amount += $payment;
+
         $price = $service->offer_price > 0 ? $service->offer_price : $service->price;
 
-
-        // Update assignment details
-        $serviceAssign->update([
-            'employee_id' => $request->employee_id,
-            'remarks' => $request->remarks,
-            'delivery_date' => $request->delivery_date,
-        ]);
-
-        // Handle new payment (if any)
-        if ($request->filled('new_payment') && $request->new_payment > 0) {
-
-            // Update total paid payment
-            $serviceAssign->paid_payment += $request->new_payment;
-            $serviceAssign->save();
-
-            // Determine new status
-            $status = $serviceAssign->invoice->status;
-            if ($serviceAssign->paid_payment >= $price) {
-                $status = 'paid';
-            } elseif ($serviceAssign->paid_payment > 0) {
-                $status = 'partial';
-            }
-            $invoice = $serviceAssign->invoice->update([
-                'paid_amount' => $serviceAssign->invoice->paid_amount  += $request->new_payment,
-                'status' => $status,
-            ]);
-
-            // $invoice = $serviceAssign->invoice;
-            // $invoice->update([
-            //     'service_assign_id' => $serviceAssign->id,
-            //     'paid_amount' =>  $invoice->paid_amount += $request->new_payment,
-            //     'status' => $status,
-            // ]);
-
-            $serviceAssign->invoice->paymentHistory()->create([
-                'amount' => $request->new_payment,
-                'payment_method' => $request->payment_method,
-                'comment' => $request->comment,
-                'paid_at' => now(),
-            ]);
-
-
-            // Log payment history
-            // PaymentHistory::create([
-            //     'invoice_id' => $invoice->id,
-            //     'amount' => $request->new_payment,
-            //     'payment_method' => $request->payment_method,
-            //     'comment' => $request->comment,
-            //     'paid_at' => now(),
-            // ]);
+        if ($invoice->paid_amount >= $price) {
+            $invoice->status = 'paid';
+        } elseif ($invoice->paid_amount > 0) {
+            $invoice->status = 'partial';
+        } else {
+            $invoice->status = 'unpaid';
         }
 
-        return back()->with('success', 'Service assignment updated and payment (if any) recorded successfully!');
+        $invoice->save();
+
+        // Add payment history
+        $invoice->paymentHistory()->create([
+            'amount'         => $payment,
+            'payment_method' => $request->payment_method,
+            'comment'        => $request->comment ?? 'New payment added',
+            'paid_at'        => now(),
+        ]);
+
+        return back()->with('success', 'New payment added successfully.');
     }
+
+
+
 
 
 

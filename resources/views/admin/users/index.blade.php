@@ -6,23 +6,27 @@
     <div class="content-overlay"></div>
     <div class="header-navbar-shadow"></div>
     <div class="content-wrapper">
-        <div class="content-header row">
-            <div class="content-header-left col-md-9 col-12 mb-2">
-                <div class="row breadcrumbs-top">
-                    <div class="col-12">
-                        {{-- <h2 class="content-header-title float-left mb-0">Brand</h2> --}}
-                        <div class="breadcrumb-wrapper col-12">
-                            <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">Home</a>
-                                </li>
-                                <li class="breadcrumb-item active"><a href="{{route('admin_users.index')}}">Products</a>
-                                </li>
-                            </ol>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+
+        <div x-data="userSearch()" class="w-2/3 mx-auto py-4" style="width: 40%;">
+    <div class="relative">
+        <input
+            type="text"
+            x-model="search"
+            placeholder="Search..."
+            class="w-full pl-10 pr-4 py-2 border rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none focus:border-blue-500 transition"
+        >
+
+        <button
+            type="button"
+            class="absolute right-0 top-0 bottom-0 px-4 text-white bg-blue-600 hover:bg-blue-700 rounded-r-md transition"
+            @click="searchUsers()"
+        >
+            Search
+        </button>
+    </div>
+</div>
+
+
         <div class="content-body">
             <!-- Scroll - horizontal and vertical table -->
             <section id="horizontal-vertical">
@@ -128,3 +132,20 @@
 </div>
 
 @stop
+
+@section('script')
+<script>
+function userSearch() {
+    return {
+        search: '',
+        searchUsers() {
+            if (this.search.trim() !== '') {
+                const query = encodeURIComponent(this.search.trim());
+                window.location.href = `?search=${query}`;
+            }
+        }
+    }
+}
+</script>
+
+@endsection
