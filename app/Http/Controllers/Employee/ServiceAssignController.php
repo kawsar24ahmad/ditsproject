@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use App\Models\ServiceAssign;
 use App\Models\PaymentHistory;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 
 class ServiceAssignController extends Controller
@@ -17,17 +18,41 @@ class ServiceAssignController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        $serviceAssignments =  ServiceAssign::with(['customer:id,name', 'employee:id,name', 'assignedTasks.task', 'invoice:id,invoice_number,service_assign_id'])
-        ->where('employee_id',auth()->user()->id)
-        ->orderByDesc('id')
-        ->paginate(10);
+    // public function index()
+    // {
+    //     $serviceAssignments =  ServiceAssign::with(['customer:id,name', 'employee:id,name', 'assignedTasks.task', 'invoice:id,invoice_number,service_assign_id'])
+    //     ->where('employee_id',auth()->user()->id)
+    //     ->orderByDesc('id')
+    //     ->paginate(10);
 
-        $assignIds = $serviceAssignments->pluck('id');
+    //     $assignIds = $serviceAssignments->pluck('id');
+
+    //     return view('employee.invoice.index', compact('serviceAssignments'));
+    // }
+
+
+    public function index(Request $request)
+    {
+        $search = $request->input('search');
+
+        $serviceAssignments = ServiceAssign::with([
+                'customer:id,name',
+                'employee:id,name',
+                'assignedTasks.task',
+                'invoice:id,invoice_number,service_assign_id'
+            ])
+            ->where('employee_id', auth()->user()->id)
+            ->when($search, function ($query) use ($search) {
+                $query->whereHas('invoice', function ($q) use ($search) {
+                    $q->where('invoice_number', 'like', '%' . $search . '%');
+                });
+            })
+            ->orderByDesc('id')
+            ->paginate(10);
 
         return view('employee.invoice.index', compact('serviceAssignments'));
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -199,51 +224,55 @@ class ServiceAssignController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+
+     public function update(Request $request, string $id)
     {
         $serviceAssign = ServiceAssign::findOrFail($id);
 
-        // Validate request
-        $request->validate([
-            'new_payment' => 'nullable|numeric|min:0',
-            'payment_method' => 'nullable|string|max:100',
-            'comment' => 'nullable|string|max:1000',
-            'remarks' => 'nullable|string|max:1000',
+        // ✅ Validate input
+        $validated = $request->validate([
+            'customer.name'       => 'nullable|string|max:255',
+            'customer.email'      => 'nullable|email|max:255',
+            'customer.phone'      => 'nullable|string|max:20',
+            'customer.fb_id_link' => 'nullable|url',
+            'customer.fb_page_link' => 'nullable|url',
         ]);
 
-        // Allow remarks update
-        $serviceAssign->remarks = $request->remarks;
-        $serviceAssign->save();
-
-        // If new payment is added
-        if ($request->filled('new_payment') && $request->new_payment > 0) {
-            // Update paid payment
-            $serviceAssign->paid_payment += $request->new_payment;
-            $serviceAssign->save();
-
-            // Determine new payment status based on service price
-            $price = $serviceAssign->offer_price > 0 ? $serviceAssign->offer_price : $serviceAssign->price;
-            $status = $serviceAssign->paid_payment >= $price ? 'paid' : 'partial';
-
-            // Update invoice
-            $invoice = $serviceAssign->invoice;
-            $invoice->paid_amount += $request->new_payment;
-            $invoice->status = $status;
-            $invoice->save();
-
-            // Log payment history
-            PaymentHistory::create([
-                'invoice_id' => $invoice->id,
-                'amount' => $request->new_payment,
-                'payment_method' => $request->payment_method,
-                'comment' => $request->comment,
-                'paid_at' => now(),
-            ]);
+         // ✅ Optional: Update customer info
+        if ($request->filled('customer')) {
+            $customer = $serviceAssign->customer;
+            if ($customer) {
+                $customer->update($request->customer);
+            }
         }
 
-        return back()->with('success', 'Payment and remarks updated successfully!');
+        return back()->with('success', 'Service assignment updated successfully!');
     }
 
+
+    public function updatePaidAmount(Request $request, $id)
+    {
+        $request->validate([
+            'paid_amount' => 'required|numeric|min:0',
+        ]);
+
+        $serviceAssign = ServiceAssign::findOrFail($id);
+        $invoice = $serviceAssign->invoice;
+
+        $newPaidAmount = floatval($request->paid_amount);
+        $price = $serviceAssign->service->offer_price > 0
+            ? $serviceAssign->service->offer_price
+            : $serviceAssign->service->price;
+
+        $serviceAssign->paid_payment = $newPaidAmount;
+        $serviceAssign->save();
+
+        $invoice->paid_amount = $newPaidAmount;
+        $invoice->status = $newPaidAmount >= $price ? 'paid' : ($newPaidAmount > 0 ? 'partial' : 'unpaid');
+        $invoice->save();
+
+        return back()->with('success', 'Paid amount updated successfully.');
+    }
 
 
     public function toggle(string $id)

@@ -1,7 +1,4 @@
 @extends('admin.layouts.app')
-@section('css')
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-@endsection
 
 @section('content')
 <div class="app-content content">
@@ -136,5 +133,4 @@
 @endsection
 
 @section('script')
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 @endsection

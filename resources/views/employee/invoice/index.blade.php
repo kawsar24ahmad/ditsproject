@@ -25,6 +25,23 @@
             <section id="data-display">
                 <div class="row">
                     <div class="col-12">
+
+                    <div class="card mb-4">
+                    <div class="card-body">
+                        <form action="{{ route('employee.service_assigns.index') }}" method="GET" class="row g-3">
+                            <div class="col-md-6">
+                                <input type="text" name="search" value="{{ request('search') }}" class="form-control" placeholder="Search by invoice number">
+                            </div>
+                            <div class="col-auto">
+                                <button type="submit" class="btn btn-primary">Search</button>
+                                @if(request('search'))
+                                <a href="{{ route('admin.service_assigns.index') }}" class="btn btn-secondary">Clear</a>
+                                @endif
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
                         <div class="card">
                             <div class="card-header">
                                 <h4 class="card-title text-bold text-lg mb-0">All Service Assignments</h4>

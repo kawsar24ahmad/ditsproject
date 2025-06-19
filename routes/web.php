@@ -204,6 +204,12 @@ Route::middleware(['auth', 'role:employee'])->group(function () {
         Route::patch('/profile/changePhoto', [EmployeeProfileController::class, 'changePhoto'])->name('employee.profile.changePhoto');
         Route::delete('/profile', [EmployeeProfileController::class, 'destroy'])->name('employee.profile.destroy');
         Route::resource('service-assigns', EmployeeServiceAssignController::class)->names('employee.service_assigns');
+
+
+        Route::put('/service-assigns/{id}/update-paid-amount', [ServiceAssignController::class, 'updatePaidAmount'])->name('employee.service-assigns.updatePaidAmount');
+
+        Route::post('/service-assigns/{id}/add-payment', [ServiceAssignController::class, 'addNewPayment'])->name('admin.service-assigns.addPayment');
+
         Route::patch('/tasks/{task}/toggle', [EmployeeServiceAssignController::class, 'toggle'])->name('employee.tasks.toggle');
         Route::post('/service-assigns/{id}/assign-task/store', [AssignTaskController::class, 'store'])->name('employee.assign_task.store');
 
