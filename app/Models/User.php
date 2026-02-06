@@ -89,5 +89,26 @@ class User extends Authenticatable
         return $this->belongsTo(User::class, 'added_by');
     }
 
+    public function employee() {
+        return $this->belongsTo(User::class, 'employee_id');
+    }
+
+    public function serviceTasks()
+    {
+        return $this->belongsToMany(
+            ServiceCalendarTask::class,
+            'service_task_user',
+            'user_id',
+            'service_calendar_task_id'
+        );
+    }
+
+
+    public function employeeTasks()
+    {
+        return $this->belongsToMany(CustomerServiceCalendarTask::class,'customer_service_calendar_task_employee','employee_id','calendar_task_id');
+    }
+
+
 
 }

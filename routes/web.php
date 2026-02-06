@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\User;
 use App\Models\FacebookPage;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
@@ -13,16 +14,20 @@ use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Auth\FacebookController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\ServiceCalendarController;
 use App\Http\Controllers\ServicePurchaseController;
 use App\Http\Controllers\Admin\AssignTaskController;
+use App\Http\Controllers\EmployeeCalendarController;
 use App\Http\Controllers\Admin\ServiceTaskController;
 use App\Http\Controllers\ServiceTaskReportController;
 use App\Http\Controllers\SslCommerzPaymentController;
 use App\Http\Controllers\Admin\FacebookPageController;
 use App\Http\Controllers\Admin\ServiceAssignController;
+use App\Http\Controllers\ServiceCalendarTaskController;
 use App\Http\Controllers\Admin\PaymentHistoryController;
 use App\Http\Controllers\User\ServiceAssignedController;
 use App\Http\Controllers\Admin\WalletTransactionController;
+use App\Http\Controllers\CustomerServiceCalendarDayController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\User\MediaController as UserMediaController;
 use App\Http\Controllers\User\WalletController as UserWalletController;
@@ -34,7 +39,6 @@ use App\Http\Controllers\Employee\ProfileController as EmployeeProfileController
 use App\Http\Controllers\Customer\FacebookController as CustomerFacebookController;
 use App\Http\Controllers\Employee\ServiceAssignController as EmployeeServiceAssignController;
 use App\Http\Controllers\User\WalletTransactionController as UserWalletTransactionController;
-use App\Models\User;
 
 Route::get('/', function () {
     if (auth()->check()) {
@@ -261,5 +265,74 @@ Route::post('/fail', [SslCommerzPaymentController::class, 'fail']);
 Route::post('/cancel', [SslCommerzPaymentController::class, 'cancel']);
 
 Route::post('/ipn', [SslCommerzPaymentController::class, 'ipn']);
+
+
+Route::middleware(['auth'])->group(function (): void {
+    Route::resource('serviceCalendars', ServiceCalendarController::class);
+    Route::get('/service-calendars/{service}', [ServiceCalendarController::class, 'all'])
+     ->name('serviceCalendars.all');
+
+    Route::post('/task/add',
+            [ServiceCalendarTaskController::class, 'store']
+        )->name('serviceCalenderTaskStore');
+    Route::post('/task/assign',
+            [ServiceCalendarTaskController::class, 'assignTask']
+        )->name('serviceCalenderTaskAssign');
+
+    Route::post('/service-calendar-task-update-status', [ServiceCalendarTaskController::class, 'updateStatus'])->name('serviceCalenderTaskUpdateStatus');
+
+
+
+    Route::put(
+        '/admin/service-calendar/task/update',
+        [ServiceCalendarController::class,'updateTask']
+    )->name('service.calendar.task.update');
+
+
+
+    Route::get(
+        '/admin/service-assign/{serviceAssign}/calendar',
+        [CustomerServiceCalendarDayController::class, 'index']
+    )->name('customerServiceCalendarIndex');
+    Route::get(
+        '/user/service/{serviceAssign}/calendar',
+        [CustomerServiceCalendarDayController::class, 'userCalender']
+    )->name('userServiceCalendarIndex');
+
+
+
+
+    // // Assign Employees (Single, Day, or Global) via Modal Form
+    Route::post('customerServiceCalendars',[CustomerServiceCalendarDayController::class, 'update'])->name('customerServiceCalendars.update');
+    Route::post('tasks/updateMultipleStatus',[CustomerServiceCalendarDayController::class, 'updateMultipleStatus'])->name('tasks.updateMultipleStatus');
+    Route::post('tasks/assignMultiple',[CustomerServiceCalendarDayController::class, 'assignMultiple'])->name('tasks.assignMultiple');
+
+    Route::post(
+        '/customer-service-calendar/task/store',
+        [CustomerServiceCalendarDayController::class, 'storeTask']
+    )->name('customerServiceCalendars.storeTask');
+
+
+
+
+});
+
+Route::middleware(['auth'])
+    ->prefix('employee')
+    ->name('employee.')
+    ->group(function () {
+        Route::get('/work-calendar', [EmployeeCalendarController::class, 'index'])
+            ->name('work.calendar');
+
+        Route::post('/employee/task/status-update', [EmployeeCalendarController::class,'updateStatus'])
+        ->name('task.status.update');
+
+        Route::get(
+                '/service-assign/{serviceAssign}/calendar',
+                [EmployeeCalendarController::class, 'CustomerServiceCalendarIndex']
+            )->name('CustomerServiceCalendarIndex');
+
+
+});
 
 require __DIR__ . '/auth.php';

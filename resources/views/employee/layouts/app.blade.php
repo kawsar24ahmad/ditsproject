@@ -37,6 +37,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
   @vite(['resources/css/app.css', 'resources/js/app.js'])
   @yield('css')
+  @stack('css')
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
 
@@ -87,7 +88,7 @@
 <!-- SweetAlert2 -->
 <script src="{{ asset('backend/plugins/sweetalert2/sweetalert2.all.min.js') }}"></script>
 @yield('script')
-
+@stack('scripts')
 <script>
 
 

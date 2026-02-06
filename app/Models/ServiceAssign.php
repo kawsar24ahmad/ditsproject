@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\AssignedTask;
 use App\Models\ServiceTaskReport;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\CustomerServiceCalendarDay;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ServiceAssign extends Model
@@ -40,5 +41,11 @@ class ServiceAssign extends Model
     {
         return $this->hasMany(ServiceTaskReport::class, 'service_assign_id');
     }
+
+    public function calendarDays()
+    {
+        return $this->hasMany(CustomerServiceCalendarDay::class);
+    }
+
 
 }

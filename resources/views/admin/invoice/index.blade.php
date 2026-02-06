@@ -48,7 +48,7 @@
 
                                 <div class="mb-3">
                                     <div class="d-flex justify-content-between align-items-center">
-                                        <h5 class="card-title mb-0">Invoice: {{ $assignment->invoice->invoice_number }}</h5>
+                                        <h5 class="card-title mb-0">Invoice: {{ $assignment->invoice->invoice_number ?? "" }}</h5>
                                         <span class="badge
                                             {{ $assignment->status === 'paid' ? 'bg-success' :
                                             ($assignment->status === 'partial' ? 'bg-warning text-dark' : 'bg-secondary') }}">
@@ -103,6 +103,7 @@
                                 </div>
 
                                 <div class="d-flex flex-wrap gap-2">
+                                    <a href="{{ route('customerServiceCalendarIndex', $assignment->id) }}" class="btn btn-outline-success btn-sm">Service Calender</a>
                                     <a href="{{ route('admin.assign_task.index', $assignment->id) }}" class="btn btn-outline-success btn-sm">Assigned Tasks</a>
                                     <a href="{{ route('admin.service_assigns.edit', $assignment->id) }}" class="btn btn-outline-primary btn-sm">Edit</a>
                                     <a href="{{ route('admin.service_assigns.invoiceGenerate', $assignment->id) }}" class="btn btn-outline-info btn-sm">See Invoice</a>

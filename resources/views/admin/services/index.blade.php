@@ -72,6 +72,7 @@
                                                     </td>
                                                     <td>{{ $service->icon ?? 'N/A' }}</td> -->
                                                     <td>
+                                                        <a class="badge badge-info" href="{{ route('serviceCalendars.all', $service->id) }}">Service Calenar Template</a>
                                                         <a class="badge badge-info" href="{{ route('admin.tasks.create', $service->id) }}">Tasks</a>
                                                         <a href="{{ route('admin.services.edit', $service->id) }}" class="text-primary me-1">
                                                             <i class="fa fa-edit"></i>

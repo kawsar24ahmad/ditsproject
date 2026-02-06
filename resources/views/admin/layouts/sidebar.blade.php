@@ -65,6 +65,13 @@
                 </li>
 
                 <li class="nav-item">
+                    <a href="{{ route('serviceCalendars.create') }}" class="nav-link {{ request()->routeIs('serviceCalendars.create') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-tags"></i> <!-- Services icon plural tags -->
+                        <p>Create Celander Template</p>
+                    </a>
+                </li>
+
+                <li class="nav-item">
                     <a href="{{ route('admin.service_assigns.create') }}" class="nav-link {{ request()->routeIs('admin.service_assigns.create') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-cart-plus"></i> <!-- Add service as Sell Service -->
                         <p>Sell Service</p>

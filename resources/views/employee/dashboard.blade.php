@@ -153,6 +153,7 @@ $serviceAssignments = App\Models\ServiceAssign::with(['customer:id,name,starting
                                     </div>
 
                                     <div class="mt-4 flex flex-wrap gap-2">
+                                         <a href="{{ route('employee.CustomerServiceCalendarIndex', $assignment->id) }}" class="btn btn-outline-success btn-sm">Service Calender</a>
                                         <a href="{{ route('employee.service_assigns.edit', $assignment->id) }}"
                                             class="text-sm px-3 py-1 rounded bg-info text-white hover:opacity-90 transition">
                                             <i class="fas fa-pen mr-1"></i> Edit

@@ -107,85 +107,132 @@ class ServiceAssignController extends Controller
         ]);
         // dd($validatedData);
 
-        // Get the service price from the DB (prevent tampering)
-        $service = Service::findOrFail($request->service_id);
-        $price = $service->offer_price > 0 ? $service->offer_price : $service->price;
+        try {
+            DB::beginTransaction();
+                // Get the service price from the DB (prevent tampering)
+            $service = Service::findOrFail($request->service_id);
+            $price = $service->offer_price > 0 ? $service->offer_price : $service->price;
 
 
-        $serviceAssign = $service->serviceAssign()->create([
-            'customer_id' => $request->customer_id,
-            'employee_id' => $request->employee_id,
-            'price' => $price,
-            'paid_payment' => $request->paid_payment,
-            'remarks' => $validatedData['remarks'],
-            'delivery_date' => $validatedData['delivery_date'],
-        ]);
-        // Create service assignment
-        // $serviceAssign = ServiceAssign::create([
-        //     'customer_id' => $request->customer_id,
-        //     'employee_id' => $request->employee_id,
-        //     'service_id' => $request->service_id,
-        //     'price' => $price,
-        //     'paid_payment' => $request->paid_payment,
-        //     'remarks' => $validatedData['remarks'],
-        // ]);
-
-        // $tasks = ServiceTask::where('service_id', $request->service_id)->get();
-        $tasks = $service->load('tasks')->tasks;
-
-        foreach ($tasks as $task) {
-            $serviceAssign->assignedTasks()->create([
-                'service_task_id' => $task->id,
-                'title' => $task->title, // Add title explicitly
-                'is_completed' => false,
+            $serviceAssign = $service->serviceAssign()->create([
+                'customer_id' => $request->customer_id,
+                'employee_id' => $request->employee_id,
+                'price' => $price,
+                'paid_payment' => $request->paid_payment,
+                'remarks' => $validatedData['remarks'],
+                'delivery_date' => $validatedData['delivery_date'],
             ]);
+
+            $tasks = $service->load('tasks')->tasks;
+
+            foreach ($tasks as $task) {
+                $serviceAssign->assignedTasks()->create([
+                    'service_task_id' => $task->id,
+                    'title' => $task->title, // Add title explicitly
+                    'is_completed' => false,
+                ]);
+            }
+
+
+            // $service->load('calendarDays.tasks');
+            //     foreach ($service->calendarDays as $serviceDay) {
+
+            //         $customerDay = $serviceAssign->calendarDays()->create([
+            //             'day_number' => $serviceDay->day_number,
+            //         ]);
+
+            //         foreach ($serviceDay->tasks as $task) {
+
+            //             $customerDay->tasks()->create([
+            //                 'title' => $task->title,
+            //                 'status' => 'pending'
+            //             ]);
+
+            //         }
+            //     }
+
+            $service->load('calendarDays.tasks.employees');
+
+            foreach ($service->calendarDays as $serviceDay) {
+
+                $customerDay = $serviceAssign->calendarDays()->create([
+                    'day_number' => $serviceDay->day_number,
+                ]);
+
+                foreach ($serviceDay->tasks as $task) {
+
+                    // Create customer task
+                    $newTask = $customerDay->tasks()->create([
+                        'service_task_id' => $task->id, // optional but good practice
+                        'title' => $task->title,
+                        'status' => 'pending'
+                    ]);
+
+                    // Copy Employees
+                    if ($task->employees->isNotEmpty()) {
+
+                        $newTask->employees()->sync(
+                            $task->employees->pluck('id')
+                        );
+
+                    }
+
+                }
+            }
+
+
+
+
+            // Create invoice
+            // Determine invoice status based on payment
+            $status = 'unpaid';
+            if ($request->paid_payment >= $price) {
+                $status = 'paid';
+            } elseif ($request->paid_payment > 0) {
+                $status = 'partial';
+            }
+            $basePhone = $serviceAssign->customer->phone;
+            $baseInvoice = 'INV-';
+
+            // Count existing invoices for this customer
+            $count = \App\Models\Invoice::where('invoice_number', 'like', $baseInvoice . '%-' . $basePhone)->count();
+
+            // Generate 2-digit suffix
+            $suffix = str_pad($count + 1, 2, '0', STR_PAD_LEFT);
+
+            // Final invoice number
+            $invoiceNumber = $baseInvoice . $suffix . '-' . $basePhone;
+
+            // Create invoice
+            $invoice = $serviceAssign->invoice()->create([
+                'invoice_number' => $invoiceNumber,
+                'total_amount' => $price,
+                'paid_amount' => $request->paid_payment,
+                'status' => $status,
+            ]);
+
+
+
+
+
+            // Log payment history
+            $invoice->paymentHistory()->create([
+                'amount' => $request->paid_payment,
+                'payment_method' => null,
+                'comment' => null,
+                'paid_at' => now(),
+            ]);
+
+            // if(auth()->user()->role == 'employee'){
+            //      return redirect()->route('employee.dashboard')->with('success', 'Service assigned and invoice created successfully!');
+            // }
+            DB::commit();
+            return redirect()->route('employee.dashboard')->with('success', 'Service assigned and invoice created successfully!');
+        } catch (\Throwable $th) {
+            DB::rollBack();
+
+            return back()->with('error', $th->getMessage());
         }
-
-
-        // Create invoice
-        // Determine invoice status based on payment
-        $status = 'unpaid';
-        if ($request->paid_payment >= $price) {
-            $status = 'paid';
-        } elseif ($request->paid_payment > 0) {
-            $status = 'partial';
-        }
-        $basePhone = $serviceAssign->customer->phone;
-        $baseInvoice = 'INV-';
-
-        // Count existing invoices for this customer
-        $count = \App\Models\Invoice::where('invoice_number', 'like', $baseInvoice . '%-' . $basePhone)->count();
-
-        // Generate 2-digit suffix
-        $suffix = str_pad($count + 1, 2, '0', STR_PAD_LEFT);
-
-        // Final invoice number
-        $invoiceNumber = $baseInvoice . $suffix . '-' . $basePhone;
-
-        // Create invoice
-        $invoice = $serviceAssign->invoice()->create([
-            'invoice_number' => $invoiceNumber,
-            'total_amount' => $price,
-            'paid_amount' => $request->paid_payment,
-            'status' => $status,
-        ]);
-
-
-
-
-
-        // Log payment history
-        $invoice->paymentHistory()->create([
-            'amount' => $request->paid_payment,
-            'payment_method' => null,
-            'comment' => null,
-            'paid_at' => now(),
-        ]);
-
-        // if(auth()->user()->role == 'employee'){
-        //      return redirect()->route('employee.dashboard')->with('success', 'Service assigned and invoice created successfully!');
-        // }
-        return redirect()->route('employee.dashboard')->with('success', 'Service assigned and invoice created successfully!');
     }
 
     /**

@@ -90,7 +90,7 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/2.3.0/css/dataTables.dataTables.css" />
 
 @yield('script')
-
+@stack('scripts')
 <script>
 
 

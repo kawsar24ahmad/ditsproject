@@ -54,6 +54,12 @@
 
                 <!-- Sell Service Link -->
                 <li class="nav-item">
+                    <a href="{{ route('employee.work.calendar') }}" class="nav-link {{ request()->routeIs('employee.service_assigns.create') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-eye"></i>
+                        <p>Work Calendar</p>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a href="{{ route('employee.service_assigns.create') }}" class="nav-link {{ request()->routeIs('employee.service_assigns.create') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-plus"></i>
                         <p>Sell Service</p>
